@@ -4,7 +4,7 @@ import Stepper from "@/components/stepper";
 import Typography from "@/components/typography";
 import DashboardLayout from "@/layouts";
 import CreateFarmPayment from "@/modules/farm/payment";
-import FarmlInformation from "@/modules/farm/farm-information";
+import FarmInformation from "@/modules/farm/farm-information";
 import FarmParameters from "@/modules/farm/farm-parameters";
 import CreateFarmReview from "@/modules/farm/farmReviewSubmit";
 import CreateFarmReward from "@/modules/farm/reward";
@@ -47,7 +47,7 @@ export default function Create() {
               className="mb-[20px]"
             />
             <Stepper current={isActiveSteeper} headers={steeperHeader}>
-              <FarmlInformation
+              <FarmInformation
                 onNext={() => {
                   setActiveSteeper(steeperHeader[1].key);
                 }}
