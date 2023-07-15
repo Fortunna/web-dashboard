@@ -58,20 +58,20 @@ export default function FarmInformation({ onNext }: componentProps) {
                 label="Token Symbol"
                 inputPlaceholder="Ex. FTN"
               />
-              <FormGroup
+              {/* <FormGroup
                 containerClassName="w-full mb-[24px]"
                 inputClassName="w-full"
                 id="Token Decimals"
                 label="Token Decimals"
                 inputPlaceholder="Ex. 0.01"
-              />
-              <FormGroup
+              /> */}
+              {/* <FormGroup
                 containerClassName="w-full mb-[24px]"
                 inputClassName="w-full"
                 id="Token Logo URL (Optional)"
                 label="Token Logo URL (Optional)"
                 inputPlaceholder="Ex. https://upload.fortuna.io"
-              />
+              /> */}
               <div className="mb-12">
                 <Typography
                   variant="body2"
@@ -108,20 +108,20 @@ export default function FarmInformation({ onNext }: componentProps) {
                 label="Token Symbol"
                 inputPlaceholder="Ex. FTN"
               />
-              <FormGroup
+              {/* <FormGroup
                 containerClassName="w-full mb-[24px]"
                 inputClassName="w-full"
                 id="Token Decimals"
                 label="Token Decimals"
                 inputPlaceholder="Ex. 0.01"
-              />
-              <FormGroup
+              /> */}
+              {/* <FormGroup
                 containerClassName="w-full mb-[24px]"
                 inputClassName="w-full"
                 id="Token Logo URL (Optional)"
                 label="Token Logo URL (Optional)"
                 inputPlaceholder="Ex. https://upload.fortuna.io"
-              />
+              /> */}
               <div className="mb-12">
                 <Typography
                   variant="body2"

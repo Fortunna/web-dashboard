@@ -7,11 +7,17 @@ import React, { MouseEventHandler } from "react";
 
 type componentProps = {
   onNext: MouseEventHandler<HTMLButtonElement>;
-  onPrevious: MouseEventHandler<HTMLButtonElement>;
+  onPrevious?: MouseEventHandler<HTMLButtonElement>;
   values: {
     setMinStakeAmount: (value: any) => void;
     minStakeAmount: any;
     setMaxStakeAmount: (value: any) => void;
+    setEndTimestamp: (value: any) => void;
+    setStartTimestamp: (value: any) => void;
+    setMinLockUpRewardsPeriod: (value: any) => void;
+    minLockUpRewardsPeriod: any;
+    endTimestamp: any;
+    startTimestamp: any;
     maxStakeAmount: any;
   };
 };
@@ -26,7 +32,12 @@ export default function FarmParameters({
         <>
           <div className="md:grid grid-cols-2 gap-24">
             <FormGroup
+              type="date"
               containerClassName="w-full mb-4"
+              value={values.startTimestamp}
+              onChange={(e) => {
+                values.setStartTimestamp(e.target.value);
+              }}
               inputClassName="w-full"
               inputPlaceholder="2022-05-01T16:43(UTC)"
               id="Start time (UTC)*"
@@ -37,6 +48,11 @@ export default function FarmParameters({
               inputClassName="w-full"
               id="End time (UTC)*"
               label="End time (UTC)*"
+              type="date"
+              value={values.endTimestamp}
+              onChange={(e) => {
+                values.setEndTimestamp(e.target.value);
+              }}
               inputPlaceholder="2022-05-01T16:43(UTC)"
             />
           </div>
@@ -64,7 +80,7 @@ export default function FarmParameters({
               inputPlaceholder="0.0001"
             />
           </div>
-          <div className="mb-5">
+          {/* <div className="mb-5">
             <Typography
               variant="body2"
               className="!text-neutrals-5 mb-[16px] !font-aeonik-pro-bold"
@@ -78,18 +94,18 @@ export default function FarmParameters({
               variant="body0.5"
               label="You can enable/disable early withdrawal"
             />
-          </div>
+          </div> */}
           <div className="md:grid grid-cols-2 gap-24">
             <div>
-              <FormGroup
+              {/* <FormGroup
                 containerClassName="w-full  mb-4"
                 inputClassName="w-full"
                 id="% Loss"
                 label="% Loss"
                 inputPlaceholder="10"
-              />
+              /> */}
             </div>
-            <div>
+            {/* <div>
               <FormGroup
                 containerClassName="w-full  mb-4"
                 inputClassName="w-full"
@@ -97,10 +113,10 @@ export default function FarmParameters({
                 label="% From deposit/profit"
                 inputPlaceholder="Deposit"
               />
-            </div>
+            </div> */}
           </div>
           <div className="md:grid grid-cols-2 gap-24">
-            <div>
+            {/* <div>
               <FormGroup
                 containerClassName="w-full  mb-4"
                 inputClassName="w-full"
@@ -131,25 +147,33 @@ export default function FarmParameters({
                   </li>
                 </ul>
               </div>
-            </div>
+            </div> */}
             <div>
               <FormGroup
                 containerClassName="w-full  mb-4"
+                value={values.minLockUpRewardsPeriod}
+                type="date"
                 inputClassName="w-full"
                 id="Minimum lock up period"
+                onChange={(e) => {
+                  values.setMinLockUpRewardsPeriod(e.target.value);
+                }}
                 label="Minimum lock up period"
-                inputPlaceholder="30 Days"
+                // inputPlaceholder="30 Days"
               />
             </div>
           </div>
           <div className="flex mt-8 justify-center">
-            <Button
-              onClick={onPrevious}
-              theme="dark"
-              className="!px-12"
-              size="big"
-              label="Back"
-            />
+            {onPrevious ? (
+              <Button
+                onClick={onPrevious}
+                theme="dark"
+                className="!px-12"
+                size="big"
+                label="Back"
+              />
+            ) : null}
+
             <div className="mx-4"></div>
             <Button
               theme="secondary"

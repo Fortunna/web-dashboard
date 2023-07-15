@@ -25,12 +25,12 @@ export default function CreateFarmPayment({
                   className="!text-neutrals-5 mb-[16px] !font-aeonik-pro-bold"
                   label={"Currency"}
                 />
-                <Radio label="BNB" checked={false} />
-                <div className="mb-[8px]"></div>
+                {/* <Radio label="BNB" checked={false} />
+                <div className="mb-[8px]"></div> */}
                 <Radio label="ETH" checked={true} />
                 <div className="mb-[8px]"></div>
-                <Radio label="FTN" checked={false} />
-                <div className="mb-[8px]"></div>
+                {/* <Radio label="FTN" checked={false} />
+                <div className="mb-[8px]"></div> */}
                 <Radio label="USDT" checked={false} />
                 <Typography
                   className="mt-[8px] mb-4"

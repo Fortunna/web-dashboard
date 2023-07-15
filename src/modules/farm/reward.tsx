@@ -69,7 +69,7 @@ export default function CreateFarmReward({
                 variant="body0.5"
                 label="Reward distributed in Linear/Increasing/Decreasing/Custom"
               />
-              <div className="mb-[20px]">
+              {/* <div className="mb-[20px]">
                 <Typography
                   variant="body2"
                   className="!text-neutrals-5 mb-[16px] !font-aeonik-pro-bold"
@@ -80,7 +80,7 @@ export default function CreateFarmReward({
                   <div className="mx-4"></div>
                   <Radio label="No" checked={true} />
                 </div>
-              </div>
+              </div> */}
               <FormGroup
                 useSelect
                 options={[
@@ -134,7 +134,7 @@ export default function CreateFarmReward({
                 variant="body0.5"
                 label="Reward distributed in Linear/Increasing/Decreasing/Custom"
               />
-              <div className="mb-[20px]">
+              {/* <div className="mb-[20px]">
                 <Typography
                   variant="body2"
                   className="!text-neutrals-5 mb-[16px] !font-aeonik-pro-bold"
@@ -145,7 +145,7 @@ export default function CreateFarmReward({
                   <div className="mx-4"></div>
                   <Radio label="No" checked={true} />
                 </div>
-              </div>
+              </div> */}
               <FormGroup
                 useSelect
                 options={[

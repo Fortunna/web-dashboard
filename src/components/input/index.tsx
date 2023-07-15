@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import React, { ChangeEventHandler, HTMLInputTypeAttribute } from "react";
 
-type componentProps = {
+export type inputComponentProps = {
   theme?: "default";
   id: string;
   rounded?: boolean;
@@ -22,7 +22,7 @@ export default function TextInput({
   onChange,
   value,
   theme = "default",
-}: componentProps) {
+}: inputComponentProps) {
   const bgStyles = classNames({
     "bg-transparent-deep text-light-white border-transparent-1":
       theme == "default",

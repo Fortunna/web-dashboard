@@ -1,5 +1,5 @@
 import React, { ChangeEventHandler } from "react";
-import TextInput from "../input";
+import TextInput, { inputComponentProps } from "../input";
 import Typography from "../typography";
 import Select, { selectComponentProps } from "../select";
 
@@ -24,9 +24,10 @@ export default function FormGroup({
   value,
   containerClassName,
   onChange,
+  type,
   selectClassName,
   inputClassName,
-}: componentProps & Partial<selectComponentProps>) {
+}: componentProps & Partial<selectComponentProps> & inputComponentProps) {
   return (
     <div className={`${containerClassName}`}>
       <label className="" htmlFor={id}>
@@ -46,6 +47,7 @@ export default function FormGroup({
         <TextInput
           value={value}
           onChange={onChange}
+          type={type}
           placeholder={inputPlaceholder}
           className={`${inputClassName} mt-[16px]`}
           id={id}

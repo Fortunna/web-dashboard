@@ -9,168 +9,23 @@ import React, { MouseEventHandler } from "react";
 type componentProps = {
   // onNext: MouseEventHandler<HTMLButtonElement>;
   onPrevious: MouseEventHandler<HTMLButtonElement>;
+  onSubmit: MouseEventHandler<HTMLButtonElement>;
+  data: {
+    name: string;
+    value: string;
+    sub?: {
+      name: string;
+      value: string;
+    }[];
+  }[];
 };
 
 export default function CreateFarmReview({
   // onNext,
   onPrevious,
+  onSubmit,
+  data,
 }: componentProps) {
-  const data = [
-    {
-      name: "Pool Name",
-      value: "Fortuna Pool",
-    },
-    {
-      name: "Pool Image URL",
-      value: "https://upload.fortuna.io",
-    },
-    {
-      name: "Token A",
-      value: null,
-      sub: [
-        {
-          name: "Contract Address",
-          value: "0x2170ed0880ac9a755fd29b2688956bd959f933f8",
-        },
-        {
-          name: "Token Symbol",
-          value: "stkBNB",
-        },
-        {
-          name: "Token Decimals",
-          value: "0.001",
-        },
-        {
-          name: "Token Logo URL (Optional)",
-          value: "https://upload.fortuna.io",
-        },
-        {
-          name: "Token Network",
-          value: "ETH",
-        },
-      ],
-    },
-    {
-      name: "Token B",
-      value: null,
-      sub: [
-        {
-          name: "Contract Address",
-          value: "0x2170ed0880ac9a755fd29b2688956bd959f933f8",
-        },
-        {
-          name: "Token Symbol",
-          value: "BMB",
-        },
-        {
-          name: "Token Decimals",
-          value: "0.001",
-        },
-        {
-          name: "Token Logo URL (Optional)",
-          value: "https://upload.fortuna.io",
-        },
-        {
-          name: "Token Network",
-          value: "ETH",
-        },
-      ],
-    },
-    {
-      name: "Start time",
-      value: "2022-05-01T16:43",
-    },
-    {
-      name: "End time",
-      value: "2022-05-01T16:43",
-    },
-    {
-      name: "Minimum stake amount",
-      value: "0.00003528",
-    },
-    {
-      name: "Maximum stake amount",
-      value: "10",
-    },
-    {
-      name: "Early withdrawal fee (Optional)",
-      value: "Yes",
-    },
-    {
-      name: "% Loss",
-      value: "10",
-    },
-    {
-      name: "% From Deposit/Profit",
-      value: "Deposit",
-    },
-    {
-      name: "Minimum Lock-up Period",
-      value: "30 days",
-    },
-    {
-      name: "Taken in",
-      value: "Token A",
-    },
-    {
-      name: "Reward Token A",
-      value: null,
-      sub: [
-        {
-          name: "Reward Quantity",
-          value: "0.1",
-        },
-        {
-          name: "Reward Distribution",
-          value: "Linear",
-        },
-        {
-          name: "Compounding",
-          value: "Yes",
-        },
-        {
-          name: "Reward Distribution Duration",
-          value: "Weekly - 7 days",
-        },
-        {
-          name: "Initial Deposit Amount",
-          value: "0.01123",
-        },
-      ],
-    },
-    {
-      name: "Reward Token B",
-      value: null,
-      sub: [
-        {
-          name: "Reward Quantity",
-          value: "0.002345",
-        },
-        {
-          name: "Reward Distribution",
-          value: "Custom",
-        },
-        {
-          name: "Compounding",
-          value: "Yes",
-        },
-        {
-          name: "Reward Distribution Duration",
-          value: "Monthly - 30 days",
-        },
-        {
-          name: "Initial Deposit Amount",
-          value: "0.21123",
-        },
-      ],
-    },
-    ,
-    {
-      name: "Currency",
-      value: "BNB",
-    },
-  ];
-
   const DetailsPreview = ({
     name,
     value,
@@ -255,7 +110,7 @@ export default function CreateFarmReview({
               <Button
                 theme="secondary"
                 className="!px-12"
-                // onClick={onNext}
+                onClick={onSubmit}
                 size="big"
                 label="Submit"
               />
