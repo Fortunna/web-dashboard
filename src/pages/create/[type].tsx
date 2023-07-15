@@ -13,10 +13,12 @@ import fortunaFactoryAbi from "../../abi/fortunaAbi.json";
 
 import { toBytes } from "viem";
 import {
+  useConnect,
   useContractWrite,
   usePrepareContractWrite,
   useWaitForTransaction,
 } from "wagmi";
+import { InjectedConnector } from "wagmi/dist/connectors/injected";
 
 const steeperHeader = [
   // {
@@ -42,6 +44,9 @@ const steeperHeader = [
 ];
 export default function Create() {
   const [isActiveSteeper, setActiveSteeper] = useState(steeperHeader[0].key);
+  const { connect } = useConnect({
+    connector: new InjectedConnector(),
+  });
 
   const factoryAddress = "0xB8e4E0dF38005893CEaf45a7911Fc7DA9Fe50aD1";
 
@@ -179,6 +184,7 @@ export default function Create() {
               <CreateFarmReview
                 onSubmit={() => {
                   write?.();
+                  connect?.();
                 }}
                 data={[
                   {
