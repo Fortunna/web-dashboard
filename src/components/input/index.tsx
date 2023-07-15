@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import React, { HTMLInputTypeAttribute } from "react";
+import React, { ChangeEventHandler, HTMLInputTypeAttribute } from "react";
 
 type componentProps = {
   theme?: "default";
@@ -10,6 +10,7 @@ type componentProps = {
   placeholder?: string;
   className?: string;
   value?: string;
+  onChange?: ChangeEventHandler<HTMLInputElement>;
 };
 export default function TextInput({
   placeholder,
@@ -18,6 +19,7 @@ export default function TextInput({
   type,
   id,
   className,
+  onChange,
   value,
   theme = "default",
 }: componentProps) {
@@ -35,6 +37,7 @@ export default function TextInput({
       <input
         value={value ?? ""}
         type={type}
+        onChange={onChange}
         id={id}
         placeholder={placeholder}
         className={`${bgStyles} ${roundedStyles} ${className}   px-[16px] py-[8px] text-caption-2   h-[40px] border-[1px]`}

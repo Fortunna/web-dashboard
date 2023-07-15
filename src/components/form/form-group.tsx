@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ChangeEventHandler } from "react";
 import TextInput from "../input";
 import Typography from "../typography";
 import Select, { selectComponentProps } from "../select";
@@ -11,6 +11,8 @@ type componentProps = {
   selectClassName?: string;
   inputPlaceholder?: string;
   useSelect?: boolean;
+  value?: any;
+  onChange?: ChangeEventHandler<HTMLInputElement>;
 };
 
 export default function FormGroup({
@@ -19,7 +21,9 @@ export default function FormGroup({
   inputPlaceholder,
   options,
   useSelect,
+  value,
   containerClassName,
+  onChange,
   selectClassName,
   inputClassName,
 }: componentProps & Partial<selectComponentProps>) {
@@ -40,6 +44,8 @@ export default function FormGroup({
         />
       ) : (
         <TextInput
+          value={value}
+          onChange={onChange}
           placeholder={inputPlaceholder}
           className={`${inputClassName} mt-[16px]`}
           id={id}

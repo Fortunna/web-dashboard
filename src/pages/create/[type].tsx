@@ -8,8 +8,13 @@ import FarmInformation from "@/modules/farm/farm-information";
 import FarmParameters from "@/modules/farm/farm-parameters";
 import CreateFarmReview from "@/modules/farm/farmReviewSubmit";
 import CreateFarmReward from "@/modules/farm/reward";
-import { headers } from "next/dist/client/components/headers";
 import React, { useState } from "react";
+import { toBytes } from "viem";
+import {
+  useContractWrite,
+  usePrepareContractWrite,
+  useWaitForTransaction,
+} from "wagmi";
 
 const steeperHeader = [
   {
@@ -36,6 +41,80 @@ const steeperHeader = [
 export default function Create() {
   const [isActiveSteeper, setActiveSteeper] = useState(steeperHeader[0].key);
 
+  const [protoPoolIdx, setProtoPoolIdx] = React.useState(0);
+  const [startTimestamp, setStartTimestamp] = React.useState(0);
+  const [endTimestamp, setEndTimestamp] = React.useState(0);
+  const [minStakeAmount, setMinStakeAmount] = React.useState(0);
+  const [maxStakeAmount, setMaxStakeAmount] = React.useState(0);
+  const [minLockUpRewardsPeriod, setMinLockUpRewardsPeriod] = React.useState(0);
+  const [earlyWithdrawalFeeBasePoints, setEarlyWithdrawalFeeBasePoints] =
+    React.useState(0);
+  const [depositWithdrawFeeBasePoints, setDepositWithdrawFeeBasePoints] =
+    React.useState(0);
+  const [
+    totalRewardBasePointsPerDistribution,
+    setTotalRewardBasePointsPerDistribution,
+  ] = React.useState(0);
+
+  const [stakingTokensMask, setStakingTokensMask] = React.useState(
+    toBytes("0x00000000000000000000000000000000000000000000000000000000000000")
+  );
+  const [rewardTokensMask, setRewardTokensMask] = React.useState(
+    toBytes("0x00000000000000000000000000000000000000000000000000000000000000")
+  );
+  const [rawStakingTokensMask, setRawStakingTokensMask] = React.useState([]);
+  const [rawRewardTokensMask, setRawRewardTokensMask] = React.useState([]);
+
+  let nonfungiblePositionManager;
+  let setNonfungiblePositionManager;
+
+  //  if (isUniswapOrClassic) {
+  //    [nonfungiblePositionManager, setNonfungiblePositionManager] =
+  //      React.useState("");
+  //  }
+
+  const [utilizingTokens, setUtilizingTokens] = React.useState(["", ""]);
+  const [initialRewardAmounts, setInitialRewardAmounts] = React.useState([
+    ["", ""],
+  ]);
+  const [initialDepositAmounts, setInitialDepositAmounts] = React.useState([
+    ["", ""],
+  ]);
+
+  // const {
+  //   config,
+  //   error: prepareError,
+  //   isError: isPrepareError,
+  // } = usePrepareContractWrite({
+  //   address: "factoryAddress",
+  //   abi: "fortunnaFactoryAbi",
+  //   functionName: "createPool",
+  //   args: [
+  //     [
+  //       parseInt(protoPoolIdx),
+  //       parseInt(startTimestamp),
+  //       parseInt(endTimestamp),
+  //       minStakeAmount,
+  //       maxStakeAmount,
+  //       parseInt(minLockUpRewardsPeriod),
+  //       parseInt(earlyWithdrawalFeeBasePoints),
+  //       parseInt(depositWithdrawFeeBasePoints),
+  //       totalRewardBasePointsPerDistribution,
+  //       stakingTokensMask,
+  //       rewardTokensMask,
+  //       [nonfungiblePositionManager],
+  //     ],
+  //     [utilizingTokens, initialRewardAmounts, initialDepositAmounts],
+  //   ],
+  //   enabled: true,
+  // });
+
+  // const { data, error, isError, write } = useContractWrite(config);
+
+  // const { isLoading, isSuccess } = useWaitForTransaction({
+  //   hash: data?.hash,
+  // });
+
   return (
     <div>
       <DashboardLayout>
@@ -58,6 +137,12 @@ export default function Create() {
                 }}
                 onPrevious={() => {
                   setActiveSteeper(steeperHeader[0].key);
+                }}
+                values={{
+                  setMinStakeAmount,
+                  minStakeAmount,
+                  setMaxStakeAmount,
+                  maxStakeAmount,
                 }}
               />
               <CreateFarmReward

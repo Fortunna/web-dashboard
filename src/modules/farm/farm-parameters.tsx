@@ -8,8 +8,18 @@ import React, { MouseEventHandler } from "react";
 type componentProps = {
   onNext: MouseEventHandler<HTMLButtonElement>;
   onPrevious: MouseEventHandler<HTMLButtonElement>;
+  values: {
+    setMinStakeAmount: (value: any) => void;
+    minStakeAmount: any;
+    setMaxStakeAmount: (value: any) => void;
+    maxStakeAmount: any;
+  };
 };
-export default function FarmParameters({ onNext, onPrevious }: componentProps) {
+export default function FarmParameters({
+  onNext,
+  onPrevious,
+  values,
+}: componentProps) {
   return (
     <div>
       <Card>
@@ -34,7 +44,11 @@ export default function FarmParameters({ onNext, onPrevious }: componentProps) {
             <FormGroup
               containerClassName="w-full mb-4"
               inputClassName="w-full"
+              onChange={(e) => {
+                values.setMinStakeAmount(e.target.value);
+              }}
               inputPlaceholder="0.0001"
+              value={values?.minStakeAmount.toString()}
               id="Minimum stake amount"
               label="Minimum stake amount"
             />
@@ -42,6 +56,10 @@ export default function FarmParameters({ onNext, onPrevious }: componentProps) {
               containerClassName="w-full  mb-4"
               inputClassName="w-full"
               id="Maximum stake amount"
+              onChange={(e) => {
+                values.setMaxStakeAmount(e.target.value);
+              }}
+              value={values?.maxStakeAmount.toString()}
               label="Maximum stake amount"
               inputPlaceholder="0.0001"
             />

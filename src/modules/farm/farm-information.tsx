@@ -8,7 +8,7 @@ import React, { MouseEventHandler } from "react";
 type componentProps = {
   onNext: MouseEventHandler<HTMLButtonElement>;
 };
-export default function FarmlInformation({ onNext }: componentProps) {
+export default function FarmInformation({ onNext }: componentProps) {
   return (
     <div>
       <Card>
@@ -18,20 +18,20 @@ export default function FarmlInformation({ onNext }: componentProps) {
             variant="body1"
             className="!text-secondary mb-[18px] !font-aeonik-pro"
           />
-          <FormGroup
+          {/* <FormGroup
             containerClassName="w-full mb-[24px]"
             inputClassName="w-full"
             inputPlaceholder="Ex. Fortuna Pool"
             id="label"
             label="Pool Name"
-          />
-          <FormGroup
+          /> */}
+          {/* <FormGroup
             containerClassName="w-full"
             inputClassName="w-full"
             id="Pool Image (Optional)"
             label="Pool Image (Optional)"
             inputPlaceholder="Ex. https://upload.fortuna.io"
-          />
+          /> */}
           <Typography
             variant="body2"
             className="!text-neutrals-5 my-7 !font-aeonik-pro-bold"
