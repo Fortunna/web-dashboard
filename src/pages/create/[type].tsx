@@ -97,7 +97,7 @@ export default function Create() {
     functionName: "createPool",
     args: [
       [
-        parseInt(protoPoolIdx),
+        parseInt(protoPoolIdx.toString()),
         new Date(startTimestamp).getTime(),
         new Date(endTimestamp).getTime(),
         minStakeAmount,

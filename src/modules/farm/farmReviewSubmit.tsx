@@ -10,14 +10,7 @@ type componentProps = {
   // onNext: MouseEventHandler<HTMLButtonElement>;
   onPrevious: MouseEventHandler<HTMLButtonElement>;
   onSubmit: MouseEventHandler<HTMLButtonElement>;
-  data: {
-    name: string;
-    value: string;
-    sub?: {
-      name: string;
-      value: string;
-    }[];
-  }[];
+  data: any;
 };
 
 export default function CreateFarmReview({
@@ -69,14 +62,14 @@ export default function CreateFarmReview({
     <div>
       <Card>
         <>
-          {data.map((_data, index) => {
+          {data.map((_data: any, index: any) => {
             return (
               <div className="" key={index}>
                 <DetailsPreview
                   value={_data?.value || ""}
                   name={_data?.name || ""}
                 />
-                {_data?.sub?.map((_sub, index) => {
+                {_data?.sub?.map((_sub: any, index: any) => {
                   return (
                     <div key={index}>
                       <DetailsPreview
