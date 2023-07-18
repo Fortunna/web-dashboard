@@ -18,20 +18,20 @@ export default function FarmInformation({ onNext }: componentProps) {
             variant="body1"
             className="!text-secondary mb-[18px] !font-aeonik-pro"
           />
-          {/* <FormGroup
+          <FormGroup
             containerClassName="w-full mb-[24px]"
             inputClassName="w-full"
             inputPlaceholder="Ex. Fortuna Pool"
             id="label"
             label="Pool Name"
-          /> */}
-          {/* <FormGroup
+          />
+          <FormGroup
             containerClassName="w-full"
             inputClassName="w-full"
             id="Pool Image (Optional)"
             label="Pool Image (Optional)"
             inputPlaceholder="Ex. https://upload.fortuna.io"
-          /> */}
+          />
           <Typography
             variant="body2"
             className="!text-neutrals-5 my-7 !font-aeonik-pro-bold"
@@ -58,20 +58,20 @@ export default function FarmInformation({ onNext }: componentProps) {
                 label="Token Symbol"
                 inputPlaceholder="Ex. FTN"
               />
-              {/* <FormGroup
+              <FormGroup
                 containerClassName="w-full mb-[24px]"
                 inputClassName="w-full"
                 id="Token Decimals"
                 label="Token Decimals"
                 inputPlaceholder="Ex. 0.01"
-              /> */}
-              {/* <FormGroup
+              />
+              <FormGroup
                 containerClassName="w-full mb-[24px]"
                 inputClassName="w-full"
                 id="Token Logo URL (Optional)"
                 label="Token Logo URL (Optional)"
                 inputPlaceholder="Ex. https://upload.fortuna.io"
-              /> */}
+              />
               <div className="mb-12">
                 <Typography
                   variant="body2"
@@ -108,20 +108,20 @@ export default function FarmInformation({ onNext }: componentProps) {
                 label="Token Symbol"
                 inputPlaceholder="Ex. FTN"
               />
-              {/* <FormGroup
+              <FormGroup
                 containerClassName="w-full mb-[24px]"
                 inputClassName="w-full"
                 id="Token Decimals"
                 label="Token Decimals"
                 inputPlaceholder="Ex. 0.01"
-              /> */}
-              {/* <FormGroup
+              />
+              <FormGroup
                 containerClassName="w-full mb-[24px]"
                 inputClassName="w-full"
                 id="Token Logo URL (Optional)"
                 label="Token Logo URL (Optional)"
                 inputPlaceholder="Ex. https://upload.fortuna.io"
-              /> */}
+              />
               <div className="mb-12">
                 <Typography
                   variant="body2"

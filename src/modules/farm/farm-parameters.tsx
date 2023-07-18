@@ -80,7 +80,7 @@ export default function FarmParameters({
               inputPlaceholder="0.0001"
             />
           </div>
-          {/* <div className="mb-5">
+          <div className="mb-5">
             <Typography
               variant="body2"
               className="!text-neutrals-5 mb-[16px] !font-aeonik-pro-bold"
@@ -94,18 +94,18 @@ export default function FarmParameters({
               variant="body0.5"
               label="You can enable/disable early withdrawal"
             />
-          </div> */}
+          </div>
           <div className="md:grid grid-cols-2 gap-24">
             <div>
-              {/* <FormGroup
+              <FormGroup
                 containerClassName="w-full  mb-4"
                 inputClassName="w-full"
                 id="% Loss"
                 label="% Loss"
                 inputPlaceholder="10"
-              /> */}
+              />
             </div>
-            {/* <div>
+            <div>
               <FormGroup
                 containerClassName="w-full  mb-4"
                 inputClassName="w-full"
@@ -113,10 +113,10 @@ export default function FarmParameters({
                 label="% From deposit/profit"
                 inputPlaceholder="Deposit"
               />
-            </div> */}
+            </div>
           </div>
           <div className="md:grid grid-cols-2 gap-24">
-            {/* <div>
+            <div>
               <FormGroup
                 containerClassName="w-full  mb-4"
                 inputClassName="w-full"
@@ -147,7 +147,7 @@ export default function FarmParameters({
                   </li>
                 </ul>
               </div>
-            </div> */}
+            </div>
             <div>
               <FormGroup
                 containerClassName="w-full  mb-4"
