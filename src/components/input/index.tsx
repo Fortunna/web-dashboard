@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import React, { ChangeEventHandler, HTMLInputTypeAttribute } from "react";
 
-export type inputComponentProps = {
+type componentProps = {
   theme?: "default";
   id: string;
   rounded?: boolean;
@@ -10,6 +10,7 @@ export type inputComponentProps = {
   placeholder?: string;
   className?: string;
   value?: string;
+  disabled?: boolean;
   onChange?: ChangeEventHandler<HTMLInputElement>;
 };
 export default function TextInput({
@@ -22,7 +23,8 @@ export default function TextInput({
   onChange,
   value,
   theme = "default",
-}: inputComponentProps) {
+  disabled = false
+}: componentProps) {
   const bgStyles = classNames({
     "bg-transparent-deep text-light-white border-transparent-1":
       theme == "default",
@@ -40,6 +42,7 @@ export default function TextInput({
         onChange={onChange}
         id={id}
         placeholder={placeholder}
+        disabled = {disabled}
         className={`${bgStyles} ${roundedStyles} ${className}   px-[16px] py-[8px] text-caption-2   h-[40px] border-[1px]`}
       />
       {rightComponent ? (

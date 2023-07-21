@@ -1,5 +1,5 @@
 import React, { ChangeEventHandler } from "react";
-import TextInput, { inputComponentProps } from "../input";
+import TextInput from "../input";
 import Typography from "../typography";
 import Select, { selectComponentProps } from "../select";
 
@@ -12,6 +12,9 @@ type componentProps = {
   inputPlaceholder?: string;
   useSelect?: boolean;
   value?: any;
+  inputAgain?: boolean;
+  name?: string;
+  disabled?: boolean;
   onChange?: ChangeEventHandler<HTMLInputElement>;
 };
 
@@ -24,10 +27,12 @@ export default function FormGroup({
   value,
   containerClassName,
   onChange,
-  type,
   selectClassName,
   inputClassName,
-}: componentProps & Partial<selectComponentProps> & inputComponentProps) {
+  name,
+  disabled,
+  inputAgain = false
+}: componentProps & Partial<selectComponentProps>) {
   return (
     <div className={`${containerClassName}`}>
       <label className="" htmlFor={id}>
@@ -42,15 +47,16 @@ export default function FormGroup({
           id={id}
           className={`${selectClassName} mt-[16px]`}
           options={options || []}
+          name = {name}
         />
       ) : (
         <TextInput
           value={value}
           onChange={onChange}
-          type={type}
           placeholder={inputPlaceholder}
-          className={`${inputClassName} mt-[16px]`}
+          className={!inputAgain ? `${inputClassName} mt-[16px]` : `${inputClassName} mt-[16px] border-[1px] border-[#AF6AFF]`}
           id={id}
+          disabled={disabled}
         />
       )}
     </div>
