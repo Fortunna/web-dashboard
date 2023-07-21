@@ -22,7 +22,7 @@ export default function AggregatorBanner() {
               <Typography
                 variant="body1"
                 className="!font-inter !text-[#CFCFCF]"
-                label="Yield Aggregator "
+                label="Discover the Oracle "
               />
               <div className="md:block hidden">
                 <Button
@@ -43,9 +43,7 @@ export default function AggregatorBanner() {
             <Typography
               className="!font-inter-light pt-2 !text-[#CFCFCF]"
               variant="body2"
-              label="Lorem ipsum dolor sit amet consectetur. Vitae volutpat convallis morbi non tincidunt. A orci sapien hac in arcu. Sed congue adipiscing amet aliquet sollicitudin lorem a. Ornare leo 
-auctor neque mi sit volutpat mauris. Mi ut nisl est mauris arcu mattis ornare.
-"
+              label="Effortlessly maximize you returns. Personalize your risk level and let it work for you. Automatic or manual – your choice, your yield."
             />
 
             <div className="block md:hidden">

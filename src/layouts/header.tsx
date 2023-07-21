@@ -47,43 +47,65 @@ export default function Header({
 
           <div className="bg-deep-secondary md:flex hidden px-[10px] rounded-2xl py-[5px]  items-center justify-center">
             <svg
-              width={24}
-              height={24}
-              className="mr-1"
-              viewBox="0 0 24 24"
-              fill="none"
               xmlns="http://www.w3.org/2000/svg"
+              xmlSpace="preserve"
+              style={{ width: "15px", height: "auto" }}
+              width="100%"
+              height="100%"
+              version="1.1"
+              shapeRendering="geometricPrecision"
+              className="mr-2"
+              textRendering="geometricPrecision"
+              imageRendering="optimizeQuality"
+              fillRule="evenodd"
+              clipRule="evenodd"
+              viewBox="0 0 784.37 1277.39"
+              xmlnsXlink="http://www.w3.org/1999/xlink"
+              // xmlns:xodm="http://www.corel.com/coreldraw/odm/2003"
             >
-              <mask
-                id="mask0_126_240"
-                style={{ maskType: "luminance" }}
-                maskUnits="userSpaceOnUse"
-                x={3}
-                y={3}
-                width={18}
-                height={18}
-              >
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z"
-                  fill="white"
-                />
-              </mask>
-              <g mask="url(#mask0_126_240)">
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M8.50447 10.5637L12.0001 7.06824L15.4975 10.5655L17.5315 8.53156L12.0001 3L6.47049 8.52971L8.50447 10.5637ZM5.03414 9.96568L7.06808 11.9996L5.03394 14.0338L3 11.9998L5.03414 9.96568ZM12 16.9316L8.50445 13.4362L6.46749 15.4674L6.47033 15.4703L12 21L17.5315 15.4684L17.5325 15.4673L15.4973 13.4345L12 16.9316ZM21.0002 12.0009L18.9662 14.0349L16.9323 12.001L18.9663 9.96693L21.0002 12.0009ZM14.0639 11.999H14.0631L14.0649 12L14.0639 12.0011L12 14.065L9.93784 12.0029L9.935 12L9.93784 11.997L10.2994 11.6355L10.4745 11.4603H10.4747L12 9.9349L14.0639 11.999Z"
-                  fill="#F5BC00"
-                />
+              <g id="Layer_x0020_1">
+                <metadata id="CorelCorpID_0Corel-Layer" />
+                <g id="_1421394342400">
+                  <g>
+                    <polygon
+                      fill="#343434"
+                      fillRule="nonzero"
+                      points="392.07,0 383.5,29.11 383.5,873.74 392.07,882.29 784.13,650.54 "
+                    />
+                    <polygon
+                      fill="#8C8C8C"
+                      fillRule="nonzero"
+                      points="392.07,0 -0,650.54 392.07,882.29 392.07,472.33 "
+                    />
+                    <polygon
+                      fill="#3C3C3B"
+                      fillRule="nonzero"
+                      points="392.07,956.52 387.24,962.41 387.24,1263.28 392.07,1277.38 784.37,724.89 "
+                    />
+                    <polygon
+                      fill="#8C8C8C"
+                      fillRule="nonzero"
+                      points="392.07,1277.38 392.07,956.52 -0,724.89 "
+                    />
+                    <polygon
+                      fill="#141414"
+                      fillRule="nonzero"
+                      points="392.07,882.29 784.13,650.54 392.07,472.33 "
+                    />
+                    <polygon
+                      fill="#393939"
+                      fillRule="nonzero"
+                      points="0,650.54 392.07,882.29 392.07,472.33 "
+                    />
+                  </g>
+                </g>
               </g>
             </svg>
 
             <Typography
               variant="body2"
               className="!font-dm-sans-bold"
-              label="BNB Chain"
+              label="ETH"
             />
           </div>
         </div>
