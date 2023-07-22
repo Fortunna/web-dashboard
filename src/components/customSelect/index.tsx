@@ -14,7 +14,7 @@ type MultiTextInputType = {
   size?: string;
   placeholder?: string;
   errorMessage?: React.ReactNode | string;
-  value?: Array<ObjectType>;
+  value?: any;
   setValues: Function;
   inputValue: string;
   setInputValue: Function;
@@ -268,14 +268,6 @@ export const MultiTextInput = ({
         className={`custom-select custom-size-lg custom-select-bg-${bg}`}
         {...rest}
       />
-
-      {errorMessage && (
-        <div className="mt-1">
-          <Body type="body12" color="#ed0707">
-            {errorMessage}
-          </Body>
-        </div>
-      )}
     </>
   );
 };

@@ -115,7 +115,7 @@ export default function BuyCoinModal({ onClose }: componentProps) {
     );
   };
 
-  const CustomValue = ({ data }) => (
+  const CustomValue = ({ data }: any) => (
     <div className="flex ">
       <Image
         src={data.img}
