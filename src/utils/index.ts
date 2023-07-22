@@ -19,12 +19,12 @@ const formatDate = (dateString: string | Date | null) => {
 }
 
 
-const convertTimeStamptoDateUTC = (timestamp: number) => {
+const convertTimeStamptoDate = (timestamp: number) => {
     if (!timestamp)
         return "";
         
     const dt = new Date(timestamp);
-    const date = `${dt.getUTCFullYear()}-${(dt.getUTCMonth() + 1).toString().padStart(2, '0')}-${dt.getUTCDate().toString().padStart(2, '0')} ${dt.getUTCHours().toString().padStart(2, '0')}:${dt.getUTCMinutes().toString().padStart(2, '0')}:${dt.getUTCSeconds().toString().padStart(2, '0')}`;
+    const date = `${(dt.getMonth()+1).toString().padStart(2, '0')}/${dt.getDate().toString().padStart(2, '0')}/${dt.getFullYear()}`;
     return date;
 }
 
@@ -39,7 +39,7 @@ const makeCostUnit = (cost: string, symbol: string|undefined) => {
 }
 export {
     formatDate,
-    convertTimeStamptoDateUTC,
+    convertTimeStamptoDate,
     checkAddressValidation,
     makeCostUnit
 }

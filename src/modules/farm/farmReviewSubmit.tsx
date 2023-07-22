@@ -6,7 +6,7 @@ import Typography from "@/components/typography";
 import classNames from "classnames";
 import React, { MouseEventHandler } from "react";
 import { useFarm } from "@/hooks/useFarm";
-import { convertTimeStamptoDateUTC, makeCostUnit } from "@/utils";
+import { convertTimeStamptoDate, makeCostUnit } from "@/utils";
 import { useNetwork, useWalletClient, Address, useBalance } from "wagmi";
 import { ethers, parseEther } from "ethers";
 import FortunnaFactoryABI from "@/assets/FortunnaFactory.json";
@@ -32,6 +32,8 @@ export default function CreateFarmReview({
   });
   
   const {
+    poolName,
+    poolImage,
     tokenAAddress, 
     tokenASymbol,
     tokenADecimal,
@@ -65,11 +67,11 @@ export default function CreateFarmReview({
   const data = [
     {
       name: "Pool Name",
-      value: "Fortuna Pool",
+      value: poolName,
     },
     {
       name: "Pool Image URL",
-      value: "https://upload.fortuna.io",
+      value: poolImage,
     },
     {
       name: "Token A",
@@ -125,11 +127,11 @@ export default function CreateFarmReview({
     },
     {
       name: "Start time",
-      value: convertTimeStamptoDateUTC(startTime),
+      value: convertTimeStamptoDate(startTime),
     },
     {
       name: "End time",
-      value: convertTimeStamptoDateUTC(endTime),
+      value: convertTimeStamptoDate(endTime),
     },
     {
       name: "Minimum stake amount",
@@ -153,7 +155,7 @@ export default function CreateFarmReview({
     },
     {
       name: "Minimum Lock-up Period",
-      value: `${lockupPeriod} days`,
+      value: `${lockupPeriod} day(s)`,
     },
     {
       name: "Taken in",
@@ -177,7 +179,7 @@ export default function CreateFarmReview({
         },
         {
           name: "Reward Distribution Duration",
-          value: `${tokenARewardDur} days`,
+          value: `${tokenARewardDur} day(s)`,
         },
         {
           name: "Initial Deposit Amount",
@@ -203,7 +205,7 @@ export default function CreateFarmReview({
         },
         {
           name: "Reward Distribution Duration",
-          value: `${tokenBRewardDur} days`,
+          value: `${tokenBRewardDur} day(s)`,
         },
         {
           name: "Initial Deposit Amount",

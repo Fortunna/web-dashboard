@@ -25,6 +25,10 @@ export default function FarmInformation({ onNext }: componentProps) {
   const {chain} = useNetwork();
 
   const {
+    poolName,
+    setPoolName,
+    poolImage,
+    setPoolImage,
     tokenAAddress, 
     setTokenAAddress,
     tokenASymbol,
@@ -83,15 +87,11 @@ export default function FarmInformation({ onNext }: componentProps) {
       return;
     }
 
-    if (!tokenASymbol|| !tokenADecimal) {
+    if (!poolName ||
+        !tokenASymbol || !tokenADecimal ||
+        !tokenBSymbol || !tokenBDecimal
+      ) {
       setShowAErrorBorder(true);
-      toast.error(TOAST_MESSAGE.FILL_FIELD, {
-        position: toast.POSITION.TOP_CENTER
-      });
-      return;
-    }
-    if (!tokenBSymbol || !tokenBDecimal) {
-      setShowBErrorBorder(true);
       toast.error(TOAST_MESSAGE.FILL_FIELD, {
         position: toast.POSITION.TOP_CENTER
       });
@@ -101,6 +101,15 @@ export default function FarmInformation({ onNext }: componentProps) {
     onNext(event);
   }
 
+  const onSetPoolName = (event: {target: {value:any;};}) => {
+    const val = event.target.value;
+    setPoolName(val);
+  }
+
+  const onSetPoolImage = (event: {target: {value:any ;}; }) => {
+    const val = event.target.value;
+    setPoolImage(val);
+  }
   const onChangeTokenA = (event: { target: { value: any; }; }) => {
     const val = event.target.value;
     setShowAErrorBorder(false);
@@ -131,20 +140,24 @@ export default function FarmInformation({ onNext }: componentProps) {
             variant="body1"
             className="!text-secondary mb-[18px] !font-aeonik-pro"
           />
-          {/* <FormGroup
+          <FormGroup
             containerClassName="w-full mb-[24px]"
             inputClassName="w-full"
             inputPlaceholder="Ex. Fortuna Pool"
             id="label"
-            label="Pool Name"
-          /> */}
-          {/* <FormGroup
+            label="Pool Name*"
+            onChange = {onSetPoolName}
+            value = {poolName}
+          />
+          <FormGroup
             containerClassName="w-full"
             inputClassName="w-full"
             id="Pool Image (Optional)"
             label="Pool Image (Optional)"
             inputPlaceholder="Ex. https://upload.fortuna.io"
-          /> */}
+            onChange = {onSetPoolImage}
+            value = {poolImage}
+          />
           <Typography
             variant="body2"
             className="!text-neutrals-5 my-7 !font-aeonik-pro-bold"
