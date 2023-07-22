@@ -1,6 +1,10 @@
 import React, { useContext, useState } from "react";
 
 export interface Farm {
+    poolName: string;
+    setPoolName: (name:string) => void;
+    poolImage: string;
+    setPoolImage: (image:string) => void;
     tokenAAddress: string;
     setTokenAAddress: (address:string) => void;
     tokenASymbol: string;
@@ -66,6 +70,8 @@ const FarmContext: React.Context<null | Farm> =
 
 export function FarmProvider({children}:any) {
     
+    const [pool_Name, setPool_Name] = useState<string>("");
+    const [pool_Image, setPool_Image] = useState<string>("");
     const [tokenA_Address, setTokenA_Address] = useState<string>("");
     const [tokenA_Symbol, setTokenA_Symbol] = useState<string>("");
     const [tokenA_Decimal, setTokenA_Decimal] = useState<number>(0);
@@ -99,6 +105,10 @@ export function FarmProvider({children}:any) {
     return (
         <FarmContext.Provider
             value = {{
+                poolName: pool_Name,
+                setPoolName: setPool_Name,
+                poolImage: pool_Image,
+                setPoolImage: setPool_Image,
                 tokenAAddress: tokenA_Address,
                 setTokenAAddress: setTokenA_Address,
                 tokenASymbol: tokenA_Symbol,

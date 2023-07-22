@@ -8,6 +8,7 @@ export enum SupportedChains {
 export enum TOAST_MESSAGE {
     CONNECT_WALLET = "Please connect wallet!",
     FILL_FIELD = "Please fill required fields!",
+    DATE_INCORRECT = "Please choose date correctly!",
     USER_REJECTED = "User rejeceted transaction!",
     TRANSACTION_SUBMITTED = "Transaction submitted successfully!"
 };

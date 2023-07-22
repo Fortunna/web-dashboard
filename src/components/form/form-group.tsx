@@ -1,5 +1,5 @@
 import React, { ChangeEventHandler } from "react";
-import TextInput from "../input";
+import TextInput, { inputComponentProps } from "../input";
 import Typography from "../typography";
 import Select, { selectComponentProps } from "../select";
 
@@ -33,7 +33,7 @@ export default function FormGroup({
   name,
   disabled,
   inputAgain = false
-}: componentProps & Partial<selectComponentProps>) {
+}: componentProps & Partial<selectComponentProps> & inputComponentProps) {
   return (
     <div className={`${containerClassName}`}>
       <label className="" htmlFor={id}>

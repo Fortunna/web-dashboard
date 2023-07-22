@@ -5,14 +5,14 @@ import Radio from "@/components/radio";
 import Typography from "@/components/typography";
 import React, { MouseEventHandler, useState } from "react";
 import { useFarm } from "@/hooks/useFarm";
-import { convertTimeStamptoDateUTC } from "@/utils";
+import { convertTimeStamptoDate } from "@/utils";
 import { useNetwork } from "wagmi";
 import { DEFAULT_VALUE, TOAST_MESSAGE } from "@/constants";
 import { toast } from "react-toastify";
 
 type componentProps = {
   onNext: MouseEventHandler<HTMLButtonElement>;
-  onPrevious: MouseEventHandler<HTMLButtonElement>;
+  onPrevious?: MouseEventHandler<HTMLButtonElement>;
   values: {
     setMinStakeAmount: (value: any) => void;
     minStakeAmount: any;
@@ -53,8 +53,8 @@ export default function FarmParameters({
     setLockupPeriod
   } = useFarm();
 
-  const [stTime, setSTtime] = useState<string>(convertTimeStamptoDateUTC(startTime));
-  const [enTime, setENtime] = useState<string>(convertTimeStamptoDateUTC(endTime));
+  const [stTime, setSTtime] = useState<string>(convertTimeStamptoDate(startTime));
+  const [enTime, setENtime] = useState<string>(convertTimeStamptoDate(endTime));
   const [minValue, setMinValue] = useState<string>(minimumStakeAmount.toString());
   const [maxValue, setMaxValue] = useState<string>(maximumStakeAmount.toString());
   const {chain} = useNetwork();
@@ -98,8 +98,17 @@ export default function FarmParameters({
       setDepositProfit("0");
     }
 
-    setStartTime(new Date(stTime + 'Z').getTime());
-    setEndTime(new Date(enTime + 'Z').getTime());
+    const st_timestamp = new Date(stTime).getTime();
+    const en_timestamp = new Date(enTime).getTime();
+
+    if (en_timestamp < st_timestamp) {
+      toast.error(TOAST_MESSAGE.DATE_INCORRECT, {
+        position: toast.POSITION.TOP_CENTER
+      });
+      return;
+    }
+    setStartTime(st_timestamp);
+    setEndTime(en_timestamp);
 
     onNext(event);
   }
@@ -110,22 +119,28 @@ export default function FarmParameters({
         <>
           <div className="md:grid grid-cols-2 gap-24">
             <FormGroup
+              type="date"
               containerClassName="w-full mb-4"
+              value={stTime}
+              onChange={(e) => {
+                setSTtime(e.target.value);
+              }}
               inputClassName="w-full"
               inputPlaceholder="2022-05-01T16:43(UTC)"
               id="Start time (UTC)*"
               label="Start time (UTC)*"
-              onChange={(event) => setSTtime(event.target.value)}
-              value={stTime}
             />
             <FormGroup
               containerClassName="w-full  mb-4"
               inputClassName="w-full"
               id="End time (UTC)*"
               label="End time (UTC)*"
-              inputPlaceholder="2022-05-01T16:43(UTC)"
-              onChange={(event) => setENtime(event.target.value)}
+              type="date"
               value={enTime}
+              onChange={(e) => {
+                setENtime(e.target.value);
+              }}
+              inputPlaceholder="2022-05-01T16:43(UTC)"
             />
           </div>
           <div className="md:grid grid-cols-2 gap-24">
