@@ -3,7 +3,13 @@ import React from "react";
 
 type componentProps = {
   outline?: boolean;
-  theme?: "white" | "secondary" | "secondary-solid" | "dark" | "transparent";
+  theme?:
+    | "white"
+    | "secondary"
+    | "secondary-solid"
+    | "dark"
+    | "harsh"
+    | "transparent";
   label: string;
   rightComponent?: React.JSX.Element;
   leftComponent?: React.JSX.Element;
@@ -33,6 +39,7 @@ export default function Button({
   const themeStyles = classNames({
     "bg-white text-dark": theme == "white" && !outline,
     "border-2 text-light-4 border-light-white": theme == "white" && outline,
+    "text-[#4C516B] bg-[#222531]": theme == "harsh" && !outline,
     "bg-secondary-gradient text-white border-[1px]  border-black":
       theme == "secondary" && !outline,
     "bg-[#DE1EFD] text-white border-[1px]  border-black":

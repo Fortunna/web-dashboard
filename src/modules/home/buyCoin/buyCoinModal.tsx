@@ -5,6 +5,8 @@ import { Dai, Usdc, Usdt } from "@/components/icons";
 import Select, { StylesConfig } from "react-select";
 import SelectComponent from "@/components/customSelect";
 import Image from "next/image";
+import Button from "@/components/button";
+import { components } from "react-select";
 
 type componentProps = {
   onClose: () => void;
@@ -52,6 +54,7 @@ export default function BuyCoinModal({ onClose }: componentProps) {
       borderColor: "#222531",
 
       width: "150px",
+      borderRadius: "8px",
       ":hover": {
         borderColor: "#222531",
       },
@@ -59,6 +62,7 @@ export default function BuyCoinModal({ onClose }: componentProps) {
         borderColor: "#222531",
       },
     }),
+
     option: (styles, { data, isDisabled, isFocused, isSelected }) => {
       const color = "";
       return {
@@ -99,10 +103,28 @@ export default function BuyCoinModal({ onClose }: componentProps) {
     }),
   };
 
+  const Control = ({ children, ...props }: any) => {
+    return (
+      <components.Control {...props}>
+        {props?.selectProps?.value?.image && (
+          <Image
+            alt=""
+            width={25}
+            height={25}
+            src={props.selectProps.value.image}
+          />
+        )}{" "}
+        {children}
+      </components.Control>
+    );
+  };
   const CustomOption = ({ innerProps, label, data }: any) => {
     console.log(data, "kskks");
     return (
-      <div {...innerProps} className="flex items-center whitespace-nowrap">
+      <div
+        {...innerProps}
+        className="flex px-4 py-3 items-center whitespace-nowrap"
+      >
         <Image
           src={data.img}
           alt="Option"
@@ -115,22 +137,50 @@ export default function BuyCoinModal({ onClose }: componentProps) {
     );
   };
 
-  const CustomValue = ({ data }: any) => (
-    <div className="flex ">
-      <Image
-        src={data.img}
-        alt="Option"
-        width={30}
-        height={30}
-        className="mr-4"
-      />
-      <Typography label={data.label} variant="body2" className="!text-white" />
-    </div>
+  const CustomValue = (props: any) => (
+    <components.SingleValue className="d-flex align-items-center" {...props}>
+      <div className="flex items-center">
+        <Image
+          src={props?.data.img}
+          alt="Option"
+          width={30}
+          height={30}
+          className="mr-4"
+        />
+        <Typography
+          label={props?.data.label}
+          variant="body2"
+          className="!text-white"
+        />
+      </div>
+    </components.SingleValue>
   );
 
-  const TokenInput = ({ title }: any) => {
+  const DropdownIndicator = (props: any) => {
     return (
-      <div className=" grid grid-cols-[auto_170px] overflow-hidden w-full border-[1px] border-[#2A2D3C] relative py-1 h-[90px] px-10  rounded-[8px]">
+      <div {...props}>
+        <svg
+          width={24}
+          height={24}
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M8 9.99997L12 14L16 9.99997"
+            stroke="white"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </div>
+    );
+  };
+
+  const TokenInput = ({ title, defaultValue }: any) => {
+    return (
+      <div className=" grid grid-cols-[auto_170px]  w-full border-[1px] border-[#2A2D3C] relative py-1 h-[80px] px-10  rounded-[8px]">
         <div>
           <Typography
             variant="body2"
@@ -139,7 +189,7 @@ export default function BuyCoinModal({ onClose }: componentProps) {
           />
           <input
             autoFocus
-            className="!text-[31px]  w-full focus:border-none focus:outline-none  !font-poppins bg-transparent !text-[#888DAA]"
+            className="!text-[25px]  w-full focus:border-none focus:outline-none  !font-poppins bg-transparent !text-[#888DAA]"
           />
         </div>
 
@@ -155,8 +205,11 @@ export default function BuyCoinModal({ onClose }: componentProps) {
               styles={colourStyles}
               components={{
                 Option: CustomOption,
-                SingleValuexx: CustomValue,
+                Control: Control,
+                SingleValue: CustomValue,
+                DropdownIndicator: DropdownIndicator,
               }}
+              defaultValue={defaultValue ?? {}}
               data={[
                 { label: "ETH", value: "ETH", img: "/eth.png" },
                 { label: "FTN", value: "FTN", img: "/ftn.png" },
@@ -171,11 +224,13 @@ export default function BuyCoinModal({ onClose }: componentProps) {
   return (
     <div>
       <Modal
+        hideClose={true}
         onClose={onClose}
-        containerClass="px-4 py-6 relative overflow-hidden rounded-[4px] bg-[#070714]"
+        containerClass="px-6 py-6 relative overflow-hidden rounded-[4px] !bg-[#070714]"
         visible={true}
       >
-        <div>
+        {/* <Select  fx/> */}
+        <div className="flex justify-between items-center">
           <div
             className="!font-aeonik-pro !text-[40px] bg-clip-text"
             style={{
@@ -188,13 +243,44 @@ export default function BuyCoinModal({ onClose }: componentProps) {
           >
             SWAP
           </div>
+
+          <div>
+            <svg
+              width={24}
+              height={24}
+              onClick={onClose}
+              viewBox="0 0 24 24"
+              className="cursor-pointer"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M7 7L17 17"
+                stroke="white"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M7 17L17 7"
+                stroke="white"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
         </div>
 
         <div className="mt-8">
-          <TokenInput title="From" />
+          <TokenInput
+            defaultValue={{ label: "ETH", img: "/eth.png" }}
+            title="From"
+          />
         </div>
 
         <svg
+          onClick={onClose}
           width={40}
           className="mx-auto my-8"
           height={40}
@@ -262,7 +348,10 @@ export default function BuyCoinModal({ onClose }: componentProps) {
             </clipPath>
           </defs>
         </svg>
-        <TokenInput title="To" />
+        <TokenInput
+          defaultValue={{ label: "FTN", img: "/ftn.png" }}
+          title="To"
+        />
 
         <div className="flex justify-between py-8 items-center">
           <div>
@@ -330,6 +419,16 @@ export default function BuyCoinModal({ onClose }: componentProps) {
             label="View Analytic"
           />
         </div>
+
+        <div className="py-8">
+          <Button
+            label="Connect Wallet"
+            size="big"
+            theme="harsh"
+            className="w-full"
+          />
+        </div>
+
         <></>
       </Modal>
     </div>
