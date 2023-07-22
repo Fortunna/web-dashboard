@@ -1,0 +1,739 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_fortunnaTokenPrototype",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_fortunnaPoolPrototype",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_fortunnaPoolUniswapV3Prototype",
+        "type": "address"
+      },
+      {
+        "internalType": "address[]",
+        "name": "paymentTokens",
+        "type": "address[]"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "entity",
+        "type": "address"
+      }
+    ],
+    "name": "AddressAlreadyExists",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "x",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "y",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "comment",
+        "type": "string"
+      }
+    ],
+    "name": "AreNotEqual",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "Banned",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "basePoints",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "comment",
+        "type": "string"
+      }
+    ],
+    "name": "IncorrectBasePoints",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "start",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "finish",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "comment",
+        "type": "string"
+      }
+    ],
+    "name": "IncorrectInterval",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "length",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "comment",
+        "type": "string"
+      }
+    ],
+    "name": "InvalidLength",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "entity",
+        "type": "address"
+      }
+    ],
+    "name": "NotAuthorized",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "NotEnoughtPayment",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "prototypeIndex",
+        "type": "uint256"
+      }
+    ],
+    "name": "UnknownPrototypeIndex",
+    "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "NativeTokenReceived",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "pool",
+        "type": "address"
+      }
+    ],
+    "name": "PoolCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "previousAdminRole",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "newAdminRole",
+        "type": "bytes32"
+      }
+    ],
+    "name": "RoleAdminChanged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
+    ],
+    "name": "RoleGranted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
+    ],
+    "name": "RoleRevoked",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "DEFAULT_ADMIN_ROLE",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "FORTUNNA_TOKEN_PROTO_INDEX",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "prototype",
+        "type": "address"
+      }
+    ],
+    "name": "addPrototype",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "protoPoolIdx",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "startTimestamp",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "endTimestamp",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minStakeAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxStakeAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minLockUpRewardsPeriod",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "earlyWithdrawalFeeBasePoints",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "depositWithdrawFeeBasePoints",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalRewardBasePointsPerDistribution",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "stakingTokensMask",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "rewardTokensMask",
+            "type": "bytes32"
+          },
+          {
+            "components": [
+              {
+                "internalType": "address",
+                "name": "nonfungiblePositionManager",
+                "type": "address"
+              }
+            ],
+            "internalType": "struct FortunnaLib.CustomPoolParameters",
+            "name": "custom",
+            "type": "tuple"
+          }
+        ],
+        "internalType": "struct FortunnaLib.PoolParameters",
+        "name": "poolParameters",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address[]",
+            "name": "utilizingTokens",
+            "type": "address[]"
+          },
+          {
+            "internalType": "uint256[2][]",
+            "name": "initialRewardAmounts",
+            "type": "uint256[2][]"
+          },
+          {
+            "internalType": "uint256[2][]",
+            "name": "initialDepositAmounts",
+            "type": "uint256[2][]"
+          }
+        ],
+        "internalType": "struct FortunnaLib.PoolParametersArrays",
+        "name": "poolParametersArrays",
+        "type": "tuple"
+      }
+    ],
+    "name": "createPool",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "pool",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bool[]",
+        "name": "flags",
+        "type": "bool[]"
+      }
+    ],
+    "name": "generateMask",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      }
+    ],
+    "name": "getPoolAt",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getPoolsLength",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      }
+    ],
+    "name": "getPrototypeAt",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "result",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getPrototypesLength",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "result",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      }
+    ],
+    "name": "getRoleAdmin",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "grantRole",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "hasRole",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "paymentInfo",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "paymentToken",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "cost",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "poolProtoIdx",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "poolIdx",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "isStakingOrReward",
+        "type": "bool"
+      }
+    ],
+    "name": "predictFortunnaTokenAddress",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "result",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "salt",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "poolProtoIdx",
+        "type": "uint256"
+      }
+    ],
+    "name": "predictPoolAddress",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "result",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "salt",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "renounceRole",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "revokeRole",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
+      },
+      {
+        "internalType": "address payable",
+        "name": "who",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "sendCollectedTokens",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "paymentToken",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "cost",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct FortunnaLib.PaymentInfo",
+        "name": "_paymentInfo",
+        "type": "tuple"
+      }
+    ],
+    "name": "setPaymentInfo",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes4",
+        "name": "interfaceId",
+        "type": "bytes4"
+      }
+    ],
+    "name": "supportsInterface",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "stateMutability": "payable",
+    "type": "receive"
+  }
+]
