@@ -21,7 +21,7 @@ export const TOP_MENU_DATA = [
   },
   {
     name: "Earn",
-    to: "/earn",
+    to: "/earn/farms",
     icon: (
       <svg
         width={15}
@@ -76,7 +76,7 @@ export const TOP_MENU_DATA = [
     menu: [
       {
         name: "Farms",
-        to: "/earn/farms",
+        to: "/earn",
         icon: (
           <svg
             width={24}
@@ -184,7 +184,7 @@ export const TOP_MENU_DATA = [
     menu: [
       {
         name: "Create Pool",
-        to: "/create/pool",
+        to: "#",
         icon: (
           <svg
             width={24}
@@ -242,7 +242,7 @@ export const TOP_MENU_DATA = [
   },
   {
     name: "Governance",
-    to: "/governance",
+    to: "#",
     icon: (
       <svg
         width="24"

@@ -1,3 +1,68 @@
+export const ThreeDotIcon = () => {
+  return (
+    <svg
+      width={20}
+      height={20}
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g opacity="0.5">
+        <path
+          d="M9.99984 10.8327C10.4601 10.8327 10.8332 10.4596 10.8332 9.99935C10.8332 9.53911 10.4601 9.16602 9.99984 9.16602C9.5396 9.16602 9.1665 9.53911 9.1665 9.99935C9.1665 10.4596 9.5396 10.8327 9.99984 10.8327Z"
+          stroke="white"
+          strokeWidth={2}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M15.8333 10.8327C16.2936 10.8327 16.6667 10.4596 16.6667 9.99935C16.6667 9.53911 16.2936 9.16602 15.8333 9.16602C15.3731 9.16602 15 9.53911 15 9.99935C15 10.4596 15.3731 10.8327 15.8333 10.8327Z"
+          stroke="white"
+          strokeWidth={2}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M4.16683 10.8327C4.62707 10.8327 5.00016 10.4596 5.00016 9.99935C5.00016 9.53911 4.62707 9.16602 4.16683 9.16602C3.70659 9.16602 3.3335 9.53911 3.3335 9.99935C3.3335 10.4596 3.70659 10.8327 4.16683 10.8327Z"
+          stroke="white"
+          strokeWidth={2}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </g>
+    </svg>
+  );
+};
+
+export const PlusIcon = () => {
+  return (
+    <svg
+      width={20}
+      height={20}
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g opacity="0.5">
+        <path
+          d="M10 4.16602V15.8327"
+          stroke="white"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M4.1665 10H15.8332"
+          stroke="white"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </g>
+    </svg>
+  );
+};
+
 export const RefreshIcon = () => {
   return (
     <svg

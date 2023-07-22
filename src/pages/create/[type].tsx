@@ -8,7 +8,7 @@ import FarmInformation from "@/modules/farm/farm-information";
 import FarmParameters from "@/modules/farm/farm-parameters";
 import CreateFarmReview from "@/modules/farm/farmReviewSubmit";
 import CreateFarmReward from "@/modules/farm/reward";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import fortunaFactoryAbi from "../../abi/fortunaAbi.json";
 
 import { toBytes } from "viem";
@@ -20,6 +20,7 @@ import {
   useWaitForTransaction,
 } from "wagmi";
 import { InjectedConnector } from "wagmi/dist/connectors/injected";
+import { useRouter } from "next/router";
 
 const steeperHeader = [
   {
@@ -46,9 +47,21 @@ const steeperHeader = [
 
 export default function Create() {
   const [isActiveSteeper, setActiveSteeper] = useState(steeperHeader[0].key);
+  const [title, setTitle] = useState("");
+  const router = useRouter();
   // const { connect } = useConnect({
   //   connector: new InjectedConnector(),
   // });
+
+  useEffect(() => {
+    if (router.query?.type) {
+      if (router.query?.type == "pool") {
+        setTitle("Create Pool");
+      } else {
+        setTitle("Create Farm");
+      }
+    }
+  }, [router]);
 
   const { data, isError, isLoading } = useContractRead({
     address: "0xB8e4E0dF38005893CEaf45a7911Fc7DA9Fe50aD1",
@@ -630,11 +643,7 @@ export default function Create() {
       <DashboardLayout>
         <PageWrapper>
           <>
-            <Typography
-              label="Create Farm"
-              variant="title"
-              className="mb-[20px]"
-            />
+            <Typography label={title} variant="title" className="mb-[20px]" />
             <Stepper current={isActiveSteeper} headers={steeperHeader}>
               <FarmInformation
                 onNext={() => {

@@ -4,7 +4,7 @@ import PageWrapper from "@/components/pageWrapper";
 import Typography from "@/components/typography";
 import FarmList from "@/widget/earning/farmList/index.tsx";
 import PoolList from "@/widget/earning/poolList";
-import React from "react";
+import React, { useState } from "react";
 
 const AccountBalance = () => {
   return (
@@ -23,12 +23,12 @@ const AccountBalance = () => {
               <Typography
                 className="!text-light-4"
                 variant="subtitle"
-                label="0.0000000"
+                label="$ 0.000"
               />
               <Typography
                 className="bg-harsh rounded-md px-[7px] ms-3 py-[5px]"
                 variant="body1"
-                label="BTC"
+                label="USD"
               />
             </div>
           </div>
@@ -40,26 +40,22 @@ const AccountBalance = () => {
 
 const headers = [
   {
-    name: "Trending Farms",
+    name: "Top 5",
   },
   {
     name: "Popular Farms",
   },
   {
-    name: "My Staked",
+    name: "My Pools",
   },
   {
-    name: "Earn Strategies",
-  },
-  {
-    name: "Newest",
-  },
-  {
-    name: "Recommended",
+    name: "Newest Farms",
   },
 ];
 
 export default function PoolModule() {
+  const [openActionModal, setOpenActionModal] = useState(false);
+  const [selectedPool, setSelectedPool] = useState(-1);
   return (
     <div>
       <div className="grid text-start  lg:grid-cols-[70%_auto]">
@@ -69,10 +65,10 @@ export default function PoolModule() {
             variant="body2"
           >
             <>
-              Total balance Fortuna offers features such as dual borrow which
-              allows for strategies such as pseudo delta neutral farming within
-              a single position.{" "}
-              <span className="text-light-secondary"> Learn more</span>
+              We offer a variety of staking pools, designed to provide secure
+              and reliable rewards for your investments. Our curated project
+              list offers an effortless and rewarding staking experience.
+              {/* <span className="text-light-secondary"> Learn more</span> */}
             </>
           </Typography>
         </div>
@@ -112,7 +108,10 @@ export default function PoolModule() {
             return (
               <AnimateWhileInView key={index}>
                 <div className="mb-[32px] overflow-hidden relative">
-                  <PoolList />
+                  <PoolList
+                    active={index == selectedPool}
+                    onStake={() => setSelectedPool(index)}
+                  />
                 </div>
               </AnimateWhileInView>
             );

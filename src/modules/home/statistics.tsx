@@ -23,35 +23,32 @@ export default function Statistics() {
   ];
 
   return (
-    <Card className="!rounded-[16px] mb-4">
-      <div>
-        <Typography
-          variant="semi-heading"
-          className="!font-aeonik-pro !text-center pb-4"
-          label="Statistics"
-        />
+    <div>
+      <Typography
+        variant="semi-heading"
+        className="!font-aeonik-pro  md:pb-4"
+        label="Statistics"
+      />
 
-        <div className="bg-transparent-secondary md:flex lg:justify-around md:py-6 py-9 rounded-[8px] grid grid-cols-2 text-center">
-          {data?.map((_stac, index) => {
-            return (
-              <div
-                key={index}
-                className={`md:mt-0 ${index < 1 ? "mb-10" : ""} `}
-              >
+      <div className=" bg-home-stat-bg  items-center bg-[length:100%_100%] rounded-[18px] md:flex lg:justify-around md:py-6   overflow-hidden grid grid-cols-2">
+        {data?.map((_stac, index) => {
+          return (
+            <div key={index} className={`md:mt-0 flex items-center  `}>
+              <div className="">
                 <Typography
-                  className="!text-[32px] !font-aeonik-pro !text-[#EFF3FB] !font-bold"
+                  className="md:!text-[40px] !text-[30px] !font-aeonik-pro !text-[#EFF3FB] !font-bold"
                   label={_stac?.value}
                 />
                 <Typography
                   variant="body1"
-                  className="!font-inter !text-gray-400"
+                  className="!font-inter !text-white"
                   label={_stac?.name}
                 />
               </div>
-            );
-          })}
-        </div>
+            </div>
+          );
+        })}
       </div>
-    </Card>
+    </div>
   );
 }

@@ -1,136 +1,228 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
-import Card from "../card";
 import Typography from "../typography";
+import Badge from "../badge";
+import Button from "../button";
+import classNames from "classnames";
+import BuyCoinModal from "@/modules/home/buyCoin/buyCoinModal";
 
-const options = {
-  chart: {
-    type: "areaspline",
-    backgroundColor: "transparent",
-  },
-  title: {
-    text: null,
-  },
-  credits: {
-    enabled: false, // Hide x-axis category labels
-  },
-  xAxis: {
-    categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
-    lineWidth: 0,
-    labels: {
-      enabled: false, // Hide x-axis category labels
+const ExchangeRateChart = () => {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          "https://cdn.jsdelivr.net/gh/highcharts/highcharts@v10.3.3/samples/data/usdeur.json"
+        );
+        const data = await response.json();
+        setData(data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const config = {
+    chart: {
+      // zoomType: "x",
+      type: "area",
+      zoomType: "x",
+      panning: true,
+      panKey: "shift",
+      scrollablePlotArea: {
+        minWidth: 600,
+      },
+      backgroundColor: "transparent",
     },
-  },
-  tooltip: {
-    formatter: function () {
-      return `+3.27% (Past 3 days)`;
-      // `<b>${this.x}</b><br/>Line 1: ${this.points[0].y}<br/>Line 2: ${this.points[1].y}`;
-    },
-    backgroundColor: "transparent",
-    borderColor: "transparent",
-    borderRadius: 5,
-    borderWidth: 1,
-    style: {
-      color: "#45C581",
-      fontSize: "12px",
-      fontFamily: "Inter",
-      fontWeight: "bold",
-    },
-  },
-  yAxis: {
     title: {
       text: null,
     },
-    labels: {
+    credits: {
       enabled: false, // Hide x-axis category labels
     },
-    gridLineWidth: 0,
-  },
-  legend: {
-    enabled: false,
-  },
-  plotOptions: {
-    areaspline: {
-      fillOpacity: 0.5,
-      fillColor: {
-        linearGradient: {
-          x1: 0,
-          y1: 0,
-          x2: 0,
-          y2: 1,
+
+    xAxis: {
+      type: "datetime",
+      labels: {
+        style: {
+          color: "#FFF", // X-axis label color
+          fontFamily: "Inter",
+          fontSize: "12px", // X-axis label font size
+          opacity: "0.30000001192092896",
+
+          // Add more styling properties as needed
         },
-
-        stops: [
-          [0, "rgba(20, 21, 31, 0)"], // Start color (100% opacity)
-          [1, "rgba(18, 19, 30, .3)"], // End color (0% opacity)
-        ],
       },
     },
-    series: {
-      marker: {
-        enabled: false, // Set enabled to false to remove the point border/circle
+    yAxis: {
+      gridLineWidth: 1,
+      gridLineColor: "rgba(255, 255, 255,.1)",
+      gridLineDashStyle: "Dash",
+      title: "",
+      labels: {
+        style: {
+          color: "#FFF", // X-axis label color
+          fontFamily: "Inter",
+          fontSize: "12px", // X-axis label font size
+          opacity: "0.30000001192092896",
+
+          // Add more styling properties as needed
+        },
       },
     },
-  },
-  series: [
-    {
-      name: null,
-      data: [
-        0, 2, 1, 5, 4, 7, 6, 9, 7, 8, 9, 6, 7, 8, 7, 8, 9, 7, 8, 8, 9, 7, 6, 9,
-        7, 8, 8, 9, 6, 7, 6, 7, 8, 7, 6, 7, 8, 9, 8, 9, 8, 7, 7, 8, 9, 8, 6, 7,
-        9, 7, 8, 9, 6, 7, 8,
-      ],
-      color: "#45C581",
-      backgroundColor: "red",
+    legend: {
+      enabled: false,
     },
-    // {
-    //   name: "Line 2",
-    //   data: [3, 1, 4, 2, 6, 5, 7],
-    // },
-  ],
-};
+    plotOptions: {
+      area: {
+        fillColor: "rgba(123, 97, 255, 0.1)",
+        marker: {
+          radius: 2,
+        },
+        lineWidth: 1,
+        states: {
+          hover: {
+            lineWidth: 1,
+          },
+        },
+        threshold: null,
+      },
+    },
+    series: [
+      {
+        type: "area",
+        name: "USD to EUR",
+        data: data,
+        color: "#DE1EFD",
+      },
+    ],
+  };
 
-const SplineChart = () => {
+  const filterBy = ["24H", "7D", "30D", "90D", "1Y", "ALL"];
+
   return (
-    <div style={{ background: "rgba(18, 15, 29, 0.48)" }}>
-      <div className="balance-chart home-chart">
-        <HighchartsReact highcharts={Highcharts} options={options} />
-
-        <div className="flex justify-end pb-[18px]">
-          <div className="  flex items-start justify-between">
-            <div className=" rounded-[2px] bg-black px-1 py-[1px] mx-3">
+    <div>
+      <div className="md:flex md:justify-between md:text-start text-center">
+        <div>
+          <Typography
+            label="Current Balance"
+            variant="body2"
+            className="opacity-[0.5]"
+          />
+          <div className="md:flex md:items-center">
+            <div className="md:flex md:items-center">
               <Typography
-                variant="body1"
-                className="!text-[#7C8497]    !font-inter px-3 py-1 flex items-center "
-                label="D"
+                label="$62,340.48"
+                className="!text-[54px] !font-aeonik-pro !font-normal"
               />
-            </div>
-            <div className="bg-[#272336] rounded-[2px] bg-black px-1 py-[1px]">
-              <Typography
-                variant="body1"
-                className="!text-[#7C8497]    !font-inter px-3 py-1 flex items-center "
-                label="7"
-              />
-            </div>
-            <div className=" rounded-[2px] bg-black px-1 py-[1px] mx-3">
-              <Typography
-                variant="body1"
-                className="!text-white !bg-[#650E73D9]   !font-inter px-3 py-1 flex items-center "
-                label="30D"
-              />
-            </div>
-            <div className=" rounded-[2px] bg-black px-1 py-[1px] mx-3">
-              <Typography
-                className="!text-[#7C8497]    !font-inter px-3 py-1 flex items-center "
-                label="6 M"
-              />
+              <div>
+                <div className="md:flex inline-block  mx-auto align-top h-full md:-mt-5">
+                  <Badge
+                    className="!py-1 ml-4"
+                    rightComponent={
+                      <svg
+                        width={10}
+                        height={9}
+                        className="ml-1"
+                        viewBox="0 0 10 9"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M1.5835 7.91667L8.50016 1M8.50016 1V5.16667M8.50016 1H4.37516"
+                          stroke="#2EBE7B"
+                          strokeWidth="1.2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    }
+                    theme="success"
+                    label="+12px"
+                    outline
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>
+        <div className="flex items-center md:justify-start justify-center md:mt-0 mt-5">
+          <Button
+            theme="transparent"
+            leftComponent={
+              <div className="bg-white w-[14px] mr-3 h-[14px] rounded-full">
+                <svg
+                  width={14}
+                  height={14}
+                  viewBox="0 0 14 14"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M7 2.9165V11.0832"
+                    stroke="#343436"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M2.9165 7H11.0832"
+                    stroke="#343436"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
+            }
+            label="Invest"
+            className="flex text-white py-3 px-7 items-center justify-center "
+          ></Button>
+          <div className="mx-3"></div>
+          <Button theme="secondary" label="Buy FORTUNA" />
+        </div>
       </div>
+
+      <div className="md:flex hidden justify-between py-7">
+        <div className="flex items-center">
+          <Button size="small" theme="transparent" label="Deposit" />
+          <div className="mx-1"></div>
+          <Button size="small" theme="transparent" label="Convert" />
+          <div className="mx-1"></div>
+
+          <Button size="small" theme="transparent" label="Withdraw" />
+        </div>
+        <div>
+          <div className="flex items-start justify-between">
+            {filterBy.map((_option, index) => {
+              const activeStyle = classNames({
+                "bg-[#2C2C33]": index == 2,
+              });
+              return (
+                <Typography
+                  variant="body1"
+                  className={`!font-aeonik-pro px-3 py-2 ml-2  rounded-[5px] cursor-pointer hover:bg-[#2C2C33] transition-all ${activeStyle}`}
+                  key={index}
+                  label={_option}
+                />
+              );
+            })}
+          </div>
+        </div>
+      </div>
+      {data.length > 0 ? (
+        <HighchartsReact highcharts={Highcharts} options={config} />
+      ) : (
+        <div>Loading...</div>
+      )}
+
+      {/* <BuyCoinModal /> */}
     </div>
   );
 };
 
-export default SplineChart;
+export default ExchangeRateChart;

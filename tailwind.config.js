@@ -79,10 +79,14 @@ module.exports = {
       },
       backgroundImage: {
         "theme-bg": "url('/theme-bg.png')",
+        "home-stat-bg": "url('/hom-stats.png')",
         // "transparent-color": "rgba(27, 28, 32, 0.6)",
         "secondary-gradient":
           "linear-gradient(98.88deg, #8C01FA 31%, #EB08A4 102.28%)",
+        "background-card-gradient":
+          "linear-gradient(98.88deg, #8C01FA 31%, #EB08A4 102.28%),linear-gradient(0deg, #8D0EA2, #8D0EA2)",
       },
+
       lineHeight: {
         "leading-24": "24px",
       },

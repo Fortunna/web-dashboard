@@ -42,7 +42,11 @@ const Assets = () => {
     </div>
   );
 };
-export default function FarmList({ onOpenActionModal }: any) {
+export default function FarmList({
+  active,
+  onOpenActionModal,
+  onJoinPool,
+}: any) {
   const [selectedFarm, setSelectedFarm] = useState(null);
 
   return (
@@ -134,6 +138,7 @@ export default function FarmList({ onOpenActionModal }: any) {
           <div className="md:block flex ">
             <Button
               theme="secondary"
+              onClick={onJoinPool}
               label="Join Pool"
               rightComponent={
                 <svg
@@ -170,64 +175,68 @@ export default function FarmList({ onOpenActionModal }: any) {
           </div>
         </div>
       </div>
-      <div className="lg:grid lg:grid-cols-[30%_auto] lg:gap-16 md:mt-[60px] mt-[40px]">
-        <div className=" md:mb-0 mb-10">
-          <ActivityChart />
-        </div>
-        <div className="grid lg:grid-cols-3 lg:gap-14">
-          <div className="md:mb-0 mb-8 relative overflow-hidden">
-            <Typography
-              className="!font-inter mb-2"
-              variant="body1"
-              label="Current Balance"
-            />
-            <Assets />
+      {active ? (
+        <>
+          <div className="lg:grid lg:grid-cols-[30%_auto] lg:gap-16 md:mt-[60px] mt-[40px]">
+            <div className=" md:mb-0 mb-10">
+              <ActivityChart />
+            </div>
+            <div className="grid lg:grid-cols-3 lg:gap-14">
+              <div className="md:mb-0 mb-8 relative overflow-hidden">
+                <Typography
+                  className="!font-inter mb-2"
+                  variant="body1"
+                  label="Current Balance"
+                />
+                <Assets />
 
-            <Button
-              className="w-full mt-9"
-              size="small"
-              onClick={onOpenActionModal}
-              rounded
-              theme="secondary-solid"
-              label="Deposit"
-            />
+                <Button
+                  className="w-full mt-9"
+                  size="small"
+                  onClick={onOpenActionModal}
+                  rounded
+                  theme="secondary-solid"
+                  label="Deposit"
+                />
+              </div>
+              <div className="relative overflow-hidden">
+                <Typography
+                  className="!font-inter mb-2"
+                  variant="body1"
+                  label="Available Balance"
+                />
+                <Assets />
+                <Button
+                  className="w-full mt-9"
+                  size="small"
+                  rounded
+                  theme="secondary-solid"
+                  onClick={onOpenActionModal}
+                  disabled
+                  label="Withdraw"
+                />
+              </div>
+              <div className="lg:my-0 my-8">
+                <Typography
+                  className="!font-inter mb-2"
+                  variant="body1"
+                  label="Current Rewards"
+                />
+                <Assets />
+                <Button
+                  className="w-full mt-9"
+                  size="small"
+                  onClick={onOpenActionModal}
+                  rounded
+                  theme="secondary-solid"
+                  disabled
+                  label="Claim Rewards"
+                />
+              </div>
+            </div>
           </div>
-          <div className="relative overflow-hidden">
-            <Typography
-              className="!font-inter mb-2"
-              variant="body1"
-              label="Available Balance"
-            />
-            <Assets />
-            <Button
-              className="w-full mt-9"
-              size="small"
-              rounded
-              theme="secondary-solid"
-              onClick={onOpenActionModal}
-              disabled
-              label="Withdraw"
-            />
-          </div>
-          <div className="lg:my-0 my-8">
-            <Typography
-              className="!font-inter mb-2"
-              variant="body1"
-              label="Current Rewards"
-            />
-            <Assets />
-            <Button
-              className="w-full mt-9"
-              size="small"
-              onClick={onOpenActionModal}
-              rounded
-              theme="secondary-solid"
-              disabled
-              label="Claim Rewards"
-            />
-          </div>
-        </div>
-      </div>
+        </>
+      ) : null}
 
       <FarmActionModal />
     </div>

@@ -1,184 +1,207 @@
 import { AnimateFadeIn, RenderWhenInView } from "@/animations";
 import Badge from "@/components/badge";
+import { PlusIcon, ThreeDotIcon } from "@/components/icons";
 import TabComponent from "@/components/tab";
 import Table from "@/components/table";
+import Typography from "@/components/typography";
 import { createColumnHelper } from "@tanstack/react-table";
 import React from "react";
+import Image from "next/image";
 
 export default function ProvidersPrice() {
   type Providers = {
     name: string;
     price: string;
-    return: string;
-    fees: string;
-    lossValue?: string;
+    img: string;
+    _24hrs: string;
+    holdings_fiat?: string;
+    holdings_crypto?: string;
+    avg?: string;
+    profit?: string;
+    loss?: string;
   };
 
   const defaultData: Providers[] = [
     {
-      name: "AugustusRFQ ",
-      price: "1720.83 DAI",
-      return: "1720.83 DAI",
-      fees: "~ $3.46",
+      name: "Binance Coin (BNB) ",
+      img: "/binance.png",
+      price: "$ 1720.83",
+      _24hrs: "+13.1%",
+      holdings_fiat: "$ 200.63",
+      holdings_crypto: "0.47 BNB",
+      avg: "$ 411.39",
+      profit: "+ $7.14",
+      loss: "3.67%",
     },
     {
-      name: "UniswapV3",
-      price: "1720.83 DAI",
-      return: "1720.83 DAI",
-      fees: "~ $3.46",
-      lossValue: "-0.08% ",
+      name: "Polkadot (DOT) ",
+      img: "/dot.png",
+      price: "$ 19.31",
+      _24hrs: "- 3.1%",
+      holdings_fiat: "$ 188.94",
+      holdings_crypto: "9.8 DOT",
+      avg: "$ 20.39",
+      profit: "- $17.14",
+      loss: "+ 33.67%",
     },
     {
-      name: "UniswapV3",
-      price: "1720.83 DAI",
-      return: "1720.83 DAI",
-      fees: "~ $3.46",
-      lossValue: "-0.08% ",
+      name: "Bitcoin (BTC)",
+      img: "/btc.png",
+      price: "$ 390.83",
+      _24hrs: "-9.1%",
+      holdings_fiat: "$ 2030.63",
+      holdings_crypto: "4.47 BTC",
+      avg: "$ 211.39",
+      profit: "+ $17.14",
+      loss: "- 3.67%",
     },
     {
-      name: "SushiSwap ",
-      price: "1720.83 DAI",
-      return: "1720.83 DAI",
-      fees: "~ $3.46",
-      lossValue: "-0.18% ",
+      name: "Ethereum (ETH) ",
+      img: "/eth.png",
+      price: "$ 5720.83",
+      _24hrs: "-103.1%",
+      holdings_fiat: "$ 500.63",
+      holdings_crypto: "0.47 ETH",
+      avg: "$ 411.39",
+      profit: "+ $7.14",
+      loss: "3.67%",
     },
     {
-      name: "BalancerV2 ",
-      price: "1720.83 DAI",
-      return: "1720.83 DAI",
-      fees: "~ $3.46",
-      lossValue: "-0.20% ",
-    },
-    {
-      name: "Verse ",
-      price: "1720.83 DAI",
-      return: "1720.83 DAI",
-      fees: "~ $3.46",
-      lossValue: "-23% ",
-    },
-    {
-      name: "BalancerV1 ",
-      price: "1720.83 DAI",
-      return: "1720.83 DAI",
-      fees: "~ $3.46",
-      lossValue: "-21.08% ",
-    },
-
-    {
-      name: "UniswapV3",
-      price: "1720.83 DAI",
-      return: "1720.83 DAI",
-      fees: "~ $3.46",
-      lossValue: "-0.08% ",
-    },
-    {
-      name: "UniswapV3",
-      price: "1720.83 DAI",
-      return: "1720.83 DAI",
-      fees: "~ $3.46",
-      lossValue: "-0.08% ",
-    },
-    {
-      name: "SushiSwap ",
-      price: "1720.83 DAI",
-      return: "1720.83 DAI",
-      fees: "~ $3.46",
-      lossValue: "-0.18% ",
-    },
-    {
-      name: "BalancerV2 ",
-      price: "1720.83 DAI",
-      return: "1720.83 DAI",
-      fees: "~ $3.46",
-      lossValue: "-0.20% ",
-    },
-    {
-      name: "Verse ",
-      price: "1720.83 DAI",
-      return: "1720.83 DAI",
-      fees: "~ $3.46",
-      lossValue: "-23% ",
-    },
-    {
-      name: "BalancerV1 ",
-      price: "1720.83 DAI",
-      return: "1720.83 DAI",
-      fees: "~ $3.46",
-      lossValue: "-21.08% ",
+      name: "Chainlink (LINK) ",
+      img: "/binance.png",
+      price: "$ 1720.83",
+      _24hrs: "+13.1%",
+      holdings_fiat: "$ 200.63",
+      holdings_crypto: "0.47 LINK",
+      avg: "$ 411.39",
+      profit: "+ $7.14",
+      loss: "3.67%",
     },
   ];
 
   const columnHelper = createColumnHelper<Providers>();
 
   const columns = [
-    columnHelper.accessor("name", {
-      header: () => "EXCHANGE",
-      cell: (info) =>
-        info.row.original?.lossValue ? (
-          <RenderWhenInView triggerOnce={false} className="flex items-center">
-            <span>{info.getValue()} </span>
-            <AnimateFadeIn>
-              <>
-                <Badge
-                  className="ms-2"
-                  theme="errorLight"
-                  label={info.row.original?.lossValue}
-                />
-              </>
-            </AnimateFadeIn>
-          </RenderWhenInView>
-        ) : (
-          <RenderWhenInView triggerOnce={false} className="flex items-center">
-            <span className="text-white font-bold ">{info.getValue()} </span>
-            <AnimateFadeIn>
-              <>
-                <Badge className="ms-2" label="Best" />
-              </>
-            </AnimateFadeIn>
-          </RenderWhenInView>
-        ),
+    columnHelper.accessor((row) => row.name, {
+      id: "Name",
+      cell: (info) => (
+        <span className={`whitespace-nowrap flex items-center`}>
+          <Image
+            width={30}
+            height={30}
+            src={info.row.original.img}
+            alt="icon"
+          />
+          <Typography
+            label={info.row.original.name}
+            variant="body2"
+            className="ml-3 !font-inter"
+          ></Typography>
+        </span>
+      ),
+      header: (props) => <span>Name</span>,
     }),
     columnHelper.accessor((row) => row.price, {
       id: "PRICE (ETH/DAI)",
       cell: (info) => (
-        <span
-          className={`whitespace-nowrap ${
-            info.row.original?.lossValue ? "" : "text-white"
-          }}`}
-        >
-          {info.getValue()}
-        </span>
+        <Typography
+          variant="body2"
+          className="ml-3 !font-inter"
+          label={info.getValue()}
+        />
       ),
       header: (props) => <span>PRICE (ETH/DAI)</span>,
     }),
-    columnHelper.accessor("return", {
-      header: () => "YOU GET",
+
+    columnHelper.accessor((row) => row._24hrs, {
+      id: "24H",
       cell: (info) => (
-        <span
-          className={`whitespace-nowrap ${
-            info.row.original?.lossValue ? "" : "text-white"
+        <Typography
+          variant="body2"
+          className={`!font-inter ${
+            info.getValue().includes("-")
+              ? "!text-[#F94F59]"
+              : "!text-[#47A663]"
           }`}
-        >
-          {info.renderValue()}
-        </span>
+          label={info.getValue()}
+        />
       ),
+      header: (props) => <span>24H</span>,
     }),
-    columnHelper.accessor("fees", {
-      header: () => "FEES",
+
+    columnHelper.accessor((row) => row.price, {
+      id: "HOLDINGS",
       cell: (info) => (
-        <span
-          className={`${
-            info.row.original?.lossValue ? "" : "text-white"
-          } whitespace-nowrap`}
-        >
-          {info.renderValue()}
-        </span>
+        <div>
+          <Typography
+            variant="body2"
+            className="ml-3 !font-inter"
+            label={info.row.original.holdings_fiat}
+          />
+          <Typography
+            variant="body2"
+            className="ml-3 !font-inter opacity-[0.4000000059604645]"
+            label={info.row.original.holdings_crypto}
+          />
+        </div>
       ),
+      header: (props) => <span>HOLDINGS</span>,
+    }),
+
+    columnHelper.accessor((row) => row.price, {
+      id: "Avg. Buy Price",
+      cell: (info) => (
+        <Typography
+          variant="body2"
+          className="ml-3 !font-inter"
+          label={info.row.original.avg}
+        />
+      ),
+      header: (props) => <span>Avg. Buy Price</span>,
+    }),
+
+    columnHelper.accessor((row) => row.price, {
+      id: "Profit/Loss",
+      cell: (info) => (
+        <div>
+          <Typography
+            variant="body2"
+            className={`!font-inter`}
+            label={info.getValue()}
+          />
+          <Typography
+            variant="body2"
+            className={`!font-inter ${
+              info.row.original?.loss?.includes("-")
+                ? "!text-[#F94F59]"
+                : "!text-[#47A663]"
+            }`}
+            label={info.getValue()}
+          />
+        </div>
+      ),
+      header: (props) => <span>Profit/Loss</span>,
+    }),
+    columnHelper.accessor((row) => row.price, {
+      id: "Actions",
+      cell: (info) => (
+        <div className="flex items-center">
+          <PlusIcon />
+          <div className="mx-2"></div>
+          <ThreeDotIcon />
+        </div>
+      ),
+      header: (props) => <span>Actions</span>,
     }),
   ];
 
   return (
     <div>
+      <Typography
+        variant="heading"
+        label="Token Holdings"
+        className="!font-aeonik-pro-bold mb-3"
+      />
       <Table columns={columns} data={...defaultData} />
     </div>
   );
