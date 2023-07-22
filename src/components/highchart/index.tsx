@@ -9,6 +9,7 @@ import BuyCoinModal from "@/modules/home/buyCoin/buyCoinModal";
 
 const ExchangeRateChart = () => {
   const [data, setData] = useState([]);
+  const [showBuyFortuna, setShowBuyFortuna] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -183,18 +184,22 @@ const ExchangeRateChart = () => {
             className="flex text-white py-3 px-7 items-center justify-center "
           ></Button>
           <div className="mx-3"></div>
-          <Button theme="secondary" label="Buy FORTUNA" />
+          <Button
+            onClick={() => setShowBuyFortuna(true)}
+            theme="secondary"
+            label="Buy FORTUNA"
+          />
         </div>
       </div>
 
       <div className="md:flex hidden justify-between py-7">
         <div className="flex items-center">
-          <Button size="small" theme="transparent" label="Deposit" />
+          {/*     <Button size="small" theme="transparent" label="Deposit" />
           <div className="mx-1"></div>
           <Button size="small" theme="transparent" label="Convert" />
           <div className="mx-1"></div>
 
-          <Button size="small" theme="transparent" label="Withdraw" />
+          <Button size="small" theme="transparent" label="Withdraw" /> */}
         </div>
         <div>
           <div className="flex items-start justify-between">
@@ -215,12 +220,16 @@ const ExchangeRateChart = () => {
         </div>
       </div>
       {data.length > 0 ? (
-        <HighchartsReact highcharts={Highcharts} options={config} />
+        <div className="home-chart">
+          <HighchartsReact highcharts={Highcharts} options={config} />
+        </div>
       ) : (
         <div>Loading...</div>
       )}
 
-      {/* <BuyCoinModal /> */}
+      {showBuyFortuna ? (
+        <BuyCoinModal onClose={() => setShowBuyFortuna(false)} />
+      ) : null}
     </div>
   );
 };

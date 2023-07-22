@@ -144,7 +144,9 @@
 .transition {
   // transition: all 0.3s ease-in-out !important;
 }
-
+.custom_select__indicator-separator {
+  display: none !important;
+}
 .allocation-chart {
   .highcharts-container {
     height: 250px !important;
@@ -155,6 +157,10 @@
 .home-chart {
   .highcharts-container {
     height: 400px !important ;
+    width: 100% !important;
+    svg {
+      width: 100% !important;
+    }
   }
 }
 .balance-chart {
@@ -254,3 +260,9 @@ input[type="range"]::-ms-thumb {
   border-radius: 50%;
   cursor: pointer;
 }
+
+// .home-chart {
+//   #highcharts-63zgyh2-3088 {
+//     display: none !important;
+//   }
+// }

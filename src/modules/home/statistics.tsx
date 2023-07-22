@@ -30,7 +30,7 @@ export default function Statistics() {
         label="Statistics"
       />
 
-      <div className=" bg-home-stat-bg  items-center bg-[length:100%_100%] rounded-[18px] md:flex lg:justify-around md:py-6   overflow-hidden grid grid-cols-2">
+      <div className=" bg-home-stat-bg  md:px-0 px-10 py-10 items-center bg-[length:100%_100%] rounded-[18px] md:flex lg:justify-around md:py-6   overflow-hidden grid grid-cols-2 md:gap-0 gap-8">
         {data?.map((_stac, index) => {
           return (
             <div key={index} className={`md:mt-0 flex items-center  `}>

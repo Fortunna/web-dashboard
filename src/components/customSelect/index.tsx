@@ -107,6 +107,7 @@ export interface SelectComponentType extends Partial<MultiTextInputType> {
   components?: {};
   showDropdownIndicator?: boolean;
   footerComponent?: React.ReactNode;
+  defaultValue: any;
   styles?: StylesConfig<any, any, any>;
   onChange?: Function | any;
 }
@@ -120,6 +121,7 @@ const SelectComponent = React.forwardRef(
       size = "default",
       placeholder = "",
       errorMessage,
+      defaultValue,
       required,
       footerComponent,
       showDropdownIndicator = true,
@@ -150,6 +152,7 @@ const SelectComponent = React.forwardRef(
           className={`custom-select custom-size-${size} custom-select-bg-${bg}`}
           options={data}
           onChange={onChange}
+          defaultValue={defaultValue}
           name={name}
           required={required}
           styles={{

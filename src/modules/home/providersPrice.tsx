@@ -99,7 +99,7 @@ export default function ProvidersPrice() {
           ></Typography>
         </span>
       ),
-      header: (props) => <span>Name</span>,
+      header: (props) => <div className="whitespace-nowrap">Name</div>,
     }),
     columnHelper.accessor((row) => row.price, {
       id: "PRICE (ETH/DAI)",
@@ -110,7 +110,9 @@ export default function ProvidersPrice() {
           label={info.getValue()}
         />
       ),
-      header: (props) => <span>PRICE (ETH/DAI)</span>,
+      header: (props) => (
+        <div className="whitespace-nowrap">PRICE (ETH/DAI)</div>
+      ),
     }),
 
     columnHelper.accessor((row) => row._24hrs, {
@@ -145,7 +147,7 @@ export default function ProvidersPrice() {
           />
         </div>
       ),
-      header: (props) => <span>HOLDINGS</span>,
+      header: (props) => <div className="whitespace-nowrap">HOLDINGS </div>,
     }),
 
     columnHelper.accessor((row) => row.price, {
@@ -157,7 +159,9 @@ export default function ProvidersPrice() {
           label={info.row.original.avg}
         />
       ),
-      header: (props) => <span>Avg. Buy Price</span>,
+      header: (props) => (
+        <div className="whitespace-nowrap">Avg. Buy Price</div>
+      ),
     }),
 
     columnHelper.accessor((row) => row.price, {
@@ -180,7 +184,7 @@ export default function ProvidersPrice() {
           />
         </div>
       ),
-      header: (props) => <span>Profit/Loss</span>,
+      header: (props) => <div className="whitespace-nowrap"> Profit/Loss</div>,
     }),
     columnHelper.accessor((row) => row.price, {
       id: "Actions",
