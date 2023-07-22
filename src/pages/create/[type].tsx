@@ -655,7 +655,7 @@ export default function Create() {
                   setActiveSteeper(steeperHeader[2].key);
                 }}
                 onPrevious={() => {
-                  setActiveSteeper(steeperHeader[1].key);
+                  setActiveSteeper(steeperHeader[0].key);
                 }}
                 values={{
                   setMinStakeAmount,
