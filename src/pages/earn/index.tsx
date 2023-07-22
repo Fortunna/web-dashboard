@@ -10,3 +10,12 @@ export default function EARN() {
 
   return <div>EARN</div>;
 }
+
+export async function getServerSideProps() {
+  return {
+    redirect: {
+      destination: "/earn/farms",
+      permanent: false,
+    },
+  };
+}
