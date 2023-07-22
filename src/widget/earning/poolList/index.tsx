@@ -44,7 +44,13 @@ const Assets = () => {
     </div>
   );
 };
-export default function FarmList({}: any) {
+export default function PoolList({
+  onStake,
+  active,
+}: {
+  onStake: React.MouseEventHandler<HTMLButtonElement>;
+  active: boolean;
+}) {
   const [selectedFarm, setSelectedFarm] = useState(null);
 
   return (
@@ -130,6 +136,7 @@ export default function FarmList({}: any) {
           <div className="md:block flex ">
             <Button
               theme="secondary"
+              onClick={onStake}
               label="Stake"
               rightComponent={
                 <svg
@@ -166,138 +173,140 @@ export default function FarmList({}: any) {
           </div>
         </div>
       </div>
-      <div className="lg:grid lg:grid-cols-[30%_auto] lg:gap-16 mt-[60px]">
-        <div>
-          <ActivityChart />
-        </div>
-        <div className="lg:grid lg:grid-cols-3 lg:gap-14">
+      {active ? (
+        <div className="lg:grid lg:grid-cols-[30%_auto] lg:gap-16 mt-[60px]">
           <div>
-            <Typography
-              className="!font-inter mb-1"
-              variant="body1"
-              label="Wallet Balance"
-            />
-            <Typography
-              className="!font-inter !text-secondary "
-              variant="body3"
-              label="13.65 BNB"
-            />
-
-            <div className="mt-[30px]">
-              <TextInput
-                rightComponent={
-                  <div className="flex h-full  py-2 items-center justify-center">
-                    <div className="h-full w-[1px] bg-secondary"></div>
-                    <Typography
-                      variant="body0.5"
-                      className="!font-inter ml-[10px] mr-[14px] text-secondary"
-                      label="MAX"
-                    />
-                  </div>
-                }
-                id="#id"
-                rounded
-                className="!w-full"
-                placeholder="Enter amount"
-              />
-              <div className="mt-[16px]">
-                <Slider className="w-full" />
-              </div>
-            </div>
-            <Button
-              className="w-full mt-[19px]"
-              size="small"
-              rounded
-              theme="secondary-solid"
-              label="Deposit"
-            />
+            <ActivityChart />
           </div>
-          <div>
-            <Typography
-              className="!font-inter mb-2"
-              variant="body1"
-              label="Available Balance"
-            />
-            <Typography
-              className="!font-inter !text-secondary "
-              variant="body3"
-              label="13.65 BNB"
-            />
-
-            <div className="mt-[30px]">
-              <TextInput
-                rightComponent={
-                  <div className="flex h-full  py-2 items-center justify-center">
-                    <div className="h-full w-[1px] bg-secondary"></div>
-                    <Typography
-                      variant="body0.5"
-                      className="!font-inter ml-[10px] pr-[14px] text-secondary"
-                      label="MAX"
-                    />
-                  </div>
-                }
-                id="#id"
-                rounded
-                className="!w-full"
-                placeholder="Enter amount"
+          <div className="lg:grid lg:grid-cols-3 lg:gap-14">
+            <div>
+              <Typography
+                className="!font-inter mb-1"
+                variant="body1"
+                label="Wallet Balance"
               />
-              <div className="mt-[16px]">
-                <Slider className="w-full" />
-              </div>
-            </div>
-            <Button
-              className="w-full mt-[19px]"
-              size="small"
-              rounded
-              theme="secondary-solid"
-              disabled
-              label="Withdraw"
-            />
-          </div>
-          <div className="lg:my-0 my-10">
-            <Typography
-              className="!font-inter mb-2"
-              variant="body1"
-              label="Current Rewards"
-            />
-            <Typography
-              className="!font-inter !text-secondary "
-              variant="body3"
-              label="13.65 BNB"
-            />
-
-            <div className="mt-[30px]">
-              <TextInput
-                rightComponent={
-                  <div className="flex h-full  py-2 items-center justify-center">
-                    <div className="h-full w-[1px] bg-secondary"></div>
-                    <Typography
-                      variant="body0.5"
-                      className="!font-inter ml-[10px] pr-[14px] text-secondary"
-                      label="MAX"
-                    />
-                  </div>
-                }
-                id="#id"
-                className="!w-full"
-                rounded
-                placeholder="Enter amount"
+              <Typography
+                className="!font-inter !text-secondary "
+                variant="body3"
+                label="13.65 BNB"
               />
-              <div className="mt-[16px]">
-                <Slider className="w-full" />
+
+              <div className="mt-[30px]">
+                <TextInput
+                  rightComponent={
+                    <div className="flex h-full  py-2 items-center justify-center">
+                      <div className="h-full w-[1px] bg-secondary"></div>
+                      <Typography
+                        variant="body0.5"
+                        className="!font-inter ml-[10px] mr-[14px] text-secondary"
+                        label="MAX"
+                      />
+                    </div>
+                  }
+                  id="#id"
+                  rounded
+                  className="!w-full"
+                  placeholder="Enter amount"
+                />
+                <div className="mt-[16px]">
+                  <Slider className="w-full" />
+                </div>
               </div>
+              <Button
+                className="w-full mt-[19px]"
+                size="small"
+                rounded
+                theme="secondary-solid"
+                label="Deposit"
+              />
             </div>
-            <Button
-              className="w-full mt-[19px]"
-              size="small"
-              rounded
-              theme="secondary-solid"
-              disabled
-              label="Claim Rewards"
-            />
+            <div>
+              <Typography
+                className="!font-inter mb-2"
+                variant="body1"
+                label="Available Balance"
+              />
+              <Typography
+                className="!font-inter !text-secondary "
+                variant="body3"
+                label="13.65 BNB"
+              />
+
+              <div className="mt-[30px]">
+                <TextInput
+                  rightComponent={
+                    <div className="flex h-full  py-2 items-center justify-center">
+                      <div className="h-full w-[1px] bg-secondary"></div>
+                      <Typography
+                        variant="body0.5"
+                        className="!font-inter ml-[10px] pr-[14px] text-secondary"
+                        label="MAX"
+                      />
+                    </div>
+                  }
+                  id="#id"
+                  rounded
+                  className="!w-full"
+                  placeholder="Enter amount"
+                />
+                <div className="mt-[16px]">
+                  <Slider className="w-full" />
+                </div>
+              </div>
+              <Button
+                className="w-full mt-[19px]"
+                size="small"
+                rounded
+                theme="secondary-solid"
+                disabled
+                label="Withdraw"
+              />
+            </div>
+            <div className="lg:my-0 my-10">
+              <Typography
+                className="!font-inter mb-2"
+                variant="body1"
+                label="Current Rewards"
+              />
+              <Typography
+                className="!font-inter !text-secondary "
+                variant="body3"
+                label="13.65 BNB"
+              />
+
+              <div className="mt-[30px]">
+                <TextInput
+                  rightComponent={
+                    <div className="flex h-full  py-2 items-center justify-center">
+                      <div className="h-full w-[1px] bg-secondary"></div>
+                      <Typography
+                        variant="body0.5"
+                        className="!font-inter ml-[10px] pr-[14px] text-secondary"
+                        label="MAX"
+                      />
+                    </div>
+                  }
+                  id="#id"
+                  className="!w-full"
+                  rounded
+                  placeholder="Enter amount"
+                />
+                <div className="mt-[16px]">
+                  <Slider className="w-full" />
+                </div>
+              </div>
+              <Button
+                className="w-full mt-[19px]"
+                size="small"
+                rounded
+                theme="secondary-solid"
+                disabled
+                label="Claim Rewards"
+              />
+            </div>
           </div>
         </div>
-      </div>
+      ) : null}
 
       {/* <FarmActionModal /> */}
     </div>

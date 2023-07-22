@@ -4,7 +4,7 @@ import PageWrapper from "@/components/pageWrapper";
 import Typography from "@/components/typography";
 import FarmList from "@/widget/earning/farmList/index.tsx";
 import PoolList from "@/widget/earning/poolList";
-import React from "react";
+import React, { useState } from "react";
 
 const AccountBalance = () => {
   return (
@@ -54,6 +54,8 @@ const headers = [
 ];
 
 export default function PoolModule() {
+  const [openActionModal, setOpenActionModal] = useState(false);
+  const [selectedPool, setSelectedPool] = useState(-1);
   return (
     <div>
       <div className="grid text-start  lg:grid-cols-[70%_auto]">
@@ -106,7 +108,10 @@ export default function PoolModule() {
             return (
               <AnimateWhileInView key={index}>
                 <div className="mb-[32px] overflow-hidden relative">
-                  <PoolList />
+                  <PoolList
+                    active={index == selectedPool}
+                    onStake={() => setSelectedPool(index)}
+                  />
                 </div>
               </AnimateWhileInView>
             );

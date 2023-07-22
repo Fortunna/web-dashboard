@@ -3,7 +3,7 @@ import React from "react";
 
 type componentProps = {
   outline?: boolean;
-  theme?: "white" | "secondary" | "secondary-solid" | "dark";
+  theme?: "white" | "secondary" | "secondary-solid" | "dark" | "transparent";
   label: string;
   rightComponent?: React.JSX.Element;
   leftComponent?: React.JSX.Element;
@@ -39,6 +39,8 @@ export default function Button({
       theme == "secondary-solid" && !outline,
     "border-[#AC6AFF] text-white border-[3px]": theme == "secondary" && outline,
     "border-neutrals-6 bg-#212531 text-white border-[1px]": theme == "dark",
+    "border-transparent-3 text-white border-[1px] bg-[rgba(255, 255, 255, 0.05)]":
+      theme == "transparent",
   });
 
   const sizeStyles = classNames({

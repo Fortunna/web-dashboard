@@ -25,8 +25,8 @@ function Modal({
     <Portal selector="#modal">
       <div
         style={{
-          background: "rgba(225, 225, 225, 0.2)",
-          backdropFilter: "blur(3px)",
+          // background: "rgba(225, 225, 225, 0.2)",
+          backdropFilter: "blur(4px)",
         }}
         className="h-screen w-screen !overflow-y-scroll pt-[8%] flex fixed z-10 top-0   justify-center "
       >
@@ -47,7 +47,7 @@ function Modal({
             </svg>
           </div>
           <AnimateFadeIn>
-            <div className={`bg-[#17181B]  ${containerClass}`}>
+            <div className={`bg-[#17181B] overflow-y-auto  ${containerClass}`}>
               <>{children}</>
             </div>
           </AnimateFadeIn>

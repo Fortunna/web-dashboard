@@ -76,7 +76,7 @@ export const TOP_MENU_DATA = [
     menu: [
       {
         name: "Farms",
-        to: "/earn/farms",
+        to: "/earn",
         icon: (
           <svg
             width={24}
