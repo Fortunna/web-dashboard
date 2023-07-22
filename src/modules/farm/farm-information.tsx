@@ -3,12 +3,138 @@ import Card from "@/components/card";
 import FormGroup from "@/components/form/form-group";
 import Radio from "@/components/radio";
 import Typography from "@/components/typography";
-import React, { MouseEventHandler } from "react";
+import { 
+  useNetwork
+} from "wagmi";
+import React, { MouseEventHandler, useCallback, useEffect, useState } from "react";
+import { SupportedChains, TOAST_MESSAGE } from "@/constants";
+import { getTokenInfo } from "@/api";
+import { useFarm } from "@/hooks/useFarm";
+import {toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { checkAddressValidation } from "@/utils";
 
 type componentProps = {
   onNext: MouseEventHandler<HTMLButtonElement>;
 };
 export default function FarmInformation({ onNext }: componentProps) {
+
+  const [showAErrorBorder, setShowAErrorBorder] = useState<boolean>();
+  const [showBErrorBorder, setShowBErrorBorder] = useState<boolean>();
+
+  const {chain} = useNetwork();
+
+  const {
+    poolName,
+    setPoolName,
+    poolImage,
+    setPoolImage,
+    tokenAAddress, 
+    setTokenAAddress,
+    tokenASymbol,
+    setTokenASymbol,
+    tokenADecimal,
+    setTokenADecimal,
+    tokenALogo,
+    setTokenALogo,
+    tokenBAddress,
+    setTokenBAddress,
+    tokenBSymbol,
+    setTokenBSymbol,
+    tokenBDecimal,
+    setTokenBDecimal,
+    tokenBLogo,
+    setTokenBLogo
+  } = useFarm();
+
+  const setTokenAInfo = useCallback(async (address: string) => {
+    if (!chain)
+      return;
+
+    const [symbol, decimal] = await getTokenInfo(address, chain.id!, chain.rpcUrls.default.http[0]);
+
+    if (symbol && decimal) {
+      setTokenASymbol(symbol);
+      setTokenADecimal(decimal);
+    } else {
+      setTokenASymbol("");
+      setTokenADecimal(0);
+    }
+  }, [chain, tokenAAddress, tokenBAddress]);
+
+  const setTokenBInfo = useCallback(async (address: string) => {
+    if (!chain)
+      return;
+
+    const [symbol, decimal] = await getTokenInfo(address, chain.id!, chain.rpcUrls.default.http[0]);
+    
+    if (symbol && decimal) {
+      setTokenBSymbol(symbol);
+      setTokenBDecimal(decimal);
+    } else {
+      setTokenBSymbol("");
+      setTokenBDecimal(0);
+    }
+
+  }, [chain, tokenAAddress, tokenBAddress]);
+
+  const onCreateFarm = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+
+    if (!chain) {
+      toast.error(TOAST_MESSAGE.CONNECT_WALLET, {
+        position: toast.POSITION.TOP_CENTER
+      });
+      return;
+    }
+
+    if (!tokenASymbol|| !tokenADecimal) {
+      setShowAErrorBorder(true);
+      toast.error(TOAST_MESSAGE.FILL_FIELD, {
+        position: toast.POSITION.TOP_CENTER
+      });
+      return;
+    }
+    if (!tokenBSymbol || !tokenBDecimal) {
+      setShowBErrorBorder(true);
+      toast.error(TOAST_MESSAGE.FILL_FIELD, {
+        position: toast.POSITION.TOP_CENTER
+      });
+      return;
+    }
+
+    onNext(event);
+  }
+
+  const onSetPoolName = (event: {target: {value:any;};}) => {
+    const val = event.target.value;
+    setPoolName(val);
+  }
+
+  const onSetPoolImage = (event: {target: {value:any ;}; }) => {
+    const val = event.target.value;
+    setPoolImage(val);
+  }
+  const onChangeTokenA = (event: { target: { value: any; }; }) => {
+    const val = event.target.value;
+    setShowAErrorBorder(false);
+    if (checkAddressValidation(val))
+      setTokenAAddress(val);
+  }
+
+  const onChangeTokenB = (event: { target: { value: any; }; }) => {
+    const val = event.target.value;
+    setShowBErrorBorder(false);
+    if (checkAddressValidation(val))
+      setTokenBAddress(val);
+  }
+
+  useEffect(() => {
+    if (chain != undefined) {
+      setTokenAInfo(tokenAAddress);
+      setTokenBInfo(tokenBAddress);
+    }
+  }, [chain, tokenAAddress, tokenBAddress]);
+
   return (
     <div>
       <Card>
@@ -24,6 +150,8 @@ export default function FarmInformation({ onNext }: componentProps) {
             inputPlaceholder="Ex. Fortuna Pool"
             id="label"
             label="Pool Name"
+            onChange = {onSetPoolName}
+            value = {poolName}
           />
           <FormGroup
             containerClassName="w-full"
@@ -31,6 +159,8 @@ export default function FarmInformation({ onNext }: componentProps) {
             id="Pool Image (Optional)"
             label="Pool Image (Optional)"
             inputPlaceholder="Ex. https://upload.fortuna.io"
+            onChange = {onSetPoolImage}
+            value = {poolImage}
           />
           <Typography
             variant="body2"
@@ -50,20 +180,25 @@ export default function FarmInformation({ onNext }: componentProps) {
                 id="Contract Address"
                 label="Contract Address"
                 inputPlaceholder="Ex. 0xbb9bc244d798123fde783fcc1c72d3bb8c189413"
+                inputAgain = {showAErrorBorder}
+                onChange={onChangeTokenA}
+                value={tokenAAddress}
               />
               <FormGroup
                 containerClassName="w-full mb-[24px]"
                 inputClassName="w-full"
                 id="Token Symbol"
-                label="Token Symbol"
-                inputPlaceholder="Ex. FTN"
+                label="Token Symbol*"
+                value = {tokenASymbol}
+                disabled = {true}
               />
               <FormGroup
                 containerClassName="w-full mb-[24px]"
                 inputClassName="w-full"
                 id="Token Decimals"
-                label="Token Decimals"
-                inputPlaceholder="Ex. 0.01"
+                label="Token Decimals*"
+                value = {tokenADecimal.toString()}
+                disabled = {true}
               />
               <FormGroup
                 containerClassName="w-full mb-[24px]"
@@ -71,6 +206,8 @@ export default function FarmInformation({ onNext }: componentProps) {
                 id="Token Logo URL (Optional)"
                 label="Token Logo URL (Optional)"
                 inputPlaceholder="Ex. https://upload.fortuna.io"
+                onChange={(event) => setTokenALogo(event.target.value)}
+                value = {tokenALogo}
               />
               <div className="mb-12">
                 <Typography
@@ -78,13 +215,17 @@ export default function FarmInformation({ onNext }: componentProps) {
                   className="!text-neutrals-5 mb-[16px] !font-aeonik-pro-bold"
                   label={"Token Network"}
                 />
-                <Radio label="ETH" checked={false} />
+                <Radio label="ETH" checked={
+                  chain?.id !== SupportedChains.ETH_MAINNET
+                }/>
                 <div className="mt-4"></div>
-                <Radio label="BSC" checked={true} />
+                <Radio label="BSC" checked={
+                  chain?.id === SupportedChains.BSC_TESTNET
+                  } />
                 <div className="mt-4"></div>
                 <Typography
                   variant="body0.5"
-                  label="Users will pay with BNB for your token"
+                  label={`Users will pay with ${chain?.id! === SupportedChains.BSC_TESTNET ? "BNB" : "ETH"} for your token`}
                 />
               </div>
             </div>
@@ -100,20 +241,25 @@ export default function FarmInformation({ onNext }: componentProps) {
                 id="Contract Address"
                 label="Contract Address"
                 inputPlaceholder="Ex. 0xbb9bc244d798123fde783fcc1c72d3bb8c189413"
+                inputAgain = {showBErrorBorder}
+                onChange={onChangeTokenB}
+                value={tokenBAddress}
               />
               <FormGroup
                 containerClassName="w-full mb-[24px]"
                 inputClassName="w-full"
                 id="Token Symbol"
-                label="Token Symbol"
-                inputPlaceholder="Ex. FTN"
+                label="Token Symbol*"
+                disabled = {true}
+                value = {tokenBSymbol}
               />
               <FormGroup
                 containerClassName="w-full mb-[24px]"
                 inputClassName="w-full"
                 id="Token Decimals"
-                label="Token Decimals"
-                inputPlaceholder="Ex. 0.01"
+                label="Token Decimals*"
+                disabled = {true}
+                value = {tokenBDecimal.toString()}
               />
               <FormGroup
                 containerClassName="w-full mb-[24px]"
@@ -121,6 +267,8 @@ export default function FarmInformation({ onNext }: componentProps) {
                 id="Token Logo URL (Optional)"
                 label="Token Logo URL (Optional)"
                 inputPlaceholder="Ex. https://upload.fortuna.io"
+                onChange={(event) => setTokenBLogo(event.target.value)}
+                value = {tokenBLogo}
               />
               <div className="mb-12">
                 <Typography
@@ -128,13 +276,17 @@ export default function FarmInformation({ onNext }: componentProps) {
                   className="!text-neutrals-5 mb-[16px] !font-aeonik-pro-bold"
                   label={"Token Network"}
                 />
-                <Radio label="ETH" checked={false} />
+                <Radio label="ETH" checked={
+                  chain?.id !== SupportedChains.ETH_MAINNET
+                }/>
                 <div className="mt-4"></div>
-                <Radio label="BSC" checked={true} />
+                <Radio label="BSC" checked={
+                  chain?.id === SupportedChains.BSC_TESTNET
+                  } />
                 <div className="mt-4"></div>
                 <Typography
                   variant="body0.5"
-                  label="Users will pay with BNB for your token"
+                  label={`Users will pay with ${chain?.id! === SupportedChains.BSC_TESTNET ? "BNB" : "ETH"} for your token`}
                 />
               </div>
             </div>
@@ -142,7 +294,7 @@ export default function FarmInformation({ onNext }: componentProps) {
 
           <div className="flex justify-center">
             <Button
-              onClick={onNext}
+              onClick={onCreateFarm}
               theme="secondary"
               className="!px-10"
               size="big"

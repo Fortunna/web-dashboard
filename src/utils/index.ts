@@ -18,7 +18,28 @@ const formatDate = (dateString: string | Date | null) => {
     return formattedDate
 }
 
-export {
-    formatDate
 
+const convertTimeStamptoDate = (timestamp: number) => {
+    if (!timestamp)
+        return "";
+        
+    const dt = new Date(timestamp);
+    const date = `${(dt.getMonth()+1).toString().padStart(2, '0')}/${dt.getDate().toString().padStart(2, '0')}/${dt.getFullYear()}`;
+    return date;
+}
+
+const checkAddressValidation = (address: string) => {
+    if (address.length < 43 && address.startsWith("0", 0))
+        return true;
+    return false;
+}
+
+const makeCostUnit = (cost: string, symbol: string|undefined) => {
+    return cost.slice(0, 4) + " " + symbol;
+}
+export {
+    formatDate,
+    convertTimeStamptoDate,
+    checkAddressValidation,
+    makeCostUnit
 }
