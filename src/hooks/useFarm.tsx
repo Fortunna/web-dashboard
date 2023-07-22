@@ -1,67 +1,67 @@
 import React, { useContext, useState } from "react";
 
 export interface Farm {
-    poolName: string;
+    poolName: string;   //pool name
     setPoolName: (name:string) => void;
-    poolImage: string;
+    poolImage: string;  //pool image
     setPoolImage: (image:string) => void;
-    tokenAAddress: string;
+    tokenAAddress: string;  //pool token A address
     setTokenAAddress: (address:string) => void;
-    tokenASymbol: string;
+    tokenASymbol: string;   //pool token A symbol
     setTokenASymbol: (symbol:string) => void;
-    tokenADecimal: number;
+    tokenADecimal: number;  //pool token A decimal
     setTokenADecimal: (decimal:number) => void;
-    tokenALogo: string;
+    tokenALogo: string;     //pool token A logo
     setTokenALogo: (logo:string) => void;
-    tokenBAddress: string;
+    tokenBAddress: string;  //pool token B address
     setTokenBAddress: (address:string) => void;
-    tokenBSymbol: string;
+    tokenBSymbol: string;   //pool token B symbol
     setTokenBSymbol: (symbol:string) => void;
-    tokenBDecimal: number;
+    tokenBDecimal: number;  //pool token B decimal
     setTokenBDecimal: (decimal:number) => void;
-    tokenBLogo: string;
+    tokenBLogo: string;     //pool token B logo
     setTokenBLogo: (logo:string) => void;
-    startTime: number;  //timestmp
-    setStartTime: (time: number) => void;
-    endTime: number;    //timestamp
-    setEndTime: (time: number) => void;
-    minimumStakeAmount: number; 
+    startTime: string;  //pool start timestmp
+    setStartTime: (time: string) => void;
+    endTime: string;    //pool end timestamp
+    setEndTime: (time: string) => void;
+    minimumStakeAmount: number;     //pool minimum stake amount
     setMinimumStakeAmount:(amount: number) => void;
-    maximumStakeAmount: number;
+    maximumStakeAmount: number;     //pool maximum stake amount
     setMaximumStakeAmount: (amount: number) => void;
-    withdrawFee: boolean;   //
+    withdrawFee: boolean;   // withdraw fee optoin default("no")
     setWithdrawFee: (fee: boolean) => void;
-    lossPercentage: string;
+    lossPercentage: string; //loss percentage
     setLossPercentage: (percent: string) => void;
-    depositProfit: string;
+    depositProfit: string;  //deposit percentage
     setDepositProfit: (profit :string) => void;
-    takeInOption: boolean;
+    takeInOption: boolean;  //take in option
     setTakeInOption: (takeIn: boolean) => void;
-    lockupPeriod: string;   //seconds
+    lockupPeriod: string;   //lock up period seconds
     setLockupPeriod: (lockup: string) => void;
     rewardToken: number; //1: tokenA, 2: tokenB, 3: both
     setRewardToken: (reward: number) => void;
-    tokenARewardQt: number;
+    tokenARewardQt: number; //token A reward quantity
     setTokenARewardQt: (rewardQt: number) => void;
-    tokenARewardDis: number;
+    tokenARewardDis: number;    //token A reward distribution
     setTokenARewardDis: (rewardDis: number) => void;
-    tokenARewardCom: boolean;
+    tokenARewardCom: boolean;   //token A compound default (No)
     setTokenARewardCom: (rewardCom: boolean) => void;
-    tokenARewardDur: number; //seconds
+    tokenARewardDur: number; //token A reward distribution duration
     setTokenARewardDur: (rewardDur: number) => void;
-    tokenARewardInit: number;
+    tokenARewardInit: number;   //token A reward init deposit amount
     setTokenARewardInit: (rewardInit: number) => void;
-    tokenBRewardQt: number;
+    tokenBRewardQt: number; //token B reward quantity
     setTokenBRewardQt: (rewardQt: number) => void;
-    tokenBRewardDis: number;
+    tokenBRewardDis: number;    //token B reward distrubtion 
     setTokenBRewardDis: (rewardDis: number) => void;
-    tokenBRewardCom: boolean;
+    tokenBRewardCom: boolean;   //token B reward compound default (No)
     setTokenBRewardCom: (rewardCom: boolean) => void;
-    tokenBRewardDur: number; //seconds
+    tokenBRewardDur: number; //token B reward ditribution duration
     setTokenBRewardDur: (rewardDur: number) => void;
-    tokenBRewardInit: number;
+    tokenBRewardInit: number;   //token B reward init deposit amount
     setTokenBRewardInit: (rewardInit: number) => void;
-    costFarm: string;
+    costFarm: string;   //cost fee for creating pool
     setCostFarm: (cost: string) => void;
 }
 
@@ -80,8 +80,8 @@ export function FarmProvider({children}:any) {
     const [tokenB_Symbol, setTokenB_Symbol] = useState<string>("");
     const [tokenB_Decimal, setTokenB_Decimal] = useState<number>(0);
     const [tokenB_Logo, setTokenB_Logo] = useState<string>("");
-    const [startTime, setStartTime] = useState<number>(0);
-    const [endTime, setEndTime] = useState<number>(0);
+    const [startTime, setStartTime] = useState<string>("");
+    const [endTime, setEndTime] = useState<string>("");
     const [minimum_StakeAmount, setMinimum_StakeAmount] = useState<number>(0);
     const [maximum_StakeAmount, setMaximum_StakeAmount] = useState<number>(0);
     const [withdraw_Fee, setWithdraw_Fee] = useState<boolean>(false);

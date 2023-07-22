@@ -53,8 +53,6 @@ export default function FarmParameters({
     setLockupPeriod
   } = useFarm();
 
-  const [stTime, setSTtime] = useState<string>(convertTimeStamptoDate(startTime));
-  const [enTime, setENtime] = useState<string>(convertTimeStamptoDate(endTime));
   const [minValue, setMinValue] = useState<string>(minimumStakeAmount.toString());
   const [maxValue, setMaxValue] = useState<string>(maximumStakeAmount.toString());
   const {chain} = useNetwork();
@@ -69,13 +67,13 @@ export default function FarmParameters({
       return;
     }
 
-    if (!stTime.length) {
+    if (!startTime.length) {
       toast.error(TOAST_MESSAGE.FILL_FIELD, {
         position: toast.POSITION.TOP_CENTER
       });
       return;
     }
-    if (!enTime.length) {
+    if (!endTime.length) {
       toast.error(TOAST_MESSAGE.FILL_FIELD, {
         position: toast.POSITION.TOP_CENTER
       });
@@ -98,8 +96,8 @@ export default function FarmParameters({
       setDepositProfit("0");
     }
 
-    const st_timestamp = new Date(stTime).getTime();
-    const en_timestamp = new Date(enTime).getTime();
+    const st_timestamp = new Date(startTime).getTime();
+    const en_timestamp = new Date(endTime).getTime();
 
     if (en_timestamp < st_timestamp) {
       toast.error(TOAST_MESSAGE.DATE_INCORRECT, {
@@ -107,8 +105,6 @@ export default function FarmParameters({
       });
       return;
     }
-    setStartTime(st_timestamp);
-    setEndTime(en_timestamp);
 
     onNext(event);
   }
@@ -121,9 +117,9 @@ export default function FarmParameters({
             <FormGroup
               type="date"
               containerClassName="w-full mb-4"
-              value={stTime}
+              value={startTime}
               onChange={(e) => {
-                setSTtime(e.target.value);
+                setStartTime(e.target.value);
               }}
               inputClassName="w-full"
               inputPlaceholder="2022-05-01T16:43(UTC)"
@@ -136,9 +132,9 @@ export default function FarmParameters({
               id="End time (UTC)*"
               label="End time (UTC)*"
               type="date"
-              value={enTime}
+              value={endTime}
               onChange={(e) => {
-                setENtime(e.target.value);
+                setEndTime(e.target.value);
               }}
               inputPlaceholder="2022-05-01T16:43(UTC)"
             />
