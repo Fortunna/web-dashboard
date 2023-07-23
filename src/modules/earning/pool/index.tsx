@@ -110,7 +110,13 @@ export default function PoolModule() {
                 <div className="mb-[32px] overflow-hidden relative">
                   <PoolList
                     active={index == selectedPool}
-                    onStake={() => setSelectedPool(index)}
+                    onStake={() => {
+                      if (index == selectedPool) {
+                        setSelectedPool(-1);
+                      } else {
+                        setSelectedPool(index);
+                      }
+                    }}
                   />
                 </div>
               </AnimateWhileInView>

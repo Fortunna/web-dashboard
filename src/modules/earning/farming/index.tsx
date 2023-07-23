@@ -113,7 +113,11 @@ export default function FramingModule() {
                   <FarmList
                     active={index == selectedFarm}
                     onJoinPool={() => {
-                      setSelectedFarm(index);
+                      if (index == selectedFarm) {
+                        setSelectedFarm(-1);
+                      } else {
+                        setSelectedFarm(index);
+                      }
                     }}
                     onOpenActionModal={() => setOpenActionModal(true)}
                   />
