@@ -683,7 +683,7 @@ export default function Create() {
                   setActiveSteeper(steeperHeader[4].key);
                 }}
                 onPrevious={() => {
-                  setActiveSteeper(steeperHeader[1].key);
+                  setActiveSteeper(steeperHeader[2].key);
                 }}
               />
               <CreateFarmReview

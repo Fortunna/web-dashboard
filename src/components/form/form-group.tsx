@@ -15,7 +15,7 @@ type componentProps = {
   inputAgain?: boolean;
   name?: string;
   disabled?: boolean;
-  onChange?: ChangeEventHandler<HTMLInputElement>;
+  onChange?: ChangeEventHandler<HTMLInputElement|HTMLSelectElement>;
 };
 
 export default function FormGroup({
@@ -49,6 +49,7 @@ export default function FormGroup({
           className={`${selectClassName} mt-[16px]`}
           options={options || []}
           name = {name}
+          onChange={onChange}
         />
       ) : (
         <TextInput

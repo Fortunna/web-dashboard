@@ -3,7 +3,7 @@ import Card from "@/components/card";
 import FormGroup from "@/components/form/form-group";
 import Radio from "@/components/radio";
 import Typography from "@/components/typography";
-import React, { MouseEventHandler, useEffect, useState } from "react";
+import React, { ChangeEventHandler, MouseEventHandler, useEffect, useState } from "react";
 import {ethers} from 'ethers';
 import { useFarm } from "@/hooks/useFarm";
 import FortunnaFactoryABI from "@/assets/FortunnaFactory.json";
@@ -34,6 +34,8 @@ export default function CreateFarmReward({
     setTokenBRewardDis,
     tokenBRewardInit,
     setTokenBRewardInit,
+    rewardToken,
+    setRewardToken,
     costFarm,
     setCostFarm
   } = useFarm();
@@ -48,6 +50,7 @@ export default function CreateFarmReward({
   const chainId = chain?.id;
   const {data:walletClient} = useWalletClient({chainId});
   const publicClient = usePublicClient();
+  let validNumber = new RegExp(/^\d*\.?\d*$/);
 
   useEffect(() => {
     const setCost = async() => {
@@ -69,9 +72,10 @@ export default function CreateFarmReward({
     
   }, [walletClient, chain]);
   
-
-  let validNumber = new RegExp(/^\d*\.?\d*$/);
-
+  const onChangeSelection = (event: { target: { value: any; }; }) => {
+    const selectedToken = event.target.value;
+    setRewardToken(selectedToken);
+  }
   const onHandleNext = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 
     if (!chain){
@@ -81,13 +85,13 @@ export default function CreateFarmReward({
       return;
     }
 
-    if (!AQuant.length || AQuant === "0") {
+    if (rewardToken != 2 && (!AQuant.length || AQuant === "0")) {
       toast.error(TOAST_MESSAGE.FILL_FIELD, {
         position: toast.POSITION.TOP_CENTER
       });
       return;
     }
-    if (!BQuant.length || BQuant === "0") {
+    if (rewardToken != 1 && (!BQuant.length || BQuant === "0")) {
       toast.error(TOAST_MESSAGE.FILL_FIELD, {
         position: toast.POSITION.TOP_CENTER
       });
@@ -125,6 +129,7 @@ export default function CreateFarmReward({
             inputPlaceholder="Rewards Token"
             id="Rewards Token"
             label="Rewards Token"
+            onChange={onChangeSelection}
           />
 
           <div className="md:grid grid-cols-2 gap-24">

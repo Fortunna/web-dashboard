@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import React from "react";
+import React, { ChangeEventHandler } from "react";
 
 export type selectComponentProps = {
   options: {
@@ -11,12 +11,14 @@ export type selectComponentProps = {
   className?: string;
   value?: string;
   name?: string;
+  onChange?: ChangeEventHandler<HTMLInputElement|HTMLSelectElement>;
 };
 export default function Select({
   options,
   className,
   theme = "default",
   name,
+  onChange
 }: selectComponentProps) {
   const bgStyles = classNames({
     "bg-transparent-deep text-light-white border-transparent-1":
@@ -28,6 +30,7 @@ export default function Select({
       style={{ backgroundPosition: "99% , center" }}
       name = {name}
       className={`${bgStyles} ${className} bg-[url('/arrow-down.svg')] bg-no-repeat  appearance-none  px-[16px] py-[8px] text-caption-2  rounded h-[40px] border-[1px]`}
+      onChange={onChange}
     >
       {options.map((option, index) => {
         return (

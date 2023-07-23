@@ -291,7 +291,7 @@ export default function CreateFarmReview({
             ],
             [
               [0,ethers.parseUnits(tokenARewardInit.toString(), tokenADecimal)],
-              [1,ethers.parseUnits(tokenARewardInit.toString(), tokenBDecimal)]
+              [1,ethers.parseUnits(tokenBRewardInit.toString(), tokenBDecimal)]
             ]
           ]],
           account: walletClient.account.address,
