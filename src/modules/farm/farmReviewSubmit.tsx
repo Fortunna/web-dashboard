@@ -127,11 +127,11 @@ export default function CreateFarmReview({
     },
     {
       name: "Start time",
-      value: convertTimeStamptoDate(startTime),
+      value: startTime,
     },
     {
       name: "End time",
-      value: convertTimeStamptoDate(endTime),
+      value: endTime,
     },
     {
       name: "Minimum stake amount",
@@ -269,8 +269,8 @@ export default function CreateFarmReview({
         args:[
           [
             1,
-            startTime,
-            endTime,
+            new Date(startTime).getTime(),
+            new Date(endTime).getTime(),
             ethers.parseUnits(minimumStakeAmount.toString(), tokenADecimal),
             ethers.parseUnits(maximumStakeAmount.toString(), tokenADecimal),
             withdrawFee ? parseInt(lockupPeriod) * 24 * 60 * 60 : 0,
