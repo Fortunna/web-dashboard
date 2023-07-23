@@ -55,18 +55,18 @@ export default function TabComponent({
           })}
         </ul>
         <ul className="flex flex-wrap -mb-px ">
-          <AnimatePresence>
-            {React.Children.map(children, (child, index) => {
-              if (currentKey == data[index]?.key) {
-                return (
-                  <AnimateFadeIn key={index}>
-                    <>{child}</>
-                  </AnimateFadeIn>
-                );
-              }
-              return null;
-            })}
-          </AnimatePresence>
+          {/* <AnimatePresence> */}
+          {React.Children.map(children, (child, index) => {
+            if (currentKey == data[index]?.key) {
+              return (
+                // <AnimateFadeIn key={index}>
+                <>{child}</>
+                // </AnimateFadeIn>
+              );
+            }
+            return null;
+          })}
+          {/* </AnimatePresence> */}
         </ul>
       </div>
     </div>
