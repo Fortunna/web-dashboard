@@ -21,6 +21,7 @@ const SingleCoinOption = ({ imgSrc, name, balance }: componentProps) => {
           {/* <div style={{ width: "46px", height: "46px" }}>
             <Image src={imgSrc} width={46} height={46} alt="Img" />
           </div> */}
+
           <div>
             <Typography
               label="0.0"
