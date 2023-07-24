@@ -23,18 +23,18 @@ const SingleCoinOption = ({ imgSrc, name, balance }: componentProps) => {
 
           <div className="ms-4">
             <Typography
-              className="!text-[20px] !font-inter !font-bold"
+              className="!md:text-[20px] !text-[15px] !font-inter !font-bold"
               label={name}
             />
             <div className="flex items-center">
               <Typography
-                variant="body1"
-                className="!font-poppins"
+                variant="body0.5"
+                className="!font-poppins !text-white"
                 label={"Balance:"}
               />
               <Typography
-                variant="body1"
-                className="!font-poppins ms-4"
+                variant="body0.5"
+                className="!font-poppins ms-4 !text-white"
                 label={balance.toString()}
               />
             </div>
@@ -72,7 +72,7 @@ export default function Deposit({ onClose }: { onClose: Function }) {
     <div>
       <Modal onClose={onClose} title="Deposit" visible={true}>
         <>
-          <div className="px-[40px]">
+          <div className="md:px-[40px] px-5">
             <SingleCoinOption name="DAI" imgSrc="/dai.png" balance={200} />
             <div className="mt-[20px]"></div>
             <SingleCoinOption name="USDT" imgSrc="/usdt.png" balance={200} />

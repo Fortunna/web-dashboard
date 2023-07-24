@@ -72,7 +72,7 @@ export default function ClaimModal({ onClose }: { onClose: Function }) {
     <div>
       <Modal onClose={onClose} title="Claim Rewards" visible={true}>
         <>
-          <div className="px-[40px]">
+          <div className="md:px-[40px] px-5">
             <Typography
               variant="body2"
               className="font-poppins text-center"
