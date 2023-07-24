@@ -9,8 +9,10 @@ export enum TOAST_MESSAGE {
     CONNECT_WALLET = "Please connect wallet!",
     FILL_FIELD = "Please fill required fields!",
     DATE_INCORRECT = "Please choose date correctly!",
+    WAITING_APPROVE_TRANSACTION = "Waiting approve transactions!",
     USER_REJECTED = "User rejeceted transaction!",
-    TRANSACTION_SUBMITTED = "Transaction submitted successfully!"
+    UNEXPECTED_ERROR = "Unexpected error!",
+    TRANSACTION_SUBMITTED = "Pool created successfully!"
 };
 
 export enum DEFAULT_VALUE {

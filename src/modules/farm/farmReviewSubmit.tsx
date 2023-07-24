@@ -4,10 +4,11 @@ import FormGroup from "@/components/form/form-group";
 import Radio from "@/components/radio";
 import Typography from "@/components/typography";
 import classNames from "classnames";
-import React, { MouseEventHandler } from "react";
+import React, { MouseEventHandler, useState } from "react";
 import { useFarm } from "@/hooks/useFarm";
 import { convertTimeStamptoDate, makeCostUnit } from "@/utils";
-import { useNetwork, useWalletClient, Address, useBalance } from "wagmi";
+import ERC20TokenABI from "@/assets/ERC20ABI.json";
+import { useNetwork, useWalletClient, Address, useBalance, usePublicClient } from "wagmi";
 import { ethers, parseEther } from "ethers";
 import FortunnaFactoryABI from "@/assets/FortunnaFactory.json";
 import { FACTORY_ADDRESS, SupportedChains, TOAST_MESSAGE } from "@/constants";
@@ -27,9 +28,11 @@ export default function CreateFarmReview({
 
   const {chain} = useNetwork();
   const {data:walletClient} = useWalletClient();
+  const publicClient = usePublicClient();
   const { data:balance, isError, isLoading } = useBalance({
     address:walletClient?.account.address
   });
+  const [txStatus, setTxStatus] = useState<boolean>(false);
   
   const {
     poolName,
@@ -64,6 +67,16 @@ export default function CreateFarmReview({
     costFarm
   } = useFarm();
 
+  const {data: tokenABalance} = useBalance({
+    token: tokenAAddress as Address,
+    address:walletClient?.account.address
+  });
+
+  const {data: tokenBBalance} = useBalance({
+    token: tokenAAddress as Address,
+    address:walletClient?.account.address
+  });
+  
   const data = [
     {
       name: "Pool Name",
@@ -220,6 +233,73 @@ export default function CreateFarmReview({
     },
   ];
 
+  const onApproveToken = async (
+    tokenAddress: string, 
+    stakingAddress: string, 
+    rewardingAddress: string
+  ) => {
+
+    const txApproveStaking:any = await walletClient!.writeContract({
+      address: tokenAddress as Address,
+      abi: ERC20TokenABI,
+      functionName: "approve",
+      args:[
+        stakingAddress,
+        ethers.MaxUint256
+      ]
+    });
+
+    const txApproveRewarding = await walletClient!.writeContract({
+      address: tokenAddress as Address,
+      abi: ERC20TokenABI,
+      functionName: "approve",
+      args:[
+        rewardingAddress,
+        ethers.MaxUint256
+      ]
+    });
+
+    return [txApproveStaking, txApproveRewarding];
+  }
+
+  const onCheckBalanceForPool = () => {
+
+    if (parseFloat(balance!.formatted) < parseFloat(costFarm)) {
+      toast.error(`Not enough ${chain!.nativeCurrency.symbol} balance for creating Pool!`, {
+        position: toast.POSITION.TOP_CENTER
+      });
+      return false;
+    }
+
+    if (parseFloat(tokenABalance!.formatted) < tokenARewardInit ||
+        parseFloat(tokenABalance!.formatted) < tokenARewardQt) {
+      toast.error(`Not enough ${tokenASymbol} balance for deposit or reward!`, {
+        position: toast.POSITION.TOP_CENTER
+      });
+      return false;
+    }
+
+    if (parseFloat(tokenBBalance!.formatted) < tokenBRewardInit ||
+        parseFloat(tokenABalance!.formatted) < tokenBRewardQt) {
+      toast.error(`Not enough ${tokenBSymbol} balance for deposit or reward!`, {
+        position: toast.POSITION.TOP_CENTER
+      });
+      return false;
+    }
+
+    return true;
+  }
+  const onWaitTransactionReceipt = async (txHash: any) => {
+
+    let index;
+
+    for(index = 0; index < txHash.length; index ++) {   
+      const confirmation = await publicClient.waitForTransactionReceipt({
+        hash:txHash[index]
+      });
+    }
+  }
+
   const onSubmit = async () => {
 
     if (!walletClient || !chain || !balance) {
@@ -229,38 +309,63 @@ export default function CreateFarmReview({
       return;
     }
         
+    if (!onCheckBalanceForPool()) {
+      return; 
+    }
+
+    setTxStatus(true);
+
     try {
-      ///////////////////////Approve/////////////////////
-      // const tokenA_Amount = await tokenAContract.read.allowance([
-      //   walletClient?.account.address,
-      //   PLATFORM.ETH.FACTORY
-      // ]);
 
-      // const tokenB_Amount = await tokenBContract.read.allowance([
-      //   walletClient?.account.address,
-      //   PLATFORM.ETH.FACTORY
-      // ]);
+      const poolLength = await publicClient.readContract({
+        address: FACTORY_ADDRESS[chain.id as SupportedChains] as Address,
+        abi: FortunnaFactoryABI,
+        functionName: "getPoolsLength"
+      });
 
-      // if (parseFloat(ethers.formatUnits(tokenA_Amount, parseInt(tokenADecimal))) < maximumStakeAmount) {
-      //   await tokenAContract.write.approve([
-      //     PLATFORM.ETH.FACTORY,
-      //     ethers.MaxInt256
-      //   ]);
-      // }
+      const stakingToken:any = await publicClient.readContract({
+        address: FACTORY_ADDRESS[chain.id as SupportedChains] as Address,
+        abi: FortunnaFactoryABI,
+        functionName: "predictFortunnaTokenAddress",
+        args:[
+          0,
+          poolLength,
+          true
+        ]
+      });
 
-      // if (parseFloat(ethers.formatUnits(tokenB_Amount, parseInt(tokenBDecimal))) < maximumStakeAmount) {
-      //   await tokenBContract.write.approve([
-      //     PLATFORM.ETH.FACTORY,
-      //     ethers.MaxInt256
-      //   ]);
-      // }
+      const rewardingToken:any = await publicClient.readContract({
+        address: FACTORY_ADDRESS[chain.id as SupportedChains] as Address,
+        abi: FortunnaFactoryABI,
+        functionName: "predictFortunnaTokenAddress",
+        args:[
+          0,
+          poolLength,
+          false
+        ]
+      });
 
-      if (parseFloat(balance.formatted) < parseFloat(costFarm)) {
-        toast.error(`Not enough ${chain.nativeCurrency.symbol} balance!`, {
+      if (!stakingToken || !rewardingToken) {
+        toast.error(TOAST_MESSAGE.UNEXPECTED_ERROR, {
           position: toast.POSITION.TOP_CENTER
         });
         return;
       }
+      // ///////////////////////Approve/////////////////////
+
+      const [txApprove1, txApprove2] = await onApproveToken(tokenAAddress, stakingToken[0], rewardingToken[0]);
+      const [txApprove3, txApprove4] = await onApproveToken(tokenBAddress, stakingToken[0], rewardingToken[0]);
+
+      toast.success(TOAST_MESSAGE.WAITING_APPROVE_TRANSACTION, {
+        position: toast.POSITION.TOP_CENTER
+      });
+
+      await onWaitTransactionReceipt([
+        txApprove1, 
+        txApprove2,
+        txApprove3,
+        txApprove4
+      ]);            
 
       const tx = await walletClient?.writeContract({
         address: FACTORY_ADDRESS[chain.id as SupportedChains] as Address,
@@ -268,7 +373,7 @@ export default function CreateFarmReview({
         functionName: "createPool",
         args:[
           [
-            1,
+            0,
             new Date(startTime).getTime(),
             new Date(endTime).getTime(),
             ethers.parseUnits(minimumStakeAmount.toString(), tokenADecimal),
@@ -291,20 +396,26 @@ export default function CreateFarmReview({
             ],
             [
               [0,ethers.parseUnits(tokenARewardInit.toString(), tokenADecimal)],
-              [1,ethers.parseUnits(tokenARewardInit.toString(), tokenBDecimal)]
+              [1,ethers.parseUnits(tokenBRewardInit.toString(), tokenBDecimal)]
             ]
           ]],
           account: walletClient.account.address,
           value: parseEther(costFarm)
       });
-      
+
+      await onWaitTransactionReceipt([tx]);
+
       toast.success(TOAST_MESSAGE.TRANSACTION_SUBMITTED, {
         position: toast.POSITION.TOP_CENTER
       });
 
     } catch (error) {
       console.log(error);
+      toast.warning(TOAST_MESSAGE.USER_REJECTED, {
+        position: toast.POSITION.TOP_CENTER
+      });
     }
+    setTxStatus(false);
   }
 
   const DetailsPreview = ({
@@ -386,6 +497,7 @@ export default function CreateFarmReview({
                 className="!px-12"
                 size="big"
                 label="Back"
+                disabled = {txStatus}
               />
               <div className="mx-4"></div>
               <Button
@@ -393,7 +505,8 @@ export default function CreateFarmReview({
                 className="!px-12"
                 onClick={onSubmit}
                 size="big"
-                label="Submit"
+                label={!txStatus ? "Submit" : "Progress..."}
+                disabled = {txStatus}
               />
             </div>
           </div>
