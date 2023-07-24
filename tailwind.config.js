@@ -83,6 +83,7 @@ module.exports = {
         // "transparent-color": "rgba(27, 28, 32, 0.6)",
         "secondary-gradient":
           "linear-gradient(98.88deg, #8C01FA 31%, #EB08A4 102.28%)",
+        "text-clip": "linear-gradient(152deg, #8C01FA 32.29%, #EB08A4 100%)",
         "background-card-gradient":
           "linear-gradient(98.88deg, #8C01FA 31%, #EB08A4 102.28%),linear-gradient(0deg, #8D0EA2, #8D0EA2)",
       },

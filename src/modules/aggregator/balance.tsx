@@ -2,7 +2,9 @@ import Button from "@/components/button";
 import Card from "@/components/card";
 import { RefreshIcon } from "@/components/icons";
 import Typography from "@/components/typography";
-import React from "react";
+import React, { useState } from "react";
+import Deposit from "../common/depositModal";
+import ClaimModal from "../common/claimModal";
 
 export default function Balance() {
   const data = [
@@ -19,6 +21,9 @@ export default function Balance() {
       value: "$4,456.72",
     },
   ];
+
+  const [showDeposit, setShowShowDeposit] = useState(false);
+  const [showClaim, setShowShowClaim] = useState(false);
   return (
     <>
       <div className="flex items-center mb-[8px]">
@@ -57,9 +62,10 @@ export default function Balance() {
           </div>
           <div className="flex items-center justify-center mt-[48px]">
             <Button
+              onClick={() => setShowShowDeposit(true)}
               label="Deposit"
               theme="secondary"
-              className=" md:w-[20%]"
+              className=" md:w-[20%] cursor-pointer"
               rightComponent={
                 <svg
                   width={7}
@@ -96,6 +102,7 @@ export default function Balance() {
               label="Claim"
               theme="secondary"
               outline
+              onClick={() => setShowShowClaim(true)}
               className=" md:w-[20%]"
               rightComponent={
                 <svg
@@ -131,6 +138,8 @@ export default function Balance() {
           </div>
         </>
       </Card>
+      {showDeposit && <Deposit onClose={() => setShowShowDeposit(false)} />}
+      {showClaim && <ClaimModal onClose={() => setShowShowClaim(false)} />}
     </>
   );
 }

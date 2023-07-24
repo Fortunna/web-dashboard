@@ -6,6 +6,7 @@ import { AuthActionTypes } from "@/reducers/auth";
 import Header from "./header";
 import Sidebar from "./sidebar";
 import MobileMenu from "./mobileMenu";
+import Head from "next/head";
 
 type componentProps = {
   children: React.ReactNode;
@@ -41,6 +42,10 @@ export default function DashboardLayout({ children }: componentProps) {
 
   return (
     <>
+      <Head>
+        <link rel="icon" type="image/png" href="/favicon.png" />
+        {/* <link rel="icon" type="image/x-icon" href="//favicon.ico" /> */}
+      </Head>
       <div className="grid lg:grid-cols-[18%_auto] gap-0 bg-theme-bg bg-cover   h-screen w-screen overflow-hidden">
         <div className="hidden lg:block">
           <Sidebar />

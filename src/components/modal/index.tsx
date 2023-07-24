@@ -32,8 +32,8 @@ function Modal({
         }}
         className="h-screen w-screen !overflow-y-scroll pt-[8%] flex fixed z-10 top-0   justify-center "
       >
-        <div className="lg:w-[40%] md:w-[60%] w-[90%] !h-full  relative overflow-hidden">
-          {!hideClose ? (
+        <div className="lg:w-[40%] md:w-[60%] w-[90%] !h-full overflow-y-scroll  relative overflow-hidden">
+          {/* {!hideClose ? (
             <div className="flex justify-end mb-5 cursor-pointer">
               <svg
                 width={28}
@@ -49,11 +49,45 @@ function Modal({
                 />
               </svg>
             </div>
-          ) : null}
+          ) : null} */}
           <AnimateFadeIn>
             <div
-              className={`bg-[#17181B] overflow-y-auto !h-full  ${containerClass}`}
+              className={`bg-[#070714] rounded-[16px] overflow-y-auto !h-full mb-10 ${containerClass}`}
             >
+              {title ? (
+                <div className="grid pt-[40px] pb-[36px] px-[24px] grid-cols-[20%_auto_20%] ">
+                  <div></div>
+                  <div className="text-center">
+                    <Typography variant="subtitle" label={title} />
+                  </div>
+                  <div className="flex justify-end">
+                    <svg
+                      width={24}
+                      height={24}
+                      onClick={() => onClose()}
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M7 7L17 17"
+                        stroke="white"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M7 17L17 7"
+                        stroke="white"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              ) : null}
+
               <>{children}</>
             </div>
           </AnimateFadeIn>
