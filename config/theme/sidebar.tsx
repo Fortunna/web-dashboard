@@ -265,6 +265,7 @@ export const TOP_MENU_DATA = [
 export const BOTTOM_MENU_DATA = [
   {
     name: "Docs",
+    to: "https://fortuna-defi.gitbook.io/fortuna-product-docs/",
     icon: (
       <svg
         width="44"

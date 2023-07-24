@@ -67,21 +67,23 @@ const MenuItem = ({
 const BottomMenuItem = ({
   data,
 }: {
-  data: { name: string; icon: React.JSX.Element };
+  data: { name: string; icon: React.JSX.Element; to: string };
 }) => {
   return (
     <li
-      className={`flex ps-2 border-l-2   cursor-pointer hover:border-l-2 border-transparent hover:border-secondary  items-center `}
+      className={` ps-2 border-l-2   cursor-pointer hover:border-l-2 border-transparent hover:border-secondary  `}
     >
-      <div className="w-[44px] flex justify-end items-center h-[44px]">
-        {data.icon}
-      </div>
+      <a href={data?.to} target="_blank" className="flex items-center ">
+        <div className="w-[44px] flex justify-end items-center h-[44px]">
+          {data.icon}
+        </div>
 
-      <Typography
-        className="text-light-white ps-3"
-        label={data.name}
-        use="span"
-      />
+        <Typography
+          className="text-light-white ps-3"
+          label={data.name}
+          use="span"
+        />
+      </a>
     </li>
   );
 };
