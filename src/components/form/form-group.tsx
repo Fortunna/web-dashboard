@@ -50,6 +50,7 @@ export default function FormGroup({
           options={options || []}
           name = {name}
           onChange={onChange}
+          value= {value}
         />
       ) : (
         <TextInput

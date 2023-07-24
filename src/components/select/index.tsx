@@ -18,13 +18,13 @@ export default function Select({
   className,
   theme = "default",
   name,
+  value,
   onChange
 }: selectComponentProps) {
   const bgStyles = classNames({
     "bg-transparent-deep text-light-white border-transparent-1":
       theme == "default",
   });
-
   return (
     <select
       style={{ backgroundPosition: "99% , center" }}

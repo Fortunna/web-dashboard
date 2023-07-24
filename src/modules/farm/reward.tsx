@@ -130,6 +130,7 @@ export default function CreateFarmReward({
             id="Rewards Token"
             label="Rewards Token"
             onChange={onChangeSelection}
+            value = {rewardToken.toString()}
           />
 
           <div className="md:grid grid-cols-2 gap-24">
@@ -143,8 +144,8 @@ export default function CreateFarmReward({
               <FormGroup
                 containerClassName="w-full mb-[16px]"
                 inputClassName="w-full"
-                id="Reward Quantity*"
-                label="Reward Quantity*"
+                id="Reward Quantity"
+                label={rewardToken != 2 ? "Reward Quantity*" : "Reward Quantity"}
                 inputPlaceholder="Ex. 0.1"
                 onChange={(event) => {
                   const val = event.target.value;
@@ -224,8 +225,8 @@ export default function CreateFarmReward({
               <FormGroup
                 containerClassName="w-full mb-[16px]"
                 inputClassName="w-full"
-                id="Reward Quantity*"
-                label="Reward Quantity*"
+                id="Reward Quantity"
+                label={rewardToken != 1 ? "Reward Quantity*" : "Reward Quantity"}
                 inputPlaceholder="Ex. 0.1"
                 onChange={(event) => {
                   const val = event.target.value;
