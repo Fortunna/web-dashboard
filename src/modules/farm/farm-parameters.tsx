@@ -78,6 +78,14 @@ export default function FarmParameters({
       });
       return;
     }
+
+    if (parseFloat(maxValue) < parseFloat(minValue)) {
+      toast.error(TOAST_MESSAGE.DATA_INCORRECT, {
+        position: toast.POSITION.TOP_CENTER
+      });
+      return;
+      
+    }
     if (minValue.length !== 0) {
       setMinimumStakeAmount(parseFloat(minValue));
     }
@@ -99,7 +107,7 @@ export default function FarmParameters({
     const en_timestamp = new Date(endTime).getTime();
 
     if (en_timestamp < st_timestamp) {
-      toast.error(TOAST_MESSAGE.DATE_INCORRECT, {
+      toast.error(TOAST_MESSAGE.DATA_INCORRECT, {
         position: toast.POSITION.TOP_CENTER
       });
       return;
