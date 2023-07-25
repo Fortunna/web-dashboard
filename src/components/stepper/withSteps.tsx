@@ -3,7 +3,7 @@ import React, { useState } from "react";
 const RangeInputWithSteps = ({ steps = 5 }: { steps: number }) => {
   const [value, setValue] = useState(0);
 
-  const handleChange = (event) => {
+  const handleChange = (event: any) => {
     setValue(event.target.value);
   };
 
