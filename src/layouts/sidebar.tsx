@@ -67,7 +67,7 @@ const MenuItem = ({
 const BottomMenuItem = ({
   data,
 }: {
-  data: { name: string; icon: React.JSX.Element; to: string };
+  data: { name: string; icon: React.JSX.Element; to?: string };
 }) => {
   return (
     <li
