@@ -6,129 +6,115 @@ import TextInput from "@/components/input";
 import Slider from "@/components/slider";
 import Button from "@/components/button";
 import RangeInputWithSteps from "@/components/stepper/withSteps";
+import CheckBox from "@/components/checkbox";
 
-type componentProps = {
-  imgSrc: string;
-  name: string;
-  balance: number;
-};
-
-const SingleCoinOption = ({ imgSrc, name, balance }: componentProps) => {
-  return (
-    <div className="border-[1px] border-[#2A2D3C] py-6 px-4 rounded-[16px]">
-      <div className="grid grid-cols-[40%_auto]">
-        <div className=" items-center">
-          {/* <div style={{ width: "46px", height: "46px" }}>
-            <Image src={imgSrc} width={46} height={46} alt="Img" />
-          </div> */}
-
-          <div>
-            <Typography
-              label="0.0"
-              className="!font-poppins !text-[#888DAA] !text-[33px]"
-            />
-            <Typography />
-          </div>
-          <div className="">
-            <div className="flex items-center">
-              <Typography
-                variant="body0.5"
-                className="!font-poppins !text-white"
-                label={"Balance:"}
-              />
-              <Typography
-                variant="body0.5"
-                className="!font-poppins ms-4 !text-white"
-                label={balance.toString()}
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className=" flex items-center justify-end">
-          <Typography
-            variant="body2"
-            className="!font-poppins-semi-bold ml-[10px] pr-[14px] !text-secondary !font-bold"
-            label="MAX"
-          />
-
-          <div className="border-[1px] flex items-center  py-3 px-4 rounded-[12px] border-[#222531]">
-            <div style={{ width: "36px", height: "36px" }} className="mr-3">
-              <Image src={imgSrc} width={36} height={36} alt="Img" />
-            </div>
-            <Typography
-              variant="body2"
-              className="!font-poppins"
-              label={name}
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+const reward = [
+  {
+    balance: "0.1 DAI",
+    img: "/dai.png",
+  },
+  {
+    balance: "0.25 ETH",
+    img: "/eth.png",
+  },
+  {
+    balance: "0.456 BTC",
+    img: "/btc.png",
+  },
+  {
+    img: "/binance.png",
+    balance: "0.00 BNB",
+  },
+  {
+    img: "/usdc.png",
+    balance: "0.01 USDC",
+  },
+  {
+    balance: "100.00 USDT",
+    img: "/usdt.png",
+  },
+];
 
 export default function ClaimModal({ onClose }: { onClose: Function }) {
   return (
     <div>
-      <Modal onClose={onClose} title="Claim Rewards" visible={true}>
+      <Modal onClose={onClose} title="Rewards" visible={true}>
         <>
           <div className="md:px-[40px] px-5">
             <Typography
-              variant="body2"
-              className="font-poppins text-center"
-              label="Amount"
+              variant="body3"
+              className="!font-inter mb-3"
+              label="Rewards"
             />
-
-            <Typography
-              variant="title"
-              className="!text-[64px] !text-center !bg-clip-text bg-text-clip !text-transparent !font-poppins"
-              label="0%"
-            />
-            <div className="mt-3"></div>
             {/* <RangeInputWithSteps /> */}
-            <SingleCoinOption name="DAI" imgSrc="/dai.png" balance={200} />
-            <div className="mt-[20px]"></div>
-            <SingleCoinOption name="USDT" imgSrc="/usdt.png" balance={200} />
-            <div className="mt-[20px]"></div>
-            <SingleCoinOption name="USDC" imgSrc="/usdc.png" balance={200} />
-            <div className="mt-[34px]"></div>
+            <div className="border-[1px] border-[#2A2D3C] py-6 px-4 rounded-[16px]">
+              {reward.map((reward, index) => {
+                return (
+                  <div className="flex items- justify-between" key={index}>
+                    <div className="flex items-center overflow-hidden ">
+                      <div className="flex items-center">
+                        <CheckBox id={index.toString()} />
+                        <label
+                          htmlFor={index.toString()}
+                          className="flex items-center ms-2"
+                        >
+                          <Image
+                            height={24}
+                            className="ms-3 mr-2"
+                            width={24}
+                            src={reward.img}
+                            alt="img"
+                          />
+                          <Typography
+                            variant="body2"
+                            className="!font-inter py-3"
+                            label={reward.balance}
+                          />
+                        </label>
+                      </div>
+                    </div>
 
-            <div className="grid grid-cols-[30%_auto]">
-              <div>
-                <Typography
-                  variant="body1"
-                  className="!text-[#ABAFC4] !font-inter text-start mb-2"
-                  label="Price"
-                />
-              </div>
-              <div>
-                <Typography
-                  variant="body1"
-                  className="!text-[#ABAFC4] !font-inter text-end mb-2"
-                  label="1 DAI = 0.0.095 DAI"
-                />
-              </div>
+                    {index == 0 ? (
+                      <div className="flex items-center">
+                        <CheckBox id="id" />
+                        <Typography className="ms-2" label="Check all" />
+                      </div>
+                    ) : null}
+                  </div>
+                );
+              })}
             </div>
-            <div>
-              <Typography
-                variant="body1"
-                className="!text-[#ABAFC4] !font-inter text-end mb-2"
-                label="1 USDT = 0.00102441 ETH"
-              />
-              <Typography
-                variant="body1"
-                className="!text-[#ABAFC4] !font-inter text-end"
-                label="1 USDC = 0.00102441 ETH"
-              />
-            </div>
+            <Typography
+              variant="body2"
+              className="!font-inter mt-6 !text-[#94A3B8] border-[1px] border-[#334155] rounded-[8px] px-[17px] py-[9px]"
+            >
+              <div>
+                Deposit liquidity on Balancer, and then stake your received BPT
+                here to earn. These tokens automatically earn fees proportional
+                to your share of the pool, and can be redeemed at anytime
+                <svg
+                  className="inline-block ms-2"
+                  width={15}
+                  height={15}
+                  viewBox="0 0 15 15"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11.473 11.974H3.30632V3.80729H7.38965V2.64062H3.30632C2.65882 2.64062 2.13965 3.16562 2.13965 3.80729V11.974C2.13965 12.6156 2.65882 13.1406 3.30632 13.1406H11.473C12.1146 13.1406 12.6396 12.6156 12.6396 11.974V7.89062H11.473V11.974ZM8.55631 2.64062V3.80729H10.6505L4.91632 9.54146L5.73882 10.364L11.473 4.62979V6.72396H12.6396V2.64062H8.55631Z"
+                    fill="#94A3B8"
+                  />
+                </svg>
+              </div>
+            </Typography>
+
             <div className="mt-[34px]"></div>
 
             <Button
               size="big"
               className="w-full"
               theme="harsh"
-              label="Claim Reward"
+              label="Deposit"
             />
             <div className="mt-[40px]"></div>
           </div>

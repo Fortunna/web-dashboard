@@ -80,6 +80,7 @@ module.exports = {
       backgroundImage: {
         "theme-bg": "url('/theme-bg.png')",
         "home-stat-bg": "url('/hom-stats.png')",
+        "mark-bg": "url('/mark.png')",
         // "transparent-color": "rgba(27, 28, 32, 0.6)",
         "secondary-gradient":
           "linear-gradient(98.88deg, #8C01FA 31%, #EB08A4 102.28%)",

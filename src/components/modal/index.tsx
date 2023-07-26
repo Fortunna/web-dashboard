@@ -32,7 +32,7 @@ function Modal({
         }}
         className="h-screen w-screen !overflow-y-scroll pt-[8%] flex fixed z-10 top-0   justify-center "
       >
-        <div className="lg:w-[40%] md:w-[60%] w-[90%] !h-full overflow-y-scroll  relative overflow-hidden">
+        <div className="lg:w-[35%] md:w-[60%] w-[90%] !h-full overflow-y-scroll  relative overflow-hidden">
           {/* {!hideClose ? (
             <div className="flex justify-end mb-5 cursor-pointer">
               <svg
