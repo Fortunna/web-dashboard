@@ -3,8 +3,8 @@ import Card from "@/components/card";
 import { RefreshIcon } from "@/components/icons";
 import Typography from "@/components/typography";
 import React, { useState } from "react";
-import Deposit from "../common/depositModal";
-import ClaimModal from "../common/claimModal";
+import Deposit from "../common/depositModal/index";
+import ClaimModal from "../common/claimModal/index";
 
 export default function Balance() {
   const data = [

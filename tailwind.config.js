@@ -77,6 +77,9 @@ module.exports = {
         "caption-2": "13px",
         "caption-3": "15px",
       },
+      boxShadow: {
+        tab: "0px 1px 0px 0.5px rgba(255, 255, 255, 0.10) inset",
+      },
       backgroundImage: {
         "theme-bg": "url('/theme-bg.png')",
         "home-stat-bg": "url('/hom-stats.png')",
