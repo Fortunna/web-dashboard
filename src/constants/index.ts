@@ -5,6 +5,11 @@ export enum SupportedChains {
     BSC_TESTNET = 97
 }
 
+export enum PoolMode {
+    CLASSIC_FARM = 0,
+    UNISWAP_POOL = 1
+}
+
 export enum TOAST_MESSAGE {
     CONNECT_WALLET = "Please connect wallet!",
     FILL_FIELD = "Please fill required fields!",

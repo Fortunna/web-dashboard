@@ -12,18 +12,7 @@ import { toast } from "react-toastify";
 type componentProps = {
   onNext: MouseEventHandler<HTMLButtonElement>;
   onPrevious?: MouseEventHandler<HTMLButtonElement>;
-  values: {
-    setMinStakeAmount: (value: any) => void;
-    minStakeAmount: any;
-    setMaxStakeAmount: (value: any) => void;
-    setEndTimestamp: (value: any) => void;
-    setStartTimestamp: (value: any) => void;
-    setMinLockUpRewardsPeriod: (value: any) => void;
-    minLockUpRewardsPeriod: any;
-    endTimestamp: any;
-    startTimestamp: any;
-    maxStakeAmount: any;
-  };
+  values: any;
 };
 export default function FarmParameters({
   onNext,
