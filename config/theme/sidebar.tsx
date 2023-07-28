@@ -184,7 +184,7 @@ export const TOP_MENU_DATA = [
     menu: [
       {
         name: "Create Pool",
-        to: "#",
+        to: "/create/pool",
         icon: (
           <svg
             width={24}
