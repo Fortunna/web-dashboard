@@ -1,29 +1,28 @@
 import Button from "@/components/button";
 import Card from "@/components/card";
-import FormGroup from "@/components/form/form-group";
-import Radio from "@/components/radio";
 import Typography from "@/components/typography";
 import classNames from "classnames";
 import React, { MouseEventHandler, useState } from "react";
 import { useFarm } from "@/hooks/useFarm";
-import { convertTimeStamptoDate, makeCostUnit } from "@/utils";
+import { makeCostUnit } from "@/utils";
 import ERC20TokenABI from "@/assets/ERC20ABI.json";
 import { useNetwork, useWalletClient, Address, useBalance, usePublicClient } from "wagmi";
 import { ethers, parseEther } from "ethers";
 import FortunnaFactoryABI from "@/assets/FortunnaFactory.json";
-import { FACTORY_ADDRESS, SupportedChains, TOAST_MESSAGE } from "@/constants";
+import { FACTORY_ADDRESS, PoolMode, SupportedChains, TOAST_MESSAGE } from "@/constants";
 import { toast } from "react-toastify";
 
 type componentProps = {
   // onNext: MouseEventHandler<HTMLButtonElement>;
   onPrevious: MouseEventHandler<HTMLButtonElement>;
   onSubmit: MouseEventHandler<HTMLButtonElement>;
-  data: any;
+  mode: any;
 };
 
 export default function CreateFarmReview({
   // onNext,
-  onPrevious
+  onPrevious,
+  mode
 }: componentProps) {
 
   const {chain} = useNetwork();
@@ -353,19 +352,21 @@ export default function CreateFarmReview({
       }
       // ///////////////////////Approve/////////////////////
 
-      const [txApprove1, txApprove2] = await onApproveToken(tokenAAddress, stakingToken[0], rewardingToken[0]);
-      const [txApprove3, txApprove4] = await onApproveToken(tokenBAddress, stakingToken[0], rewardingToken[0]);
+      if (mode[0] == PoolMode.CLASSIC_FARM) {
+        const [txApprove1, txApprove2] = await onApproveToken(tokenAAddress, stakingToken[0], rewardingToken[0]);
+        const [txApprove3, txApprove4] = await onApproveToken(tokenBAddress, stakingToken[0], rewardingToken[0]);
 
-      toast.success(TOAST_MESSAGE.WAITING_APPROVE_TRANSACTION, {
-        position: toast.POSITION.TOP_CENTER
-      });
+        toast.success(TOAST_MESSAGE.WAITING_APPROVE_TRANSACTION, {
+          position: toast.POSITION.TOP_CENTER
+        });
 
-      await onWaitTransactionReceipt([
-        txApprove1, 
-        txApprove2,
-        txApprove3,
-        txApprove4
-      ]);            
+        await onWaitTransactionReceipt([
+          txApprove1, 
+          txApprove2,
+          txApprove3,
+          txApprove4
+        ]);            
+      }
 
       const tx = await walletClient?.writeContract({
         address: FACTORY_ADDRESS[chain.id as SupportedChains] as Address,
@@ -373,7 +374,7 @@ export default function CreateFarmReview({
         functionName: "createPool",
         args:[
           [
-            0,
+            mode[0],
             new Date(startTime).getTime(),
             new Date(endTime).getTime(),
             ethers.parseUnits(minimumStakeAmount.toString(), tokenADecimal),
