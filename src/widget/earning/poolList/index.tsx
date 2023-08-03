@@ -6,6 +6,7 @@ import { Ankr, ArrowUp, BnB, Curve, Dai, Usdc, Usdt } from "@/components/icons";
 import TextInput from "@/components/input";
 import Slider from "@/components/slider";
 import ActivityChart from "./activityChart";
+import { PoolCollection } from "@/constants";
 // import FarmActionModal from "./actionModal";
 
 const activeTokenData = [
@@ -45,9 +46,11 @@ const Assets = () => {
   );
 };
 export default function PoolList({
+  pool,
   onStake,
   active,
 }: {
+  pool: PoolCollection
   onStake: React.MouseEventHandler<HTMLButtonElement>;
   active: boolean;
 }) {
@@ -66,7 +69,7 @@ export default function PoolList({
                 <BnB />
               </div>
             </div>
-            <Typography variant="subtitle" label="Binance (BNB) " />
+            <Typography variant="subtitle" label={pool.name} />
           </div>
 
           <div className="lg:grid lg:grid-cols-4 gap-10 mt-[32px] ">

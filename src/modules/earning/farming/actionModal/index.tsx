@@ -6,11 +6,16 @@ import { Dai, Usdc, Usdt } from "@/components/icons";
 import Rewards from "./rewards";
 import Withdraw from "./withdraw";
 import classNames from "classnames";
+import { TokenInfos } from "@/constants";
+import { ethers } from "ethers";
 
 type componentProps = {
+  tokenAInfo: TokenInfos,
+  tokenBInfo: TokenInfos,
+  pool: string
   onClose: () => void;
 };
-export default function ActionModal({ onClose }: componentProps) {
+export default function ActionModal({ tokenAInfo, tokenBInfo, pool, onClose }: componentProps) {
   const header = [
     {
       title: "Deposit",
@@ -30,10 +35,6 @@ export default function ActionModal({ onClose }: componentProps) {
   ];
 
   const data = [
-    {
-      value: "1000 DAI",
-      icon: <Dai />,
-    },
     {
       value: "21 USDC",
       icon: <Usdc />,
@@ -94,19 +95,34 @@ export default function ActionModal({ onClose }: componentProps) {
                   label={currentData.subtitle}
                 />
                 <div className="flex mt-3">
-                  {data.map((_d, index) => {
-                    return (
-                      <div key={index} className="flex  mr-3 items-center">
-                        {_d.icon}
+                    <div className="flex  mr-3 items-center">
+                      <Usdc/>
 
-                        <Typography
-                          variant="body3"
-                          className="!text-secondary ms-2 "
-                          label={_d.value}
-                        />
-                      </div>
-                    );
-                  })}
+                      <Typography
+                        variant="body3"
+                        className="!text-secondary ms-2 "
+                        label={
+                          `${currentData.key == header[0].key ? ethers.formatUnits(tokenAInfo.tokenBalanceInfo.value, tokenAInfo.tokenBalanceInfo?.decimals) :
+                          currentData.key == header[1].key ? ethers.formatUnits(tokenAInfo.tokenStakeBalance, tokenAInfo.tokenBalanceInfo?.decimals) :
+                          ethers.formatUnits(tokenAInfo.tokenRewardBalance, tokenAInfo.tokenBalanceInfo?.decimals)} 
+                          ${tokenAInfo.tokenBalanceInfo.symbol}`
+                        }
+                      />
+                    </div>
+                    <div className="flex  mr-3 items-center">
+                      <Usdt/>
+
+                      <Typography
+                        variant="body3"
+                        className="!text-secondary ms-2 "
+                        label={
+                          `${currentData.key == header[0].key ? ethers.formatUnits(tokenBInfo.tokenBalanceInfo.value, tokenBInfo.tokenBalanceInfo?.decimals) :
+                          currentData.key == header[1].key ? ethers.formatUnits(tokenBInfo.tokenStakeBalance, tokenBInfo.tokenBalanceInfo?.decimals) :
+                          ethers.formatUnits(tokenBInfo.tokenRewardBalance, tokenBInfo.tokenBalanceInfo?.decimals)} 
+                          ${tokenAInfo.tokenBalanceInfo.symbol}`
+                        }
+                      />
+                    </div>
                 </div>
               </div>
             </div>
@@ -114,10 +130,9 @@ export default function ActionModal({ onClose }: componentProps) {
         </div>
 
         <>
-          {currentData.key == header[0].key ? <Deposit /> : null}
-
-          {currentData.key == header[1].key ? <Rewards /> : null}
-          {currentData.key == header[2].key ? <Withdraw /> : null}
+          {currentData.key == header[0].key ? <Deposit tokenAInfo={tokenAInfo} tokenBInfo={tokenBInfo} pool={pool}/> : null}
+          {currentData.key == header[1].key ? <Rewards tokenAInfo={tokenAInfo} tokenBInfo={tokenBInfo} pool={pool}/> : null}
+          {currentData.key == header[2].key ? <Withdraw tokenAInfo={tokenAInfo} tokenBInfo={tokenBInfo} pool={pool} /> : null}
         </>
       </Modal>
     </div>

@@ -1,54 +1,209 @@
 import Button from "@/components/button";
 import Typography from "@/components/typography";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { ArrowUp, Curve, Dai, Usdc, Usdt } from "@/components/icons";
 import ActivityChart from "./activityChart";
 import FarmActionModal from "./actionModal";
+import FortunnaFarmABI from "@/assets/FortunnaPool.json";
+import FortunnaToken from "@/assets/FortunnaToken.json";
+import { Address, useBalance, usePublicClient, useWalletClient } from "wagmi";
+import { getTokenInfo } from "@/api";
+import { ethers } from "ethers";
+import { PoolCollection, TokenInfos } from "@/constants";
 
-const activeTokenData = [
-  {
-    value: "1000 DAI",
-    icon: <Dai />,
-  },
-  {
-    value: "950 USDC",
-    icon: <Usdc />,
-  },
-  {
-    value: "11085 USDT",
-    icon: <Usdt />,
-  },
-];
-
-const Assets = () => {
-  return (
-    <div>
-      {activeTokenData.map((token, index) => {
-        return (
-          <div
-            className={`flex items-center ${index ? "mt-2" : null} `}
-            key={index}
-          >
-            {token.icon}
-            <Typography
-              label={token.value}
-              className="!font-inter !text-secondary ml-2"
-              variant="body3"
-            />
-          </div>
-        );
-      })}
-    </div>
-  );
-};
 export default function FarmList({
   active,
+  pool,
   onOpenActionModal,
-  onJoinPool,
-}: any) {
-  const [selectedFarm, setSelectedFarm] = useState(null);
+  onJoinPool, 
+  onSetTokenAInfo,
+  onSetTokenBInfo
+}: {
+  active: boolean,
+  pool: PoolCollection,
+  onOpenActionModal : () => void,
+  onJoinPool: () => void
+  onSetTokenAInfo: (x?: TokenInfos) => void,
+  onSetTokenBInfo: (x?: TokenInfos) => void
+}) {
 
+  const {data:walletClient} = useWalletClient();
+  const publicClient = usePublicClient();
+  const [tokenAAddress, setTokenAAddress] = useState<string>("");
+  const [tokenBAddress, setTokenBAddress] = useState<string>("");
+  const [tokenAStakeBalance, setTokenAStakeBalance] = useState<string>("0");
+  const [tokenBStakeBalance, setTokenBStakeBalance] = useState<string>("0");
+  const [tokenARewardBalance, setTokenARewardBalance] = useState<string>("0");
+  const [tokenBRewardBalance, setTokenBRewardBalance] = useState<string>("0");
+  const [stakingToken, setStakingToken] = useState<string>("");
+  const [rewardToken, setRewardToken] = useState<string>("");
+  const [rewardBalance, setRewardBalance] = useState<number>(0);
+  
+  const {data: tokenABalance} = useBalance({
+    token: tokenAAddress as Address,
+    address:walletClient?.account.address
+  });
+  
+  const {data: tokenBBalance} = useBalance({
+    token: tokenBAddress as Address,
+    address:walletClient?.account.address
+  });
+
+  const {data: stakingBalance} = useBalance({
+    token: stakingToken as Address,
+    address: walletClient?.account.address
+  })
+
+  const readTokensInfo = async () => {
+    
+    const staking_Token:any = await publicClient.readContract( {
+      address: pool.address as Address,
+      abi: FortunnaFarmABI,
+      functionName: "stakingToken"
+    });
+
+    const reward_Token:any = await publicClient.readContract( {
+      address: pool.address as Address,
+      abi: FortunnaFarmABI,
+      functionName: "rewardToken"
+    });
+
+    setStakingToken(staking_Token);
+    setRewardToken(reward_Token);
+
+    const tokenA_Address:any = await publicClient.readContract( {
+      address: staking_Token as Address,
+      abi: FortunnaToken,
+      functionName: "underlyingTokens",
+      args:[
+        0
+      ]
+    });
+
+    const tokenB_Address:any = await publicClient.readContract( {
+      address: staking_Token as Address,
+      abi: FortunnaToken,
+      functionName: "underlyingTokens",
+      args:[
+        1
+      ]
+    });
+
+    setTokenAAddress(tokenA_Address);
+    setTokenBAddress(tokenB_Address);
+
+  }
+
+  const readStaking_RewardInfo = async (tokenAddress: string, amount:string, stake_reward: boolean) => {
+
+    console.log('stakebalance', stakingBalance?.value);
+
+    const tokenA_Balance:any = await publicClient.readContract( {
+      address: tokenAddress as Address,
+      abi: FortunnaToken,
+      functionName: "calcUnderlyingTokensInOrOutPerFortunnaToken",
+      args:[
+        0,
+        amount
+      ]
+    });
+
+    const tokenB_Balance:any = await publicClient.readContract( {
+      address: tokenAddress as Address,
+      abi: FortunnaToken,
+      functionName: "calcUnderlyingTokensInOrOutPerFortunnaToken",
+      args:[
+        1,
+        amount
+      ]
+    });
+    console.log('tokenA_Balance', tokenA_Balance);
+    console.log('tokenB_Balance', tokenB_Balance);
+
+    if (stake_reward) {
+      console.log('set stake');
+      setTokenAStakeBalance(tokenA_Balance);
+      setTokenBStakeBalance(tokenB_Balance);
+    } else {
+      console.log('set reward');
+      setTokenARewardBalance(tokenA_Balance);
+      setTokenBRewardBalance(tokenB_Balance);
+    }
+
+  }
+
+  useEffect(() => {
+    if (active) {
+      readTokensInfo();
+    }
+  }, [active]);
+
+  useEffect(() => {
+    if (stakingBalance && stakingToken)
+      readStaking_RewardInfo(stakingToken, stakingBalance?.value.toString(), true);
+    if (rewardBalance && rewardToken)
+      readStaking_RewardInfo(rewardToken, rewardBalance.toString(), false);
+  }, [stakingBalance, rewardBalance])
+
+  const onHandleActionModal = (event:any) => {
+
+    const tokenAInfo = {
+      tokenAddress: tokenAAddress,
+      tokenBalanceInfo: tokenABalance,
+      tokenStakeBalance: tokenAStakeBalance,
+      tokenRewardBalance: tokenARewardBalance,
+      stakeTokenAddress: stakingToken,
+      rewardTokenAddress: rewardToken
+    } as TokenInfos;
+
+    const tokenBInfo = {
+      tokenAddress: tokenBAddress,
+      tokenBalanceInfo: tokenBBalance,
+      tokenStakeBalance: tokenBStakeBalance,
+      tokenRewardBalance: tokenBRewardBalance,
+      stakeTokenAddress: stakingToken,
+      rewardTokenAddress: rewardToken
+    } as TokenInfos;
+
+    onSetTokenAInfo(tokenAInfo);
+    onSetTokenBInfo(tokenBInfo);
+    onOpenActionModal();
+  }
+  const Assets = ({
+    tokenA, 
+    tokenB
+  }: {
+    tokenA: string, 
+    tokenB: string
+  }) => {
+    return (
+      <div>
+        <div
+            className="flex items-center mt-2"
+          >
+              <Usdc />
+              <Typography
+                label={tokenA}
+                className="!font-inter !text-secondary ml-2"
+                variant="body3"
+              />
+        </div>
+        <div
+            className="flex items-center mt-2"
+          >
+              <Usdt />
+              <Typography
+                label={tokenB}
+                className="!font-inter !text-secondary ml-2"
+                variant="body3"
+              />
+        </div>
+      </div>
+    );
+  };
+  console.log('tokenAStakeBalance', tokenAStakeBalance);
+  console.log('tokenABalance', tokenABalance);
   return (
     <div
       style={{ backgroundColor: "rgba(27, 28, 32, 0.6)" }}
@@ -68,7 +223,7 @@ export default function FarmList({
                 <Usdc />
               </div>
             </div>
-            <Typography variant="subtitle" label="Curve 3Pool " />
+            <Typography variant="subtitle" label={pool.name} />
           </div>
 
           <div className="grid lg:grid-cols-4  grid-cols-2  gap-10 mt-[32px] ">
@@ -188,14 +343,18 @@ export default function FarmList({
                   variant="body1"
                   label="Current Balance"
                 />
-                <Assets />
+                <Assets 
+                  tokenA = {!tokenAAddress || !tokenABalance ? "--" : ethers.formatUnits(tokenABalance!.value, tokenABalance?.decimals) + " " + tokenABalance?.symbol}
+                  tokenB = {!tokenBAddress || !tokenBBalance ? "--" : ethers.formatUnits(tokenBBalance!.value, tokenBBalance?.decimals) + " " + tokenBBalance?.symbol}
+                />
 
                 <Button
                   className="w-full mt-9"
                   size="small"
-                  onClick={onOpenActionModal}
+                  onClick={onHandleActionModal}
                   rounded
                   theme="secondary-solid"
+                  disabled = {tokenAAddress && tokenBAddress && tokenABalance && tokenABalance?.value > 0 ?false:true}
                   label="Deposit"
                 />
               </div>
@@ -205,14 +364,17 @@ export default function FarmList({
                   variant="body1"
                   label="Available Balance"
                 />
-                <Assets />
+                <Assets 
+                  tokenA = {!stakingToken ? "--" : ethers.formatUnits(tokenAStakeBalance, tokenABalance?.decimals)  + " " + tokenABalance?.symbol}
+                  tokenB = {!stakingToken ? "--" : ethers.formatUnits(tokenBStakeBalance, tokenBBalance?.decimals) + " " + tokenBBalance?.symbol}
+                />
                 <Button
                   className="w-full mt-9"
                   size="small"
                   rounded
                   theme="secondary-solid"
-                  onClick={onOpenActionModal}
-                  disabled
+                  onClick={onHandleActionModal}
+                  disabled = {parseFloat(tokenAStakeBalance) > 0 || parseFloat(tokenBStakeBalance) > 0?false:true}
                   label="Withdraw"
                 />
               </div>
@@ -222,14 +384,17 @@ export default function FarmList({
                   variant="body1"
                   label="Current Rewards"
                 />
-                <Assets />
+                <Assets 
+                  tokenA = {!rewardToken ? "--" : ethers.formatUnits(tokenARewardBalance, tokenABalance?.decimals) + " " + tokenABalance?.symbol}
+                  tokenB = {!rewardToken ? "--" : ethers.formatUnits(tokenBRewardBalance, tokenBBalance?.decimals) + " " + tokenBBalance?.symbol}
+                />
                 <Button
                   className="w-full mt-9"
                   size="small"
-                  onClick={onOpenActionModal}
+                  onClick={onHandleActionModal}
                   rounded
                   theme="secondary-solid"
-                  disabled
+                  disabled = {rewardBalance > 0?false:true}
                   label="Claim Rewards"
                 />
               </div>

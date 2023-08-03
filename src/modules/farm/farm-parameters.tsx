@@ -68,7 +68,10 @@ export default function FarmParameters({
       return;
     }
 
-    if (parseFloat(maxValue) < parseFloat(minValue)) {
+    if ( parseFloat(minValue) == 0 || 
+         parseFloat(maxValue) == 0 ||
+         parseFloat(maxValue) < parseFloat(minValue)
+    ) {
       toast.error(TOAST_MESSAGE.DATA_INCORRECT, {
         position: toast.POSITION.TOP_CENTER
       });
@@ -147,7 +150,7 @@ export default function FarmParameters({
               inputPlaceholder={DEFAULT_VALUE.MINIMUM_STAKE_AMOUNT}
               value={minValue}
               id="Minimum stake amount"
-              label="Minimum stake amount"
+              label="Minimum stake amount*"
             />
             <FormGroup
               containerClassName="w-full  mb-4"
@@ -159,7 +162,7 @@ export default function FarmParameters({
                 }
               }}
               value={maxValue}
-              label="Maximum stake amount"
+              label="Maximum stake amount*"
               inputPlaceholder={DEFAULT_VALUE.MAXIMUM_STAKE_AMOUNT}
             />
           </div>

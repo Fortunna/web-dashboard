@@ -17,7 +17,9 @@ export enum TOAST_MESSAGE {
     WAITING_APPROVE_TRANSACTION = "Waiting approve transactions!",
     USER_REJECTED = "User rejeceted transaction!",
     UNEXPECTED_ERROR = "Unexpected error!",
-    TRANSACTION_SUBMITTED = "Pool created successfully!"
+    POOL_CREATED_SUCCESSFULLY = "Pool created successfully!",
+    TRANSACTION_SUBMITTED = "Transaction submitted successfully!"
+
 };
 
 export enum DEFAULT_VALUE {
@@ -35,3 +37,25 @@ export const FACTORY_ADDRESS: FactoryAddressType = {
     56: "0xB8e4E0dF38005893CEaf45a7911Fc7DA9Fe50aD1",
     97: "0xB8e4E0dF38005893CEaf45a7911Fc7DA9Fe50aD1",
 }
+
+export interface PoolCollection {
+    id: number,
+    name: string,
+    address: string,
+    type: number,
+    poolLogo: string,
+    tokenALogo: string,
+    tokenBLogo: string,
+    createdAt: number
+};
+
+export interface TokenInfos {
+    tokenAddress : string,
+    tokenBalanceInfo: any,
+    tokenStakeBalance: string,
+    tokenRewardBalance: string
+    stakeTokenAddress: string,
+    rewardTokenAddress: string
+  }
+
+export const FIREBASE_DATABASE_NAME = "pool";
