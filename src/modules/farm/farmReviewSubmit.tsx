@@ -310,15 +310,15 @@ export default function CreateFarmReview({
   }
   const onWaitTransactionReceipt = async (txHash: any, waitPoolAddress = false) => {
 
+    console.log('txHash', txHash);
     let index;
     try{    
       for(index = 0; index < txHash.length; index ++) {   
         const confirmation = await publicClient.waitForTransactionReceipt({
           hash:txHash[index],
-          timeout:10000
+          timeout: 10000
         });
         if (waitPoolAddress) {
-          console.log(confirmation.logs[confirmation.logs.length - 1]);
           return confirmation.logs[confirmation.logs.length - 1].topics[1];
         }
       }
@@ -439,7 +439,6 @@ export default function CreateFarmReview({
 
       if (address_res) {
         const address = removeForwardZero(address_res);
-        console.log('address', address);
         savePool(address);
       }
 

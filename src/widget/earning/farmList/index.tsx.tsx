@@ -114,7 +114,7 @@ export default function FarmList({
         walletClient?.account.address
       ]
     });
-    console.log('res', res);
+    
     if (stake_reward) {
       lpAmount = res[0];
     } else {
@@ -140,15 +140,13 @@ export default function FarmList({
         lpAmount
       ]
     });
-    console.log('tokenA_Balance', tokenA_Balance);
-    console.log('tokenB_Balance', tokenB_Balance);
+    // console.log('tokenA_Balance', tokenA_Balance);
+    // console.log('tokenB_Balance', tokenB_Balance);
 
     if (stake_reward) {
-      console.log('set stake');
       setTokenAStakeBalance(tokenA_Balance);
       setTokenBStakeBalance(tokenB_Balance);
     } else {
-      console.log('set reward');
       setTokenARewardBalance(tokenA_Balance);
       setTokenBRewardBalance(tokenB_Balance);
     }
@@ -168,7 +166,7 @@ export default function FarmList({
       timeout:10000
     });
     
-    console.log("reward confirm", confirmation);
+    // console.log("reward confirm", confirmation);
     return BigInt(confirmation.logs[1].data).toString(10);
 
   }
@@ -190,7 +188,7 @@ export default function FarmList({
       timeout:10000
     });
 
-    console.log('burn confirm', confirmation);
+    // console.log('burn confirm', confirmation);
   }
 
   useEffect(() => {
@@ -237,7 +235,7 @@ export default function FarmList({
     try {
       const amount = await onGetReward();
 
-      console.log('reward amount', amount);
+      // console.log('reward amount', amount);
 
       await onBurnReward(amount);
 
@@ -285,8 +283,7 @@ export default function FarmList({
       </div>
     );
   };
-  console.log('tokenAStakeBalance', tokenAStakeBalance);
-  console.log('tokenABalance', tokenABalance);
+  
   return (
     <div
       style={{ backgroundColor: "rgba(27, 28, 32, 0.6)" }}
