@@ -55,7 +55,7 @@ export default function PoolList({
   active: boolean;
 }) {
   const [selectedFarm, setSelectedFarm] = useState(null);
-
+  const [value, setValue] = useState<number>(0);
   return (
     <div
       style={{ backgroundColor: "rgba(27, 28, 32, 0.6)" }}
@@ -212,7 +212,7 @@ export default function PoolList({
                   placeholder="Enter amount"
                 />
                 <div className="mt-[16px]">
-                  <Slider className="w-full" />
+                  <Slider className="w-full" sliderValue={value} setSliderValue={setValue}/>
                 </div>
               </div>
               <Button
@@ -253,7 +253,7 @@ export default function PoolList({
                   placeholder="Enter amount"
                 />
                 <div className="mt-[16px]">
-                  <Slider className="w-full" />
+                  <Slider className="w-full" sliderValue={value} setSliderValue={setValue} />
                 </div>
               </div>
               <Button
@@ -295,7 +295,7 @@ export default function PoolList({
                   placeholder="Enter amount"
                 />
                 <div className="mt-[16px]">
-                  <Slider className="w-full" />
+                  <Slider className="w-full" sliderValue={value} setSliderValue={setValue} />
                 </div>
               </div>
               <Button
