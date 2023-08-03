@@ -1,11 +1,15 @@
 import Button from "@/components/button";
 import { Dai, Usdc, Usdt } from "@/components/icons";
 import TextInput from "@/components/input";
-import Select from "@/components/select";
-import Slider from "@/components/slider";
 import Typography from "@/components/typography";
-import { TokenInfos } from "@/constants";
+import { TOAST_MESSAGE, TokenInfos } from "@/constants";
+import { ethers } from "ethers";
 import React, { useState } from "react";
+import FortunnaTokenABI from "@/assets/FortunnaToken.json";
+import FortunnaPoolABI from "@/assets/FortunnaPool.json";
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+import { Address, usePublicClient, useWalletClient } from "wagmi";
 
 
 type componentProps = {
@@ -19,16 +23,15 @@ export default function Rewards({
   pool
 }:componentProps) {
 
-  const [tokenAInput, setTokenAInput] = useState<string>("0");
-  const [tokenBInput, setTokenBInput] = useState<string>("0");
+  const {data:walletClient} = useWalletClient();
+  const publicClient = usePublicClient();
+  const [status, setStatus] = useState<boolean>(false);
 
-  let validNumber = new RegExp(/^\d*\.?\d*$/);
+  const onHandleReward = async () => {
 
+    setStatus(true);
 
-  const onHandleWithdraw = async () => {
-
-    
-
+    setStatus(false);
   }
 
   return (
@@ -39,16 +42,6 @@ export default function Rewards({
             <div>
               <div className="flex items-center mb-7 overflow-hidden relative">
                 <Usdc />
-                <TextInput
-                  id="item2"
-                  value={tokenAInput}
-                  className="rounded-full mx-3 text-white focus:outline-none !border-[#AC6AFF]"
-                  onChange={(e) => {
-                    if (validNumber.test(e.target.value)) {
-                      setTokenAInput(e.target.value);
-                    }
-                  }}                  
-                />
                 <Typography
                   label={tokenAInfo.tokenBalanceInfo?.symbol}
                   variant="body3"
@@ -57,16 +50,6 @@ export default function Rewards({
               </div>
               <div className="flex items-center">
                 <Usdt />
-                <TextInput
-                  id="item3"
-                  value={tokenBInput}
-                  className="rounded-full mx-3 text-white focus:outline-none !border-[#AC6AFF]"
-                  onChange={(e) => {
-                    if (validNumber.test(e.target.value)) {
-                      setTokenBInput(e.target.value);
-                    }
-                  }}                  
-                />
                 <Typography
                   label={tokenBInfo.tokenBalanceInfo?.symbol}
                   variant="body3"
@@ -80,8 +63,8 @@ export default function Rewards({
           className="w-full mt-[48px]"
           label="Reward"
           rounded
+          disabled={status}
           theme="secondary-solid"
-          onClick={onHandleWithdraw}
         />
       </div>
     </div>

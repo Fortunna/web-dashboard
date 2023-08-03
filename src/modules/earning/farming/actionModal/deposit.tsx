@@ -78,7 +78,8 @@ export default function Deposit({
       });
 
       const confirmation = await publicClient.waitForTransactionReceipt({
-        hash:txApproveStaking
+        hash:txApproveStaking,
+        timeout:10000
       });
       return true;
     } catch (ex) {
@@ -132,14 +133,13 @@ export default function Deposit({
         ]
       ]
     });
-    console.log('txMint', txMint);
     
     const confirmation = await publicClient.waitForTransactionReceipt({
-      hash:txMint
+      hash:txMint,
+      timeout:10000
     });
 
     const amount = BigInt(confirmation.logs[2].data).toString(10);
-    console.log('confirmation', amount);
 
     return amount;
   }
@@ -155,8 +155,6 @@ export default function Deposit({
       }
     }
 
-    console.log('stake approve success');
-
     const txStake:any = await walletClient?.writeContract({
       address: pool as Address,
       abi: FortunnaPoolABI,
@@ -166,10 +164,9 @@ export default function Deposit({
       ]
     });
     const confirmation = await publicClient.waitForTransactionReceipt({
-      hash:txStake
+      hash:txStake,
+      timeout:10000
     });
-
-    console.log('stake confimation', confirmation);
 
   }
   const onHandleDeposit = async () => {
@@ -180,9 +177,6 @@ export default function Deposit({
       return;
     }
     setStatus(true);
-
-    console.log('pool', pool);
-    console.log('lp', tokenAInfo.stakeTokenAddress);
 
     try{
       const pre = await onTokenPreparation();

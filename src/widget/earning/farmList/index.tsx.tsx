@@ -8,9 +8,11 @@ import FarmActionModal from "./actionModal";
 import FortunnaPoolABI from "@/assets/FortunnaPool.json";
 import FortunnaToken from "@/assets/FortunnaToken.json";
 import { Address, useBalance, usePublicClient, useWalletClient } from "wagmi";
-import { getTokenInfo } from "@/api";
 import { ethers } from "ethers";
-import { PoolCollection, TokenInfos } from "@/constants";
+import FortunnaTokenABI from "@/assets/FortunnaToken.json";
+import { PoolCollection, TOAST_MESSAGE, TokenInfos } from "@/constants";
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function FarmList({
   active,
@@ -39,6 +41,7 @@ export default function FarmList({
   const [stakingToken, setStakingToken] = useState<string>("");
   const [rewardToken, setRewardToken] = useState<string>("");
   const [rewardBalance, setRewardBalance] = useState<number>(0);
+  const [rewardStatus, setRewardStatus] = useState<boolean>(false);
   
   const {data: tokenABalance} = useBalance({
     token: tokenAAddress as Address,
@@ -49,11 +52,16 @@ export default function FarmList({
     token: tokenBAddress as Address,
     address:walletClient?.account.address
   });
-
-  const {data: stakingBalance} = useBalance({
+  
+  const {data: stakeLPBalance} = useBalance({
     token: stakingToken as Address,
-    address: walletClient?.account.address
-  })
+    address:walletClient?.account.address
+  });
+  
+  const {data: rewardLPBalance} = useBalance({
+    token: rewardToken as Address,
+    address:walletClient?.account.address
+  });
 
   const readTokensInfo = async () => {
     
@@ -97,8 +105,6 @@ export default function FarmList({
 
   const readStaking_RewardInfo = async (tokenAddress: string, stake_reward: boolean) => {
 
-    console.log('stakebalance', stakingBalance?.value);
-
     let lpAmount = 0;
     const res:any = await publicClient.readContract( {
       address: pool.address as Address,
@@ -113,6 +119,7 @@ export default function FarmList({
       lpAmount = res[0];
     } else {
       lpAmount = res[1];
+      setRewardBalance(lpAmount);
     }
     const tokenA_Balance:any = await publicClient.readContract( {
       address: tokenAddress as Address,
@@ -148,6 +155,44 @@ export default function FarmList({
 
   }
 
+  const onGetReward = async() => {
+
+    const txReward:any = await walletClient!.writeContract({
+      address: pool.address as Address,
+      abi: FortunnaPoolABI,
+      functionName: "getReward"
+    });
+
+    const confirmation = await publicClient.waitForTransactionReceipt({
+      hash:txReward,
+      timeout:10000
+    });
+    
+    console.log("reward confirm", confirmation);
+    return BigInt(confirmation.logs[1].data).toString(10);
+
+  }
+
+  const onBurnReward = async (amount:any) => {
+
+    const txBurn:any = await walletClient!.writeContract({
+      address: rewardToken as Address,
+      abi: FortunnaTokenABI,
+      functionName: "burn",
+      args:[
+        walletClient?.account.address,
+        amount
+      ]
+    });
+
+    const confirmation = await publicClient.waitForTransactionReceipt({
+      hash:txBurn,
+      timeout:10000
+    });
+
+    console.log('burn confirm', confirmation);
+  }
+
   useEffect(() => {
     if (active) {
       readTokensInfo();
@@ -155,11 +200,11 @@ export default function FarmList({
   }, [active]);
 
   useEffect(() => {
-    if (stakingBalance && stakingToken)
+    if (stakingToken)
       readStaking_RewardInfo(stakingToken, true);
-    if (rewardBalance && rewardToken)
+    if (rewardToken)
       readStaking_RewardInfo(rewardToken, false);
-  }, [stakingBalance, rewardBalance])
+  }, [tokenABalance, tokenBBalance, stakeLPBalance, rewardLPBalance])
 
   const onHandleActionModal = (event:any) => {
 
@@ -184,6 +229,29 @@ export default function FarmList({
     onSetTokenAInfo(tokenAInfo);
     onSetTokenBInfo(tokenBInfo);
     onOpenActionModal();
+  }
+
+  const onClaimReward = async (event:any) => {
+
+    setRewardStatus(true);
+    try {
+      const amount = await onGetReward();
+
+      console.log('reward amount', amount);
+
+      await onBurnReward(amount);
+
+      toast.success(TOAST_MESSAGE.TRANSACTION_SUBMITTED, {
+        position: toast.POSITION.TOP_CENTER
+      });
+    } catch(ex){
+      console.log('ex', ex);
+      toast.error(TOAST_MESSAGE.UNEXPECTED_ERROR, {
+        position: toast.POSITION.TOP_CENTER
+      });
+    }
+
+    setRewardStatus(false);
   }
   const Assets = ({
     tokenA, 
@@ -406,10 +474,10 @@ export default function FarmList({
                 <Button
                   className="w-full mt-9"
                   size="small"
-                  onClick={onHandleActionModal}
+                  onClick={onClaimReward}
                   rounded
                   theme="secondary-solid"
-                  disabled = {rewardBalance > 0?false:true}
+                  disabled = {rewardStatus || rewardBalance == 0?true:false}
                   label="Claim Rewards"
                 />
               </div>

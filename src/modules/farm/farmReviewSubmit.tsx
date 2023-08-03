@@ -314,7 +314,8 @@ export default function CreateFarmReview({
     try{    
       for(index = 0; index < txHash.length; index ++) {   
         const confirmation = await publicClient.waitForTransactionReceipt({
-          hash:txHash[index]
+          hash:txHash[index],
+          timeout:10000
         });
         if (waitPoolAddress) {
           console.log(confirmation.logs[confirmation.logs.length - 1]);
