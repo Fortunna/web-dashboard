@@ -2,7 +2,7 @@ import Modal from "@/components/modal";
 import Typography from "@/components/typography";
 import React, { ChangeEventHandler, useState } from "react";
 import Deposit from "./deposit";
-import { Dai, Usdc, Usdt } from "@/components/icons";
+import { Dai, Usdc, Usdt, Close } from "@/components/icons";
 import Rewards from "./rewards";
 import Withdraw from "./withdraw";
 import classNames from "classnames";
@@ -26,12 +26,7 @@ export default function ActionModal({ tokenAInfo, tokenBInfo, pool, onClose }: c
       title: "Withdraw",
       subtitle: "Wallet Balance",
       key: "withdraw",
-    },
-    {
-      title: "Rewards",
-      subtitle: "Current Rewards",
-      key: "reward",
-    },
+    }
   ];
 
   const data = [
@@ -55,7 +50,7 @@ export default function ActionModal({ tokenAInfo, tokenBInfo, pool, onClose }: c
         visible={true}
       >
         <div>
-          <div className="flex items-center">
+          <div className="flex item-center" style={{justifyContent: "space-between"}}>
             <div className="flex items-center ">
               {header.map((_header, index) => {
                 const activeContainerStyles = classNames({
@@ -80,11 +75,8 @@ export default function ActionModal({ tokenAInfo, tokenBInfo, pool, onClose }: c
                 );
               })}
             </div>
-            <div className="cursor:pointer" onClick={onClose}>
-              <Typography
-                variant="body2"
-                label="close"
-              />
+            <div className="cursor-pointer" onClick={onClose}>
+              <Close/>
             </div>
           </div>
 
@@ -139,7 +131,6 @@ export default function ActionModal({ tokenAInfo, tokenBInfo, pool, onClose }: c
 
         <>
           {currentData.key == header[0].key ? <Deposit tokenAInfo={tokenAInfo} tokenBInfo={tokenBInfo} pool={pool}/> : null}
-          {currentData.key == header[2].key ? <Rewards tokenAInfo={tokenAInfo} tokenBInfo={tokenBInfo} pool={pool}/> : null}
           {currentData.key == header[1].key ? <Withdraw tokenAInfo={tokenAInfo} tokenBInfo={tokenBInfo} pool={pool} /> : null}
         </>
       </Modal>
