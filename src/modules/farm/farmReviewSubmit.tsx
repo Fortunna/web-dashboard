@@ -436,9 +436,11 @@ export default function CreateFarmReview({
       });
 
       const address_res = await onWaitTransactionReceipt([tx], true);
+      console.log('address_res', address_res);
 
       if (address_res) {
         const address = removeForwardZero(address_res);
+        console.log('address', address);
         savePool(address);
       }
 
