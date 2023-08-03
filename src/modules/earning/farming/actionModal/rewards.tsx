@@ -5,7 +5,7 @@ import Select from "@/components/select";
 import Slider from "@/components/slider";
 import Typography from "@/components/typography";
 import { TokenInfos } from "@/constants";
-import React from "react";
+import React, { useState } from "react";
 
 
 type componentProps = {
@@ -18,6 +18,19 @@ export default function Rewards({
   tokenBInfo,
   pool
 }:componentProps) {
+
+  const [tokenAInput, setTokenAInput] = useState<string>("0");
+  const [tokenBInput, setTokenBInput] = useState<string>("0");
+
+  let validNumber = new RegExp(/^\d*\.?\d*$/);
+
+
+  const onHandleWithdraw = async () => {
+
+    
+
+  }
+
   return (
     <div className="">
       <div className="w-[80%] mt-[35px] mb-[28px] mx-auto">
@@ -28,8 +41,13 @@ export default function Rewards({
                 <Usdc />
                 <TextInput
                   id="item2"
-                  value="30.43"
+                  value={tokenAInput}
                   className="rounded-full mx-3 text-white focus:outline-none !border-[#AC6AFF]"
+                  onChange={(e) => {
+                    if (validNumber.test(e.target.value)) {
+                      setTokenAInput(e.target.value);
+                    }
+                  }}                  
                 />
                 <Typography
                   label={tokenAInfo.tokenBalanceInfo?.symbol}
@@ -41,8 +59,13 @@ export default function Rewards({
                 <Usdt />
                 <TextInput
                   id="item3"
-                  value="30.43"
+                  value={tokenBInput}
                   className="rounded-full mx-3 text-white focus:outline-none !border-[#AC6AFF]"
+                  onChange={(e) => {
+                    if (validNumber.test(e.target.value)) {
+                      setTokenBInput(e.target.value);
+                    }
+                  }}                  
                 />
                 <Typography
                   label={tokenBInfo.tokenBalanceInfo?.symbol}
@@ -58,6 +81,7 @@ export default function Rewards({
           label="Reward"
           rounded
           theme="secondary-solid"
+          onClick={onHandleWithdraw}
         />
       </div>
     </div>

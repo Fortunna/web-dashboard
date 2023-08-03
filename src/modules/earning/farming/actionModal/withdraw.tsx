@@ -3,7 +3,7 @@ import { Dai, Usdc, Usdt } from "@/components/icons";
 import TextInput from "@/components/input";
 import Typography from "@/components/typography";
 import { TokenInfos } from "@/constants";
-import React from "react";
+import React, { useState } from "react";
 
 
 type componentProps = {
@@ -16,6 +16,12 @@ export default function Withdraw({
   tokenBInfo,
   pool
 }:componentProps) {
+
+  const [tokenAInput, setTokenAInput] = useState<string>("0");
+  const [tokenBInput, setTokenBInput] = useState<string>("0");
+  
+  let validNumber = new RegExp(/^\d*\.?\d*$/);
+
   return (
     <div className="">
       <div className="w-[80%] mt-[35px] mb-[28px] mx-auto">
@@ -25,9 +31,14 @@ export default function Withdraw({
               <div className="flex items-center mb-7 overflow-hidden relative">
                 <Usdc />
                 <TextInput
-                  value="30.43"
+                  value={tokenAInput}
                   id="withdraw-3"
                   className="rounded-full mx-3 text-white focus:outline-none !border-[#AC6AFF]"
+                  onChange={(e) => {
+                    if (validNumber.test(e.target.value)) {
+                      setTokenAInput(e.target.value);
+                    }
+                  }}
                 />
                 <Typography
                   label={tokenAInfo.tokenBalanceInfo?.symbol}
@@ -39,8 +50,13 @@ export default function Withdraw({
                 <Usdt />
                 <TextInput
                   id="withdraw"
-                  value="30.43"
+                  value={tokenBInput}
                   className="rounded-full mx-3 text-white focus:outline-none !border-[#AC6AFF]"
+                  onChange={(e) => {
+                    if (validNumber.test(e.target.value)) {
+                      setTokenBInput(e.target.value);
+                    }
+                  }}
                 />
                 <Typography
                   label={tokenBInfo.tokenBalanceInfo?.symbol}

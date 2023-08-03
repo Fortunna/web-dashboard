@@ -24,12 +24,12 @@ export default function ActionModal({ tokenAInfo, tokenBInfo, pool, onClose }: c
     },
     {
       title: "Withdraw",
-      subtitle: "Current Rewards",
+      subtitle: "Wallet Balance",
       key: "withdraw",
     },
     {
       title: "Rewards",
-      subtitle: "Wallet Balance",
+      subtitle: "Current Rewards",
       key: "reward",
     },
   ];
@@ -56,28 +56,36 @@ export default function ActionModal({ tokenAInfo, tokenBInfo, pool, onClose }: c
       >
         <div>
           <div className="flex items-center">
-            {header.map((_header, index) => {
-              const activeContainerStyles = classNames({
-                "bg-[#353945] rounded-full !text-white":
-                  _header.key == currentData.key,
-              });
-              const activeTextStyles = classNames({
-                "!text-white": _header.key == currentData.key,
-              });
-              return (
-                <div
-                  key={index}
-                  className={`px-[28px] transition-all cursor-pointer  py-3  ${activeContainerStyles}`}
-                  onClick={() => setCurrentData(_header)}
-                >
-                  <Typography
-                    variant="body2"
-                    className={`!font-dm-sans !text-[#777E90] ${activeTextStyles}`}
-                    label={_header.title}
-                  />
-                </div>
-              );
-            })}
+            <div className="flex items-center ">
+              {header.map((_header, index) => {
+                const activeContainerStyles = classNames({
+                  "bg-[#353945] rounded-full !text-white":
+                    _header.key == currentData.key,
+                });
+                const activeTextStyles = classNames({
+                  "!text-white": _header.key == currentData.key,
+                });
+                return (
+                  <div
+                    key={index}
+                    className={`px-[28px] transition-all cursor-pointer  py-3  ${activeContainerStyles}`}
+                    onClick={() => setCurrentData(_header)}
+                  >
+                    <Typography
+                      variant="body2"
+                      className={`!font-dm-sans !text-[#777E90] ${activeTextStyles}`}
+                      label={_header.title}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+            <div className="cursor:pointer" onClick={onClose}>
+              <Typography
+                variant="body2"
+                label="close"
+              />
+            </div>
           </div>
 
           <div className="grid md:grid-cols-[30%_auto] mt-6">
@@ -131,8 +139,8 @@ export default function ActionModal({ tokenAInfo, tokenBInfo, pool, onClose }: c
 
         <>
           {currentData.key == header[0].key ? <Deposit tokenAInfo={tokenAInfo} tokenBInfo={tokenBInfo} pool={pool}/> : null}
-          {currentData.key == header[1].key ? <Rewards tokenAInfo={tokenAInfo} tokenBInfo={tokenBInfo} pool={pool}/> : null}
-          {currentData.key == header[2].key ? <Withdraw tokenAInfo={tokenAInfo} tokenBInfo={tokenBInfo} pool={pool} /> : null}
+          {currentData.key == header[2].key ? <Rewards tokenAInfo={tokenAInfo} tokenBInfo={tokenBInfo} pool={pool}/> : null}
+          {currentData.key == header[1].key ? <Withdraw tokenAInfo={tokenAInfo} tokenBInfo={tokenBInfo} pool={pool} /> : null}
         </>
       </Modal>
     </div>

@@ -5,7 +5,7 @@ import Image from "next/image";
 import { ArrowUp, Curve, Dai, Usdc, Usdt } from "@/components/icons";
 import ActivityChart from "./activityChart";
 import FarmActionModal from "./actionModal";
-import FortunnaFarmABI from "@/assets/FortunnaPool.json";
+import FortunnaPoolABI from "@/assets/FortunnaPool.json";
 import FortunnaToken from "@/assets/FortunnaToken.json";
 import { Address, useBalance, usePublicClient, useWalletClient } from "wagmi";
 import { getTokenInfo } from "@/api";
@@ -59,13 +59,13 @@ export default function FarmList({
     
     const staking_Token:any = await publicClient.readContract( {
       address: pool.address as Address,
-      abi: FortunnaFarmABI,
+      abi: FortunnaPoolABI,
       functionName: "stakingToken"
     });
 
     const reward_Token:any = await publicClient.readContract( {
       address: pool.address as Address,
-      abi: FortunnaFarmABI,
+      abi: FortunnaPoolABI,
       functionName: "rewardToken"
     });
 
@@ -95,17 +95,32 @@ export default function FarmList({
 
   }
 
-  const readStaking_RewardInfo = async (tokenAddress: string, amount:string, stake_reward: boolean) => {
+  const readStaking_RewardInfo = async (tokenAddress: string, stake_reward: boolean) => {
 
     console.log('stakebalance', stakingBalance?.value);
 
+    let lpAmount = 0;
+    const res:any = await publicClient.readContract( {
+      address: pool.address as Address,
+      abi: FortunnaPoolABI,
+      functionName: "usersInfo",
+      args:[
+        walletClient?.account.address
+      ]
+    });
+    console.log('res', res);
+    if (stake_reward) {
+      lpAmount = res[0];
+    } else {
+      lpAmount = res[1];
+    }
     const tokenA_Balance:any = await publicClient.readContract( {
       address: tokenAddress as Address,
       abi: FortunnaToken,
       functionName: "calcUnderlyingTokensInOrOutPerFortunnaToken",
       args:[
         0,
-        amount
+        lpAmount
       ]
     });
 
@@ -115,7 +130,7 @@ export default function FarmList({
       functionName: "calcUnderlyingTokensInOrOutPerFortunnaToken",
       args:[
         1,
-        amount
+        lpAmount
       ]
     });
     console.log('tokenA_Balance', tokenA_Balance);
@@ -141,9 +156,9 @@ export default function FarmList({
 
   useEffect(() => {
     if (stakingBalance && stakingToken)
-      readStaking_RewardInfo(stakingToken, stakingBalance?.value.toString(), true);
+      readStaking_RewardInfo(stakingToken, true);
     if (rewardBalance && rewardToken)
-      readStaking_RewardInfo(rewardToken, rewardBalance.toString(), false);
+      readStaking_RewardInfo(rewardToken, false);
   }, [stakingBalance, rewardBalance])
 
   const onHandleActionModal = (event:any) => {
