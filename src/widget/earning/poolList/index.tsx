@@ -6,6 +6,7 @@ import { Ankr, ArrowUp, BnB, Curve, Dai, Usdc, Usdt } from "@/components/icons";
 import TextInput from "@/components/input";
 import Slider from "@/components/slider";
 import ActivityChart from "./activityChart";
+import { PoolCollection } from "@/constants";
 // import FarmActionModal from "./actionModal";
 
 const activeTokenData = [
@@ -45,14 +46,16 @@ const Assets = () => {
   );
 };
 export default function PoolList({
+  pool,
   onStake,
   active,
 }: {
+  pool: PoolCollection
   onStake: React.MouseEventHandler<HTMLButtonElement>;
   active: boolean;
 }) {
   const [selectedFarm, setSelectedFarm] = useState(null);
-
+  const [value, setValue] = useState<number>(0);
   return (
     <div
       style={{ backgroundColor: "rgba(27, 28, 32, 0.6)" }}
@@ -66,7 +69,7 @@ export default function PoolList({
                 <BnB />
               </div>
             </div>
-            <Typography variant="subtitle" label="Binance (BNB) " />
+            <Typography variant="subtitle" label={pool.name} />
           </div>
 
           <div className="lg:grid lg:grid-cols-4 gap-10 mt-[32px] ">
@@ -209,7 +212,7 @@ export default function PoolList({
                   placeholder="Enter amount"
                 />
                 <div className="mt-[16px]">
-                  <Slider className="w-full" />
+                  <Slider className="w-full" sliderValue={value} setSliderValue={setValue}/>
                 </div>
               </div>
               <Button
@@ -250,7 +253,7 @@ export default function PoolList({
                   placeholder="Enter amount"
                 />
                 <div className="mt-[16px]">
-                  <Slider className="w-full" />
+                  <Slider className="w-full" sliderValue={value} setSliderValue={setValue} />
                 </div>
               </div>
               <Button
@@ -292,7 +295,7 @@ export default function PoolList({
                   placeholder="Enter amount"
                 />
                 <div className="mt-[16px]">
-                  <Slider className="w-full" />
+                  <Slider className="w-full" sliderValue={value} setSliderValue={setValue} />
                 </div>
               </div>
               <Button

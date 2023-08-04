@@ -13,6 +13,9 @@ type componentProps = {
 };
 
 const SingleCoinOption = ({ imgSrc, name, balance }: componentProps) => {
+
+  const [value, setValue] = useState<number>(0);
+
   return (
     <div className="border-[1px] border-[#2A2D3C] py-6 px-4 rounded-[16px]">
       <div className="grid grid-cols-[40%_auto]">
@@ -59,7 +62,7 @@ const SingleCoinOption = ({ imgSrc, name, balance }: componentProps) => {
             placeholder="Enter amount"
           />
           <div className="mt-[16px]">
-            <Slider className="w-full" />
+            <Slider className="w-full" sliderValue={value} setSliderValue={setValue}/>
           </div>
         </div>
       </div>

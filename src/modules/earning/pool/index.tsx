@@ -2,6 +2,7 @@ import { AnimateWhileInView } from "@/animations";
 import Button from "@/components/button";
 import PageWrapper from "@/components/pageWrapper";
 import Typography from "@/components/typography";
+import { PoolCollection } from "@/constants";
 import FarmList from "@/widget/earning/farmList/index.tsx";
 import PoolList from "@/widget/earning/poolList";
 import React, { useState } from "react";
@@ -53,9 +54,16 @@ const headers = [
   },
 ];
 
-export default function PoolModule() {
+type PoolModuleType = {
+  poolData: PoolCollection[]
+}
+
+export default function PoolModule({
+  poolData 
+} : PoolModuleType) {
   const [openActionModal, setOpenActionModal] = useState(false);
   const [selectedPool, setSelectedPool] = useState(-1);
+
   return (
     <div>
       <div className="grid text-start  lg:grid-cols-[70%_auto]">
@@ -104,12 +112,13 @@ export default function PoolModule() {
 
       <PageWrapper className="!px-0">
         <>
-          {[0, 1, 2, 3, 4, 5].map((_list, index) => {
+          {poolData.map((_list, index) => {
             return (
               <AnimateWhileInView key={index}>
                 <div className="mb-[32px] overflow-hidden relative">
                   <PoolList
                     active={index == selectedPool}
+                    pool = {_list}
                     onStake={() => {
                       if (index == selectedPool) {
                         setSelectedPool(-1);

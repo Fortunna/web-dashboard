@@ -37,9 +37,14 @@ const checkAddressValidation = (address: string) => {
 const makeCostUnit = (cost: string, symbol: string|undefined) => {
     return cost.slice(0, 4) + " " + symbol;
 }
+
+const removeForwardZero = (original: string) => {
+    return "0x" + original.slice(26);
+}
 export {
     formatDate,
     convertTimeStamptoDate,
     checkAddressValidation,
+    removeForwardZero,
     makeCostUnit
 }
