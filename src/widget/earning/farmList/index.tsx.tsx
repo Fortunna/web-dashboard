@@ -10,9 +10,10 @@ import FortunnaToken from "@/assets/FortunnaToken.json";
 import { Address, useBalance, usePublicClient, useWalletClient } from "wagmi";
 import { ethers } from "ethers";
 import FortunnaTokenABI from "@/assets/FortunnaToken.json";
-import { PoolCollection, TOAST_MESSAGE, TokenInfos } from "@/constants";
+import { BalanceShowDecimals, PoolCollection, TOAST_MESSAGE, TokenInfos } from "@/constants";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import { convertUnderDecimals } from "@/utils";
 
 export default function FarmList({
   active,
@@ -20,14 +21,16 @@ export default function FarmList({
   onOpenActionModal,
   onJoinPool, 
   onSetTokenAInfo,
-  onSetTokenBInfo
+  onSetTokenBInfo,
+  onSelectedIndex,
 }: {
   active: boolean,
   pool: PoolCollection,
   onOpenActionModal : () => void,
   onJoinPool: () => void
   onSetTokenAInfo: (x?: TokenInfos) => void,
-  onSetTokenBInfo: (x?: TokenInfos) => void
+  onSetTokenBInfo: (x?: TokenInfos) => void,
+  onSelectedIndex: (x?: any) => void
 }) {
 
   const {data:walletClient} = useWalletClient();
@@ -38,6 +41,8 @@ export default function FarmList({
   const [tokenBStakeBalance, setTokenBStakeBalance] = useState<string>("0");
   const [tokenARewardBalance, setTokenARewardBalance] = useState<string>("0");
   const [tokenBRewardBalance, setTokenBRewardBalance] = useState<string>("0");
+  const [minStakeAmount, setMinStakeAmount] = useState<string[]>([]);
+  const [maxStakeAmount, setMaxStakeAmount] = useState<string[]>([]);
   const [stakingToken, setStakingToken] = useState<string>("");
   const [rewardToken, setRewardToken] = useState<string>("");
   const [rewardBalance, setRewardBalance] = useState<number>(0);
@@ -45,22 +50,26 @@ export default function FarmList({
   
   const {data: tokenABalance} = useBalance({
     token: tokenAAddress as Address,
-    address:walletClient?.account.address
+    address:walletClient?.account.address,
+    watch: true
   });
-  
+
   const {data: tokenBBalance} = useBalance({
     token: tokenBAddress as Address,
-    address:walletClient?.account.address
+    address:walletClient?.account.address,
+    watch: true
   });
   
   const {data: stakeLPBalance} = useBalance({
     token: stakingToken as Address,
-    address:walletClient?.account.address
+    address:walletClient?.account.address,
+    watch: true
   });
   
-  const {data: rewardLPBalance} = useBalance({
+  const rewardLPBalance = useBalance({
     token: rewardToken as Address,
-    address:walletClient?.account.address
+    address:walletClient?.account.address,
+    watch: true
   });
 
   const readTokensInfo = async () => {
@@ -77,6 +86,18 @@ export default function FarmList({
       functionName: "rewardToken"
     });
 
+    const scalar_Params:any = await publicClient.readContract( {
+      address: pool.address as Address,
+      abi: FortunnaPoolABI,
+      functionName: "scalarParams"
+    });
+
+    if (scalar_Params.length > 0) {
+      const [minAAmount, minBAmount] = await readMin_MaxAmount(staking_Token, scalar_Params[3]);
+      const [maxAMounnt, maxBAmount] = await readMin_MaxAmount(staking_Token, scalar_Params[4]);
+      setMinStakeAmount([minAAmount, minBAmount]);
+      setMaxStakeAmount([maxAMounnt, maxBAmount]);
+    }
     setStakingToken(staking_Token);
     setRewardToken(reward_Token);
 
@@ -101,6 +122,31 @@ export default function FarmList({
     setTokenAAddress(tokenA_Address);
     setTokenBAddress(tokenB_Address);
 
+  }
+
+  const readMin_MaxAmount = async(tokenAddress:string, amount: string) => {
+
+    const tokenA_Amount:any = await publicClient.readContract( {
+      address: tokenAddress as Address,
+      abi: FortunnaToken,
+      functionName: "calcUnderlyingTokensInOrOutPerFortunnaToken",
+      args:[
+        0,
+        amount
+      ]
+    });
+
+    const tokenB_Amount:any = await publicClient.readContract( {
+      address: tokenAddress as Address,
+      abi: FortunnaToken,
+      functionName: "calcUnderlyingTokensInOrOutPerFortunnaToken",
+      args:[
+        1,
+        amount
+      ]
+    });
+
+    return [tokenA_Amount, tokenB_Amount];
   }
 
   const readStaking_RewardInfo = async (tokenAddress: string, stake_reward: boolean) => {
@@ -163,10 +209,11 @@ export default function FarmList({
 
     const confirmation = await publicClient.waitForTransactionReceipt({
       hash:txReward,
-      timeout:10000
+      timeout:100000
     });
     
-    // console.log("reward confirm", confirmation);
+    console.log("reward confirm", confirmation);
+    
     return BigInt(confirmation.logs[1].data).toString(10);
 
   }
@@ -182,13 +229,13 @@ export default function FarmList({
         amount
       ]
     });
-
+  
     const confirmation = await publicClient.waitForTransactionReceipt({
       hash:txBurn,
-      timeout:10000
+      timeout:100000
     });
 
-    // console.log('burn confirm', confirmation);
+    console.log('burn confirm', confirmation);
   }
 
   useEffect(() => {
@@ -198,11 +245,22 @@ export default function FarmList({
   }, [active]);
 
   useEffect(() => {
-    if (stakingToken)
+    if (stakingToken) {
       readStaking_RewardInfo(stakingToken, true);
+    }
     if (rewardToken)
       readStaking_RewardInfo(rewardToken, false);
   }, [tokenABalance, tokenBBalance, stakeLPBalance, rewardLPBalance])
+
+  const onHandleDepositActionModal = (event: any) => {
+    onSelectedIndex(0);
+    onHandleActionModal(event);
+  }
+
+  const onHandleWithdrawActionModal = (event: any) => {
+    onSelectedIndex(1);
+    onHandleActionModal(event);
+  }
 
   const onHandleActionModal = (event:any) => {
 
@@ -212,7 +270,9 @@ export default function FarmList({
       tokenStakeBalance: tokenAStakeBalance,
       tokenRewardBalance: tokenARewardBalance,
       stakeTokenAddress: stakingToken,
-      rewardTokenAddress: rewardToken
+      rewardTokenAddress: rewardToken,
+      minStakeAmount: minStakeAmount[0],
+      maxStakeAmount: maxStakeAmount[0]
     } as TokenInfos;
 
     const tokenBInfo = {
@@ -221,7 +281,10 @@ export default function FarmList({
       tokenStakeBalance: tokenBStakeBalance,
       tokenRewardBalance: tokenBRewardBalance,
       stakeTokenAddress: stakingToken,
-      rewardTokenAddress: rewardToken
+      rewardTokenAddress: rewardToken,
+      minStakeAmount: minStakeAmount[1],
+      maxStakeAmount: maxStakeAmount[1]
+
     } as TokenInfos;
 
     onSetTokenAInfo(tokenAInfo);
@@ -235,7 +298,7 @@ export default function FarmList({
     try {
       const amount = await onGetReward();
 
-      // console.log('reward amount', amount);
+      console.log('reward amount', amount);
 
       await onBurnReward(amount);
 
@@ -424,14 +487,14 @@ export default function FarmList({
                   label="Current Balance"
                 />
                 <Assets 
-                  tokenA = {!tokenAAddress || !tokenABalance ? "--" : ethers.formatUnits(tokenABalance!.value, tokenABalance?.decimals) + " " + tokenABalance?.symbol}
-                  tokenB = {!tokenBAddress || !tokenBBalance ? "--" : ethers.formatUnits(tokenBBalance!.value, tokenBBalance?.decimals) + " " + tokenBBalance?.symbol}
+                  tokenA = {!tokenAAddress || !tokenABalance ? "--" : convertUnderDecimals(ethers.formatUnits(tokenABalance!.value, tokenABalance?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) + " " + tokenABalance?.symbol}
+                  tokenB = {!tokenBAddress || !tokenBBalance ? "--" : convertUnderDecimals(ethers.formatUnits(tokenBBalance!.value, tokenBBalance?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) + " " + tokenBBalance?.symbol}
                 />
 
                 <Button
                   className="w-full mt-9"
                   size="small"
-                  onClick={onHandleActionModal}
+                  onClick={onHandleDepositActionModal}
                   rounded
                   theme="secondary-solid"
                   disabled = {tokenAAddress && tokenBAddress && tokenABalance && tokenABalance?.value > 0 ?false:true}
@@ -445,15 +508,15 @@ export default function FarmList({
                   label="Available Balance"
                 />
                 <Assets 
-                  tokenA = {!stakingToken ? "--" : ethers.formatUnits(tokenAStakeBalance, tokenABalance?.decimals)  + " " + tokenABalance?.symbol}
-                  tokenB = {!stakingToken ? "--" : ethers.formatUnits(tokenBStakeBalance, tokenBBalance?.decimals) + " " + tokenBBalance?.symbol}
+                  tokenA = {!stakingToken ? "--" : convertUnderDecimals(ethers.formatUnits(tokenAStakeBalance, tokenABalance?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE)  + " " + tokenABalance?.symbol}
+                  tokenB = {!stakingToken ? "--" : convertUnderDecimals(ethers.formatUnits(tokenBStakeBalance, tokenBBalance?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) + " " + tokenBBalance?.symbol}
                 />
                 <Button
                   className="w-full mt-9"
                   size="small"
                   rounded
                   theme="secondary-solid"
-                  onClick={onHandleActionModal}
+                  onClick={onHandleWithdrawActionModal}
                   disabled = {parseFloat(tokenAStakeBalance) > 0 || parseFloat(tokenBStakeBalance) > 0?false:true}
                   label="Withdraw"
                 />
@@ -465,8 +528,8 @@ export default function FarmList({
                   label="Current Rewards"
                 />
                 <Assets 
-                  tokenA = {!rewardToken ? "--" : ethers.formatUnits(tokenARewardBalance, tokenABalance?.decimals) + " " + tokenABalance?.symbol}
-                  tokenB = {!rewardToken ? "--" : ethers.formatUnits(tokenBRewardBalance, tokenBBalance?.decimals) + " " + tokenBBalance?.symbol}
+                  tokenA = {!rewardToken ? "--" : convertUnderDecimals(ethers.formatUnits(tokenARewardBalance, tokenABalance?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) + " " + tokenABalance?.symbol}
+                  tokenB = {!rewardToken ? "--" : convertUnderDecimals(ethers.formatUnits(tokenBRewardBalance, tokenBBalance?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) + " " + tokenBBalance?.symbol}
                 />
                 <Button
                   className="w-full mt-9"

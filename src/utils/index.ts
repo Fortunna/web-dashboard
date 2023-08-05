@@ -1,3 +1,4 @@
+import { BalanceShowDecimals } from "@/constants";
 
 
 const formatDate = (dateString: string | Date | null) => {
@@ -41,10 +42,16 @@ const makeCostUnit = (cost: string, symbol: string|undefined) => {
 const removeForwardZero = (original: string) => {
     return "0x" + original.slice(26);
 }
+
+const convertUnderDecimals = (amount:string, decimal = BalanceShowDecimals.WALLET_BALANCE) => {
+    const value = parseFloat(amount).toFixed(decimal);
+    return value.toString();
+}
 export {
     formatDate,
     convertTimeStamptoDate,
     checkAddressValidation,
     removeForwardZero,
-    makeCostUnit
+    makeCostUnit,
+    convertUnderDecimals
 }

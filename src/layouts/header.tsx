@@ -32,6 +32,7 @@ export default function Header({
   const {switchNetwork} = useSwitchNetwork();
   const { data:balance, isError, isLoading } = useBalance({
     address: address,
+    watch: true
   });
 
   const handleConnect = async () => {

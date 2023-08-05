@@ -14,12 +14,14 @@ import { Address, usePublicClient, useWalletClient } from "wagmi";
 type componentProps = {
   tokenAInfo: TokenInfos,
   tokenBInfo: TokenInfos,
-  pool: string
+  pool: string,
+  onClose: () => void;
 };
 export default function Withdraw({
   tokenAInfo,
   tokenBInfo,
-  pool
+  pool,
+  onClose
 }:componentProps) {
 
   const {data:walletClient} = useWalletClient();
@@ -121,6 +123,8 @@ export default function Withdraw({
       toast.success(TOAST_MESSAGE.TRANSACTION_SUBMITTED, {
         position: toast.POSITION.TOP_CENTER
       });
+      
+      onClose();
       
     } catch (ex) {
       console.log(ex);
