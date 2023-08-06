@@ -33,7 +33,8 @@ export default function CreateFarmReview({
   const {data:walletClient} = useWalletClient();
   const publicClient = usePublicClient();
   const { data:balance, isError, isLoading } = useBalance({
-    address:walletClient?.account.address
+    address:walletClient?.account.address,
+    watch:true
   });
   const [txStatus, setTxStatus] = useState<boolean>(false);
   
@@ -72,12 +73,14 @@ export default function CreateFarmReview({
 
   const {data: tokenABalance} = useBalance({
     token: tokenAAddress as Address,
-    address:walletClient?.account.address
+    address:walletClient?.account.address,
+    watch: true
   });
 
   const {data: tokenBBalance} = useBalance({
     token: tokenBAddress as Address,
-    address:walletClient?.account.address
+    address:walletClient?.account.address,
+    watch: true
   });
   
   const data = [

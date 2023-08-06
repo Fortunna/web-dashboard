@@ -73,6 +73,7 @@ export default function FramingModule({
   const [activePoolAddress, setActivePoolAddress] = useState<string>();
   const [tokenAInfo, setTokenAInfo] = useState<TokenInfos>();
   const [tokenBInfo, setTokenBInfo] = useState<TokenInfos>();
+  const [depositWithdrawIndex, setDepositWithdrawIndex] = useState<number>(0);
 
   return (
     <div>
@@ -147,6 +148,7 @@ export default function FramingModule({
                     onOpenActionModal={() => setOpenActionModal(true)}
                     onSetTokenAInfo={setTokenAInfo}
                     onSetTokenBInfo={setTokenBInfo}
+                    onSelectedIndex = {setDepositWithdrawIndex}
                   />
                 </div>
               </AnimateWhileInView>
@@ -158,6 +160,7 @@ export default function FramingModule({
               tokenBInfo={tokenBInfo!}
               pool = {activePoolAddress!}
               onClose={() => setOpenActionModal(false)} 
+              index = {depositWithdrawIndex}
             />
           ) : null}
         </>

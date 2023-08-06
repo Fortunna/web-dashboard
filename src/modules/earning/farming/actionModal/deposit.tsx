@@ -17,12 +17,14 @@ import { error } from "highcharts";
 type componentProps = {
   tokenAInfo: TokenInfos,
   tokenBInfo: TokenInfos,
-  pool: string
+  pool: string,
+  onClose: () => void;
 };
 export default function Deposit({
   tokenAInfo,
   tokenBInfo,
-  pool
+  pool,
+  onClose
 }:componentProps) {
 
   const {data:walletClient} = useWalletClient();
@@ -79,7 +81,7 @@ export default function Deposit({
 
       const confirmation = await publicClient.waitForTransactionReceipt({
         hash:txApproveStaking,
-        timeout:10000
+        timeout:1000000
       });
       return true;
     } catch (ex) {
@@ -108,6 +110,7 @@ export default function Deposit({
       if (!approve_res)
         return false;
     }
+    
     const allowanceTokenB = await checkAllowance(tokenBInfo.tokenAddress, tokenBInfo.stakeTokenAddress, ethers.parseUnits(tokenBInput, tokenBInfo.tokenBalanceInfo?.decimals), ERC20TokenABI);
     if (!allowanceTokenB) {
       const approve_res = await approveToken(tokenBInfo.tokenAddress, tokenBInfo.stakeTokenAddress, ERC20TokenABI);
@@ -136,7 +139,7 @@ export default function Deposit({
     
     const confirmation = await publicClient.waitForTransactionReceipt({
       hash:txMint,
-      timeout:10000
+      timeout:1000000
     });
 
     const amount = BigInt(confirmation.logs[2].data).toString(10);
@@ -165,17 +168,33 @@ export default function Deposit({
     });
     const confirmation = await publicClient.waitForTransactionReceipt({
       hash:txStake,
-      timeout:10000
+      timeout:1000000
     });
 
   }
   const onHandleDeposit = async () => {
+
+    const minAAmount = ethers.formatUnits(tokenAInfo.minStakeAmount, tokenAInfo.tokenBalanceInfo?.decimals);
+    const minBAmount = ethers.formatUnits(tokenBInfo.minStakeAmount, tokenAInfo.tokenBalanceInfo?.decimals);
+
     if (parseFloat(tokenAInput) == 0 || parseFloat(tokenBInput) == 0) {
       toast.error(TOAST_MESSAGE.DATA_INCORRECT, {
         position: toast.POSITION.TOP_CENTER
       });
       return;
     }
+
+    const minAAmountstr = minAAmount + " " + tokenAInfo.tokenBalanceInfo?.symbol;
+    const minBAmountstr = minBAmount + " " + tokenBInfo.tokenBalanceInfo?.symbol;
+
+    if (parseFloat(tokenAInput) < parseFloat(minAAmount) || 
+        parseFloat(tokenBInput) < parseFloat(minBAmount)) {
+      toast.error(`Please input more than ${minAAmountstr} and ${minBAmountstr}`, {
+        position: toast.POSITION.TOP_CENTER
+      });
+      return;
+    }
+
     setStatus(true);
 
     try{
@@ -192,6 +211,8 @@ export default function Deposit({
         position: toast.POSITION.TOP_CENTER
       });
 
+      onClose();
+      
     } catch (ex) {
       console.log('ex', ex);
       toast.error(TOAST_MESSAGE.USER_REJECTED, {
@@ -222,7 +243,7 @@ export default function Deposit({
             }}
             rightComponent={
               <div className="flex h-full  py-2 items-center justify-center cursor-pointer" onClick={(e) => {
-                  setTokenAInput(tokenABalance);
+                  setTokenAInput(ethers.formatUnits(tokenAInfo.maxStakeAmount, tokenAInfo.tokenBalanceInfo?.decimals));
                   setSliderAVal(100);
                 }}>
                 <div className="h-full w-[1px] bg-secondary"></div>
@@ -267,7 +288,7 @@ export default function Deposit({
             rightComponent={
               <div className="flex h-full  py-2 items-center justify-center cursor-pointer" onClick={
                 (e) => {
-                  setTokenBInput(tokenBBalance);
+                  setTokenBInput(ethers.formatUnits(tokenBInfo.maxStakeAmount, tokenBInfo.tokenBalanceInfo?.decimals));
                   setSliderBVal(100);
                 }}>
                 <div className="h-full w-[1px] bg-secondary"></div>

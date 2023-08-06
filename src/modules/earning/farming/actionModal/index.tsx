@@ -6,16 +6,18 @@ import { Dai, Usdc, Usdt, Close } from "@/components/icons";
 import Rewards from "./rewards";
 import Withdraw from "./withdraw";
 import classNames from "classnames";
-import { TokenInfos } from "@/constants";
+import { BalanceShowDecimals, TokenInfos } from "@/constants";
 import { ethers } from "ethers";
+import { convertUnderDecimals } from "@/utils";
 
 type componentProps = {
   tokenAInfo: TokenInfos,
   tokenBInfo: TokenInfos,
   pool: string
   onClose: () => void;
+  index: number;
 };
-export default function ActionModal({ tokenAInfo, tokenBInfo, pool, onClose }: componentProps) {
+export default function ActionModal({ tokenAInfo, tokenBInfo, pool, onClose, index }: componentProps) {
   const header = [
     {
       title: "Deposit",
@@ -40,7 +42,7 @@ export default function ActionModal({ tokenAInfo, tokenBInfo, pool, onClose }: c
     },
   ];
 
-  const [currentData, setCurrentData] = useState(header[0]);
+  const [currentData, setCurrentData] = useState(header[index]);
 
   return (
     <div>
@@ -102,8 +104,8 @@ export default function ActionModal({ tokenAInfo, tokenBInfo, pool, onClose }: c
                         variant="body3"
                         className="!text-secondary ms-2 "
                         label={
-                          `${currentData.key == header[0].key ? ethers.formatUnits(tokenAInfo.tokenBalanceInfo.value, tokenAInfo.tokenBalanceInfo?.decimals) :
-                          currentData.key == header[1].key ? ethers.formatUnits(tokenAInfo.tokenStakeBalance, tokenAInfo.tokenBalanceInfo?.decimals) :
+                          `${currentData.key == header[0].key ? convertUnderDecimals(ethers.formatUnits(tokenAInfo.tokenBalanceInfo.value, tokenAInfo.tokenBalanceInfo?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) :
+                          currentData.key == header[1].key ? convertUnderDecimals(ethers.formatUnits(tokenAInfo.tokenStakeBalance, tokenAInfo.tokenBalanceInfo?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) :
                           ethers.formatUnits(tokenAInfo.tokenRewardBalance, tokenAInfo.tokenBalanceInfo?.decimals)} 
                           ${tokenAInfo.tokenBalanceInfo.symbol}`
                         }
@@ -116,8 +118,8 @@ export default function ActionModal({ tokenAInfo, tokenBInfo, pool, onClose }: c
                         variant="body3"
                         className="!text-secondary ms-2 "
                         label={
-                          `${currentData.key == header[0].key ? ethers.formatUnits(tokenBInfo.tokenBalanceInfo.value, tokenBInfo.tokenBalanceInfo?.decimals) :
-                          currentData.key == header[1].key ? ethers.formatUnits(tokenBInfo.tokenStakeBalance, tokenBInfo.tokenBalanceInfo?.decimals) :
+                          `${currentData.key == header[0].key ? convertUnderDecimals(ethers.formatUnits(tokenBInfo.tokenBalanceInfo.value, tokenBInfo.tokenBalanceInfo?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) :
+                          currentData.key == header[1].key ? convertUnderDecimals(ethers.formatUnits(tokenBInfo.tokenStakeBalance, tokenBInfo.tokenBalanceInfo?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) :
                           ethers.formatUnits(tokenBInfo.tokenRewardBalance, tokenBInfo.tokenBalanceInfo?.decimals)} 
                           ${tokenAInfo.tokenBalanceInfo.symbol}`
                         }
@@ -130,8 +132,8 @@ export default function ActionModal({ tokenAInfo, tokenBInfo, pool, onClose }: c
         </div>
 
         <>
-          {currentData.key == header[0].key ? <Deposit tokenAInfo={tokenAInfo} tokenBInfo={tokenBInfo} pool={pool}/> : null}
-          {currentData.key == header[1].key ? <Withdraw tokenAInfo={tokenAInfo} tokenBInfo={tokenBInfo} pool={pool} /> : null}
+          {currentData.key == header[0].key ? <Deposit tokenAInfo={tokenAInfo} tokenBInfo={tokenBInfo} pool={pool} onClose = {onClose}/> : null}
+          {currentData.key == header[1].key ? <Withdraw tokenAInfo={tokenAInfo} tokenBInfo={tokenBInfo} pool={pool} onClose = {onClose} /> : null}
         </>
       </Modal>
     </div>
