@@ -176,6 +176,8 @@ export default function Deposit({
 
     const minAAmount = ethers.formatUnits(tokenAInfo.minStakeAmount, tokenAInfo.tokenBalanceInfo?.decimals);
     const minBAmount = ethers.formatUnits(tokenBInfo.minStakeAmount, tokenAInfo.tokenBalanceInfo?.decimals);
+    const maxAAmount = ethers.formatUnits(tokenAInfo.maxStakeAmount, tokenAInfo.tokenBalanceInfo?.decimals);
+    const maxBAmount = ethers.formatUnits(tokenBInfo.maxStakeAmount, tokenAInfo.tokenBalanceInfo?.decimals);
 
     if (parseFloat(tokenAInput) == 0 || parseFloat(tokenBInput) == 0) {
       toast.error(TOAST_MESSAGE.DATA_INCORRECT, {
@@ -194,6 +196,19 @@ export default function Deposit({
       });
       return;
     }
+
+
+    const maxAAmountstr = maxAAmount + " " + tokenAInfo.tokenBalanceInfo?.symbol;
+    const maxBAmountstr = maxBAmount + " " + tokenBInfo.tokenBalanceInfo?.symbol;
+
+    if (parseFloat(tokenAInput) > parseFloat(maxAAmount) ||
+        parseFloat(tokenBInput) > parseFloat(maxBAmount)) {
+          toast.error(`Please input less than ${maxAAmountstr} and ${maxBAmountstr}`, {
+            position: toast.POSITION.TOP_CENTER
+          });
+          return;
+
+      }
 
     setStatus(true);
 
