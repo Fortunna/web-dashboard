@@ -96,9 +96,9 @@ export default function Deposit({
   }
 
   useEffect(() => {
-    const valA = parseFloat(tokenABalance) * sliderAVal / 100;
+    const valA = parseFloat(ethers.formatUnits(tokenAInfo.maxStakeAmount, tokenAInfo.tokenBalanceInfo?.decimals)) * sliderAVal / 100;
     setTokenAInput(valA.toString());
-    const valB = parseFloat(tokenBBalance) * sliderBVal / 100;
+    const valB = parseFloat(ethers.formatUnits(tokenBInfo.maxStakeAmount, tokenBInfo.tokenBalanceInfo?.decimals)) * sliderBVal / 100;
     setTokenBInput(valB.toString());
   }, [sliderAVal, sliderBVal])
 
@@ -221,6 +221,9 @@ export default function Deposit({
     }
     setStatus(false);
   }
+
+  console.log('tokenAInfo', tokenAInfo, tokenAInput);
+
   return (
     <div className="">
       <div className="grid grid-cols-[30%_auto] mt-[20px]">
