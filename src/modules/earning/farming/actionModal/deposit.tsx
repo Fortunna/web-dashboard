@@ -96,9 +96,9 @@ export default function Deposit({
   }
 
   useEffect(() => {
-    const valA = parseFloat(tokenABalance) * sliderAVal / 100;
+    const valA = parseFloat(ethers.formatUnits(tokenAInfo.maxStakeAmount, tokenAInfo.tokenBalanceInfo?.decimals)) * sliderAVal / 100;
     setTokenAInput(valA.toString());
-    const valB = parseFloat(tokenBBalance) * sliderBVal / 100;
+    const valB = parseFloat(ethers.formatUnits(tokenBInfo.maxStakeAmount, tokenBInfo.tokenBalanceInfo?.decimals)) * sliderBVal / 100;
     setTokenBInput(valB.toString());
   }, [sliderAVal, sliderBVal])
 
@@ -176,6 +176,8 @@ export default function Deposit({
 
     const minAAmount = ethers.formatUnits(tokenAInfo.minStakeAmount, tokenAInfo.tokenBalanceInfo?.decimals);
     const minBAmount = ethers.formatUnits(tokenBInfo.minStakeAmount, tokenAInfo.tokenBalanceInfo?.decimals);
+    const maxAAmount = ethers.formatUnits(tokenAInfo.maxStakeAmount, tokenAInfo.tokenBalanceInfo?.decimals);
+    const maxBAmount = ethers.formatUnits(tokenBInfo.maxStakeAmount, tokenAInfo.tokenBalanceInfo?.decimals);
 
     if (parseFloat(tokenAInput) == 0 || parseFloat(tokenBInput) == 0) {
       toast.error(TOAST_MESSAGE.DATA_INCORRECT, {
@@ -194,6 +196,19 @@ export default function Deposit({
       });
       return;
     }
+
+
+    const maxAAmountstr = maxAAmount + " " + tokenAInfo.tokenBalanceInfo?.symbol;
+    const maxBAmountstr = maxBAmount + " " + tokenBInfo.tokenBalanceInfo?.symbol;
+
+    if (parseFloat(tokenAInput) > parseFloat(maxAAmount) ||
+        parseFloat(tokenBInput) > parseFloat(maxBAmount)) {
+          toast.error(`Please input less than ${maxAAmountstr} and ${maxBAmountstr}`, {
+            position: toast.POSITION.TOP_CENTER
+          });
+          return;
+
+      }
 
     setStatus(true);
 
@@ -221,6 +236,9 @@ export default function Deposit({
     }
     setStatus(false);
   }
+
+  console.log('tokenAInfo', tokenAInfo, tokenAInput);
+
   return (
     <div className="">
       <div className="grid grid-cols-[30%_auto] mt-[20px]">

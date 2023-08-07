@@ -26,7 +26,7 @@ export default function ActionModal({ tokenAInfo, tokenBInfo, pool, onClose, ind
     },
     {
       title: "Withdraw",
-      subtitle: "Wallet Balance",
+      subtitle: "Pool Balance",
       key: "withdraw",
     }
   ];
