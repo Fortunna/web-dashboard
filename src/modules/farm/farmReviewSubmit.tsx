@@ -4,13 +4,15 @@ import Typography from "@/components/typography";
 import classNames from "classnames";
 import React, { MouseEventHandler, useState } from "react";
 import { useFarm } from "@/hooks/useFarm";
-import { makeCostUnit } from "@/utils";
+import { makeCostUnit, removeForwardZero } from "@/utils";
 import ERC20TokenABI from "@/assets/ERC20ABI.json";
 import { useNetwork, useWalletClient, Address, useBalance, usePublicClient } from "wagmi";
 import { ethers, parseEther } from "ethers";
 import FortunnaFactoryABI from "@/assets/FortunnaFactory.json";
-import { FACTORY_ADDRESS, PoolMode, SupportedChains, TOAST_MESSAGE } from "@/constants";
+import { FACTORY_ADDRESS, FIREBASE_DATABASE_NAME, PoolMode, SupportedChains, TOAST_MESSAGE } from "@/constants";
 import { toast } from "react-toastify";
+import { database } from "@/utils/firebase";
+import { collection, addDoc } from "firebase/firestore";
 
 type componentProps = {
   // onNext: MouseEventHandler<HTMLButtonElement>;
@@ -18,6 +20,8 @@ type componentProps = {
   onSubmit: MouseEventHandler<HTMLButtonElement>;
   mode: any;
 };
+
+const dbInstance = collection(database, FIREBASE_DATABASE_NAME);
 
 export default function CreateFarmReview({
   // onNext,
@@ -29,7 +33,8 @@ export default function CreateFarmReview({
   const {data:walletClient} = useWalletClient();
   const publicClient = usePublicClient();
   const { data:balance, isError, isLoading } = useBalance({
-    address:walletClient?.account.address
+    address:walletClient?.account.address,
+    watch:true
   });
   const [txStatus, setTxStatus] = useState<boolean>(false);
   
@@ -68,12 +73,14 @@ export default function CreateFarmReview({
 
   const {data: tokenABalance} = useBalance({
     token: tokenAAddress as Address,
-    address:walletClient?.account.address
+    address:walletClient?.account.address,
+    watch: true
   });
 
   const {data: tokenBBalance} = useBalance({
-    token: tokenAAddress as Address,
-    address:walletClient?.account.address
+    token: tokenBAddress as Address,
+    address:walletClient?.account.address,
+    watch: true
   });
   
   const data = [
@@ -232,6 +239,22 @@ export default function CreateFarmReview({
     },
   ];
 
+  const savePool = (poolAddress: string) => {
+    const currentDT = new Date().getTime();
+    addDoc(dbInstance, {
+        id: 0,
+        name: poolName,
+        address: poolAddress,
+        type: mode[0],
+        poolLogo: poolImage,
+        tokenALogo: tokenALogo,
+        tokenBLogo: tokenBLogo,
+        createdAt: currentDT
+    })
+        .then(() => {
+        })
+
+  }
   const onApproveToken = async (
     tokenAddress: string, 
     stakingAddress: string, 
@@ -288,15 +311,25 @@ export default function CreateFarmReview({
 
     return true;
   }
-  const onWaitTransactionReceipt = async (txHash: any) => {
+  const onWaitTransactionReceipt = async (txHash: any, waitPoolAddress = false) => {
 
+    console.log('txHash', txHash);
     let index;
+    try{    
+      for(index = 0; index < txHash.length; index ++) {   
+        const confirmation = await publicClient.waitForTransactionReceipt({
+          hash:txHash[index],
+          timeout: 10000
+        });
+        if (waitPoolAddress) {
+          return confirmation.logs[confirmation.logs.length - 1].topics[1];
+        }
+      }
+    } catch (ex) {
 
-    for(index = 0; index < txHash.length; index ++) {   
-      const confirmation = await publicClient.waitForTransactionReceipt({
-        hash:txHash[index]
-      });
-    }
+    } 
+
+    return "";
   }
 
   const onSubmit = async () => {
@@ -353,6 +386,7 @@ export default function CreateFarmReview({
       // ///////////////////////Approve/////////////////////
 
       if (mode[0] == PoolMode.CLASSIC_FARM) {
+
         const [txApprove1, txApprove2] = await onApproveToken(tokenAAddress, stakingToken[0], rewardingToken[0]);
         const [txApprove3, txApprove4] = await onApproveToken(tokenBAddress, stakingToken[0], rewardingToken[0]);
 
@@ -379,7 +413,7 @@ export default function CreateFarmReview({
             new Date(endTime).getTime(),
             ethers.parseUnits(minimumStakeAmount.toString(), tokenADecimal),
             ethers.parseUnits(maximumStakeAmount.toString(), tokenADecimal),
-            withdrawFee ? parseInt(lockupPeriod) * 24 * 60 * 60 : 0,
+            parseInt(lockupPeriod) * 24 * 60 * 60,
             withdrawFee ? parseInt(lossPercentage) * 100 : 0,
             0,
             rewardToken === 1 ? tokenARewardDis * 100 : tokenBRewardDis * 100,
@@ -404,9 +438,16 @@ export default function CreateFarmReview({
           value: parseEther(costFarm)
       });
 
-      await onWaitTransactionReceipt([tx]);
+      const address_res = await onWaitTransactionReceipt([tx], true);
+      console.log('address_res', address_res);
 
-      toast.success(TOAST_MESSAGE.TRANSACTION_SUBMITTED, {
+      if (address_res) {
+        const address = removeForwardZero(address_res);
+        console.log('address', address);
+        savePool(address);
+      }
+
+      toast.success(TOAST_MESSAGE.POOL_CREATED_SUCCESSFULLY, {
         position: toast.POSITION.TOP_CENTER
       });
 

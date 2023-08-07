@@ -4,8 +4,12 @@ import Modal from "@/components/modal";
 import PageWrapper from "@/components/pageWrapper";
 import Typography from "@/components/typography";
 import FarmList from "@/widget/earning/farmList/index.tsx";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ActionModal from "./actionModal";
+import { PoolCollection, TOAST_MESSAGE, TokenInfos } from "@/constants";
+import { useNetwork } from "wagmi";
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const AccountBalance = () => {
   return (
@@ -54,9 +58,22 @@ const headers = [
   },
 ];
 
-export default function FramingModule() {
+
+type FarmModuleType = {
+  poolData: PoolCollection[]
+}
+
+export default function FramingModule({
+  poolData
+}: FarmModuleType) {
+
+  const {chain} = useNetwork();
   const [openActionModal, setOpenActionModal] = useState(false);
   const [selectedFarm, setSelectedFarm] = useState(-1);
+  const [activePoolAddress, setActivePoolAddress] = useState<string>();
+  const [tokenAInfo, setTokenAInfo] = useState<TokenInfos>();
+  const [tokenBInfo, setTokenBInfo] = useState<TokenInfos>();
+  const [depositWithdrawIndex, setDepositWithdrawIndex] = useState<number>(0);
 
   return (
     <div>
@@ -106,27 +123,45 @@ export default function FramingModule() {
 
       <PageWrapper className="!px-0">
         <>
-          {[0, 1, 2, 3, 4, 5].map((_list, index) => {
+          {poolData.map((_list, index) => {
             return (
               <AnimateWhileInView key={index}>
                 <div className="mb-[32px] overflow-hidden relative">
                   <FarmList
                     active={index == selectedFarm}
+                    pool = {_list}
                     onJoinPool={() => {
+
+                      if (!chain) {
+                        toast.error(TOAST_MESSAGE.CONNECT_WALLET, {
+                          position: toast.POSITION.TOP_CENTER
+                        });
+                        return;
+                      }
                       if (index == selectedFarm) {
                         setSelectedFarm(-1);
                       } else {
                         setSelectedFarm(index);
                       }
+                      setActivePoolAddress(_list.address)
                     }}
                     onOpenActionModal={() => setOpenActionModal(true)}
+                    onSetTokenAInfo={setTokenAInfo}
+                    onSetTokenBInfo={setTokenBInfo}
+                    onSelectedIndex = {setDepositWithdrawIndex}
                   />
                 </div>
               </AnimateWhileInView>
             );
           })}
           {openActionModal ? (
-            <ActionModal onClose={() => setOpenActionModal(false)} />
+            <ActionModal
+              tokenAInfo={tokenAInfo!} 
+              tokenBInfo={tokenBInfo!}
+              pool = {activePoolAddress!}
+              onClose={() => setOpenActionModal(false)} 
+              index = {depositWithdrawIndex}
+            />
           ) : null}
         </>
       </PageWrapper>

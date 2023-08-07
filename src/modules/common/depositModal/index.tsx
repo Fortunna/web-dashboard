@@ -14,6 +14,67 @@ type componentProps = {
   balance: number;
 };
 
+const SingleCoinOption = ({ imgSrc, name, balance }: componentProps) => {
+  const [value, setValue] = useState<number>(0);
+
+  return (
+    <div className="border-[1px] border-[#2A2D3C] py-6 px-4 rounded-[16px]">
+      <div className="grid grid-cols-[40%_auto]">
+        <div className="flex items-center">
+          <div style={{ width: "46px", height: "46px" }}>
+            <Image src={imgSrc} width={46} height={46} alt="Img" />
+          </div>
+
+          <div className="ms-4">
+            <Typography
+              className="!text-[20px] !font-inter !font-bold"
+              label={name}
+            />
+            <div className="flex items-center">
+              <Typography
+                variant="body1"
+                className="!font-poppins"
+                label={"Balance:"}
+              />
+              <Typography
+                variant="body1"
+                className="!font-poppins ms-4"
+                label={balance.toString()}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="">
+          <TextInput
+            rightComponent={
+              <div className="flex h-full  py-2 items-center justify-center">
+                <div className="h-full w-[1px] bg-secondary"></div>
+                <Typography
+                  variant="body0.5"
+                  className="!font-inter ml-[10px] pr-[14px] text-secondary"
+                  label="MAX"
+                />
+              </div>
+            }
+            id="#id"
+            rounded
+            className="!w-full"
+            placeholder="Enter amount"
+          />
+          <div className="mt-[16px]">
+            <Slider
+              className="w-full"
+              sliderValue={value}
+              setSliderValue={setValue}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default function Deposit({ onClose }: { onClose: Function }) {
   const [current, setCurrent] = useState<"manual" | "auto">("auto");
   return (

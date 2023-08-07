@@ -10,6 +10,11 @@ export enum PoolMode {
     UNISWAP_POOL = 1
 }
 
+export enum BalanceShowDecimals {
+    WALLET_BALANCE = 3,
+    FARM_SHOW_BALANCE = 7
+}
+
 export enum TOAST_MESSAGE {
     CONNECT_WALLET = "Please connect wallet!",
     FILL_FIELD = "Please fill required fields!",
@@ -17,7 +22,9 @@ export enum TOAST_MESSAGE {
     WAITING_APPROVE_TRANSACTION = "Waiting approve transactions!",
     USER_REJECTED = "User rejeceted transaction!",
     UNEXPECTED_ERROR = "Unexpected error!",
-    TRANSACTION_SUBMITTED = "Pool created successfully!"
+    POOL_CREATED_SUCCESSFULLY = "Pool created successfully!",
+    TRANSACTION_SUBMITTED = "Transaction submitted successfully!"
+
 };
 
 export enum DEFAULT_VALUE {
@@ -31,7 +38,31 @@ type FactoryAddressType = {[chainId in SupportedChains]: string; }
 
 export const FACTORY_ADDRESS: FactoryAddressType = {
     1: "0xB8e4E0dF38005893CEaf45a7911Fc7DA9Fe50aD1",
-    5: "0xb556487f2D631cF1FbC2240e779E6C1Db8BeE90D",
+    5: "0xfBB400aC812541b05525bf511f560e1B1Ac9f0E3",
     56: "0xB8e4E0dF38005893CEaf45a7911Fc7DA9Fe50aD1",
     97: "0xB8e4E0dF38005893CEaf45a7911Fc7DA9Fe50aD1",
 }
+
+export interface PoolCollection {
+    id: number,
+    name: string,
+    address: string,
+    type: number,
+    poolLogo: string,
+    tokenALogo: string,
+    tokenBLogo: string,
+    createdAt: number
+};
+
+export interface TokenInfos {
+    tokenAddress : string,
+    tokenBalanceInfo: any,
+    tokenStakeBalance: string,
+    tokenRewardBalance: string
+    stakeTokenAddress: string,
+    rewardTokenAddress: string,
+    minStakeAmount: string,
+    maxStakeAmount: string
+  }
+
+export const FIREBASE_DATABASE_NAME = "pool";

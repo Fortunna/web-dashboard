@@ -1,54 +1,352 @@
 import Button from "@/components/button";
 import Typography from "@/components/typography";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { ArrowUp, Curve, Dai, Usdc, Usdt } from "@/components/icons";
 import ActivityChart from "./activityChart";
 import FarmActionModal from "./actionModal";
+import FortunnaPoolABI from "@/assets/FortunnaPool.json";
+import FortunnaToken from "@/assets/FortunnaToken.json";
+import { Address, useBalance, usePublicClient, useWalletClient } from "wagmi";
+import { ethers } from "ethers";
+import FortunnaTokenABI from "@/assets/FortunnaToken.json";
+import { BalanceShowDecimals, PoolCollection, TOAST_MESSAGE, TokenInfos } from "@/constants";
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+import { convertUnderDecimals } from "@/utils";
 
-const activeTokenData = [
-  {
-    value: "1000 DAI",
-    icon: <Dai />,
-  },
-  {
-    value: "950 USDC",
-    icon: <Usdc />,
-  },
-  {
-    value: "11085 USDT",
-    icon: <Usdt />,
-  },
-];
-
-const Assets = () => {
-  return (
-    <div>
-      {activeTokenData.map((token, index) => {
-        return (
-          <div
-            className={`flex items-center ${index ? "mt-2" : null} `}
-            key={index}
-          >
-            {token.icon}
-            <Typography
-              label={token.value}
-              className="!font-inter !text-secondary ml-2"
-              variant="body3"
-            />
-          </div>
-        );
-      })}
-    </div>
-  );
-};
 export default function FarmList({
   active,
+  pool,
   onOpenActionModal,
-  onJoinPool,
-}: any) {
-  const [selectedFarm, setSelectedFarm] = useState(null);
+  onJoinPool, 
+  onSetTokenAInfo,
+  onSetTokenBInfo,
+  onSelectedIndex,
+}: {
+  active: boolean,
+  pool: PoolCollection,
+  onOpenActionModal : () => void,
+  onJoinPool: () => void
+  onSetTokenAInfo: (x?: TokenInfos) => void,
+  onSetTokenBInfo: (x?: TokenInfos) => void,
+  onSelectedIndex: (x?: any) => void
+}) {
 
+  const {data:walletClient} = useWalletClient();
+  const publicClient = usePublicClient();
+  const [tokenAAddress, setTokenAAddress] = useState<string>("");
+  const [tokenBAddress, setTokenBAddress] = useState<string>("");
+  const [tokenAStakeBalance, setTokenAStakeBalance] = useState<string>("0");
+  const [tokenBStakeBalance, setTokenBStakeBalance] = useState<string>("0");
+  const [tokenARewardBalance, setTokenARewardBalance] = useState<string>("0");
+  const [tokenBRewardBalance, setTokenBRewardBalance] = useState<string>("0");
+  const [minStakeAmount, setMinStakeAmount] = useState<string[]>([]);
+  const [maxStakeAmount, setMaxStakeAmount] = useState<string[]>([]);
+  const [stakingToken, setStakingToken] = useState<string>("");
+  const [rewardToken, setRewardToken] = useState<string>("");
+  const [rewardBalance, setRewardBalance] = useState<number>(0);
+  const [rewardStatus, setRewardStatus] = useState<boolean>(false);
+  
+  const {data: tokenABalance} = useBalance({
+    token: tokenAAddress as Address,
+    address:walletClient?.account.address,
+    watch: true
+  });
+
+  const {data: tokenBBalance} = useBalance({
+    token: tokenBAddress as Address,
+    address:walletClient?.account.address,
+    watch: true
+  });
+  
+  const {data: stakeLPBalance} = useBalance({
+    token: stakingToken as Address,
+    address:walletClient?.account.address,
+    watch: true
+  });
+  
+  const rewardLPBalance = useBalance({
+    token: rewardToken as Address,
+    address:walletClient?.account.address,
+    watch: true
+  });
+
+  const readTokensInfo = async () => {
+    
+    const staking_Token:any = await publicClient.readContract( {
+      address: pool.address as Address,
+      abi: FortunnaPoolABI,
+      functionName: "stakingToken"
+    });
+
+    const reward_Token:any = await publicClient.readContract( {
+      address: pool.address as Address,
+      abi: FortunnaPoolABI,
+      functionName: "rewardToken"
+    });
+
+    const scalar_Params:any = await publicClient.readContract( {
+      address: pool.address as Address,
+      abi: FortunnaPoolABI,
+      functionName: "scalarParams"
+    });
+
+    if (scalar_Params.length > 0) {
+      const [minAAmount, minBAmount] = await readMin_MaxAmount(staking_Token, scalar_Params[3]);
+      const [maxAMounnt, maxBAmount] = await readMin_MaxAmount(staking_Token, scalar_Params[4]);
+      setMinStakeAmount([minAAmount, minBAmount]);
+      setMaxStakeAmount([maxAMounnt, maxBAmount]);
+    }
+    setStakingToken(staking_Token);
+    setRewardToken(reward_Token);
+
+    const tokenA_Address:any = await publicClient.readContract( {
+      address: staking_Token as Address,
+      abi: FortunnaToken,
+      functionName: "underlyingTokens",
+      args:[
+        0
+      ]
+    });
+
+    const tokenB_Address:any = await publicClient.readContract( {
+      address: staking_Token as Address,
+      abi: FortunnaToken,
+      functionName: "underlyingTokens",
+      args:[
+        1
+      ]
+    });
+
+    setTokenAAddress(tokenA_Address);
+    setTokenBAddress(tokenB_Address);
+
+  }
+
+  const readMin_MaxAmount = async(tokenAddress:string, amount: string) => {
+
+    const tokenA_Amount:any = await publicClient.readContract( {
+      address: tokenAddress as Address,
+      abi: FortunnaToken,
+      functionName: "calcUnderlyingTokensInOrOutPerFortunnaToken",
+      args:[
+        0,
+        amount
+      ]
+    });
+
+    const tokenB_Amount:any = await publicClient.readContract( {
+      address: tokenAddress as Address,
+      abi: FortunnaToken,
+      functionName: "calcUnderlyingTokensInOrOutPerFortunnaToken",
+      args:[
+        1,
+        amount
+      ]
+    });
+
+    return [tokenA_Amount, tokenB_Amount];
+  }
+
+  const readStaking_RewardInfo = async (tokenAddress: string, stake_reward: boolean) => {
+
+    let lpAmount = 0;
+    const res:any = await publicClient.readContract( {
+      address: pool.address as Address,
+      abi: FortunnaPoolABI,
+      functionName: "usersInfo",
+      args:[
+        walletClient?.account.address
+      ]
+    });
+    
+    if (stake_reward) {
+      lpAmount = res[0];
+    } else {
+      lpAmount = res[1];
+      setRewardBalance(lpAmount);
+    }
+    const tokenA_Balance:any = await publicClient.readContract( {
+      address: tokenAddress as Address,
+      abi: FortunnaToken,
+      functionName: "calcUnderlyingTokensInOrOutPerFortunnaToken",
+      args:[
+        0,
+        lpAmount
+      ]
+    });
+
+    const tokenB_Balance:any = await publicClient.readContract( {
+      address: tokenAddress as Address,
+      abi: FortunnaToken,
+      functionName: "calcUnderlyingTokensInOrOutPerFortunnaToken",
+      args:[
+        1,
+        lpAmount
+      ]
+    });
+    // console.log('tokenA_Balance', tokenA_Balance);
+    // console.log('tokenB_Balance', tokenB_Balance);
+
+    if (stake_reward) {
+      setTokenAStakeBalance(tokenA_Balance);
+      setTokenBStakeBalance(tokenB_Balance);
+    } else {
+      setTokenARewardBalance(tokenA_Balance);
+      setTokenBRewardBalance(tokenB_Balance);
+    }
+
+  }
+
+  const onGetReward = async() => {
+
+    const txReward:any = await walletClient!.writeContract({
+      address: pool.address as Address,
+      abi: FortunnaPoolABI,
+      functionName: "getReward"
+    });
+
+    const confirmation = await publicClient.waitForTransactionReceipt({
+      hash:txReward,
+      timeout:100000
+    });
+    
+    console.log("reward confirm", confirmation);
+    
+    return BigInt(confirmation.logs[1].data).toString(10);
+
+  }
+
+  const onBurnReward = async (amount:any) => {
+
+    const txBurn:any = await walletClient!.writeContract({
+      address: rewardToken as Address,
+      abi: FortunnaTokenABI,
+      functionName: "burn",
+      args:[
+        walletClient?.account.address,
+        amount
+      ]
+    });
+  
+    const confirmation = await publicClient.waitForTransactionReceipt({
+      hash:txBurn,
+      timeout:100000
+    });
+
+    console.log('burn confirm', confirmation);
+  }
+
+  useEffect(() => {
+    if (active) {
+      readTokensInfo();
+    }
+  }, [active]);
+
+  useEffect(() => {
+    if (stakingToken) {
+      readStaking_RewardInfo(stakingToken, true);
+    }
+    if (rewardToken)
+      readStaking_RewardInfo(rewardToken, false);
+  }, [tokenABalance, tokenBBalance, stakeLPBalance, rewardLPBalance])
+
+  const onHandleDepositActionModal = (event: any) => {
+    onSelectedIndex(0);
+    onHandleActionModal(event);
+  }
+
+  const onHandleWithdrawActionModal = (event: any) => {
+    onSelectedIndex(1);
+    onHandleActionModal(event);
+  }
+
+  const onHandleActionModal = (event:any) => {
+
+    const tokenAInfo = {
+      tokenAddress: tokenAAddress,
+      tokenBalanceInfo: tokenABalance,
+      tokenStakeBalance: tokenAStakeBalance,
+      tokenRewardBalance: tokenARewardBalance,
+      stakeTokenAddress: stakingToken,
+      rewardTokenAddress: rewardToken,
+      minStakeAmount: minStakeAmount[0],
+      maxStakeAmount: maxStakeAmount[0]
+    } as TokenInfos;
+
+    const tokenBInfo = {
+      tokenAddress: tokenBAddress,
+      tokenBalanceInfo: tokenBBalance,
+      tokenStakeBalance: tokenBStakeBalance,
+      tokenRewardBalance: tokenBRewardBalance,
+      stakeTokenAddress: stakingToken,
+      rewardTokenAddress: rewardToken,
+      minStakeAmount: minStakeAmount[1],
+      maxStakeAmount: maxStakeAmount[1]
+
+    } as TokenInfos;
+
+    onSetTokenAInfo(tokenAInfo);
+    onSetTokenBInfo(tokenBInfo);
+    onOpenActionModal();
+  }
+
+  const onClaimReward = async (event:any) => {
+
+    setRewardStatus(true);
+    try {
+      const amount = await onGetReward();
+
+      console.log('reward amount', amount);
+
+      await onBurnReward(amount);
+
+      toast.success(TOAST_MESSAGE.TRANSACTION_SUBMITTED, {
+        position: toast.POSITION.TOP_CENTER
+      });
+    } catch(ex){
+      console.log('ex', ex);
+      toast.error(TOAST_MESSAGE.UNEXPECTED_ERROR, {
+        position: toast.POSITION.TOP_CENTER
+      });
+    }
+
+    setRewardStatus(false);
+  }
+  const Assets = ({
+    tokenA, 
+    tokenB
+  }: {
+    tokenA: string, 
+    tokenB: string
+  }) => {
+    return (
+      <div>
+        <div
+            className="flex items-center mt-2"
+          >
+              <Usdc />
+              <Typography
+                label={tokenA}
+                className="!font-inter !text-secondary ml-2"
+                variant="body3"
+              />
+        </div>
+        <div
+            className="flex items-center mt-2"
+          >
+              <Usdt />
+              <Typography
+                label={tokenB}
+                className="!font-inter !text-secondary ml-2"
+                variant="body3"
+              />
+        </div>
+      </div>
+    );
+  };
+  
   return (
     <div
       style={{ backgroundColor: "rgba(27, 28, 32, 0.6)" }}
@@ -68,7 +366,7 @@ export default function FarmList({
                 <Usdc />
               </div>
             </div>
-            <Typography variant="subtitle" label="Curve 3Pool " />
+            <Typography variant="subtitle" label={pool.name} />
           </div>
 
           <div className="grid lg:grid-cols-4  grid-cols-2  gap-10 mt-[32px] ">
@@ -188,14 +486,18 @@ export default function FarmList({
                   variant="body1"
                   label="Current Balance"
                 />
-                <Assets />
+                <Assets 
+                  tokenA = {!tokenAAddress || !tokenABalance ? "--" : convertUnderDecimals(ethers.formatUnits(tokenABalance!.value, tokenABalance?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) + " " + tokenABalance?.symbol}
+                  tokenB = {!tokenBAddress || !tokenBBalance ? "--" : convertUnderDecimals(ethers.formatUnits(tokenBBalance!.value, tokenBBalance?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) + " " + tokenBBalance?.symbol}
+                />
 
                 <Button
                   className="w-full mt-9"
                   size="small"
-                  onClick={onOpenActionModal}
+                  onClick={onHandleDepositActionModal}
                   rounded
                   theme="secondary-solid"
+                  disabled = {tokenAAddress && tokenBAddress && tokenABalance && tokenABalance?.value > 0 ?false:true}
                   label="Deposit"
                 />
               </div>
@@ -205,14 +507,17 @@ export default function FarmList({
                   variant="body1"
                   label="Available Balance"
                 />
-                <Assets />
+                <Assets 
+                  tokenA = {!stakingToken ? "--" : convertUnderDecimals(ethers.formatUnits(tokenAStakeBalance, tokenABalance?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE)  + " " + tokenABalance?.symbol}
+                  tokenB = {!stakingToken ? "--" : convertUnderDecimals(ethers.formatUnits(tokenBStakeBalance, tokenBBalance?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) + " " + tokenBBalance?.symbol}
+                />
                 <Button
                   className="w-full mt-9"
                   size="small"
                   rounded
                   theme="secondary-solid"
-                  onClick={onOpenActionModal}
-                  disabled
+                  onClick={onHandleWithdrawActionModal}
+                  disabled = {parseFloat(tokenAStakeBalance) > 0 || parseFloat(tokenBStakeBalance) > 0?false:true}
                   label="Withdraw"
                 />
               </div>
@@ -222,14 +527,17 @@ export default function FarmList({
                   variant="body1"
                   label="Current Rewards"
                 />
-                <Assets />
+                <Assets 
+                  tokenA = {!rewardToken ? "--" : convertUnderDecimals(ethers.formatUnits(tokenARewardBalance, tokenABalance?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) + " " + tokenABalance?.symbol}
+                  tokenB = {!rewardToken ? "--" : convertUnderDecimals(ethers.formatUnits(tokenBRewardBalance, tokenBBalance?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) + " " + tokenBBalance?.symbol}
+                />
                 <Button
                   className="w-full mt-9"
                   size="small"
-                  onClick={onOpenActionModal}
+                  onClick={onClaimReward}
                   rounded
                   theme="secondary-solid"
-                  disabled
+                  disabled = {rewardStatus || rewardBalance == 0?true:false}
                   label="Claim Rewards"
                 />
               </div>
