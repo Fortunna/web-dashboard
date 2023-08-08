@@ -239,12 +239,16 @@ export default function FarmList({
   }
 
   useEffect(() => {
+    if (!walletClient?.chain)
+      return;
     if (active) {
       readTokensInfo();
     }
   }, [active]);
 
   useEffect(() => {
+    if (!walletClient?.chain)
+      return;
     if (stakingToken) {
       readStaking_RewardInfo(stakingToken, true);
     }
@@ -253,11 +257,17 @@ export default function FarmList({
   }, [tokenABalance, tokenBBalance, stakeLPBalance, rewardLPBalance])
 
   const onHandleDepositActionModal = (event: any) => {
+    if (!walletClient?.chain)
+      return;
+
     onSelectedIndex(0);
     onHandleActionModal(event);
   }
 
   const onHandleWithdrawActionModal = (event: any) => {
+    if (!walletClient?.chain)
+      return;
+
     onSelectedIndex(1);
     onHandleActionModal(event);
   }
@@ -347,6 +357,8 @@ export default function FarmList({
     );
   };
   
+  console.log('publicClinet chain', publicClient.chain);
+
   return (
     <div
       style={{ backgroundColor: "rgba(27, 28, 32, 0.6)" }}
