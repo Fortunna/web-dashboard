@@ -12,7 +12,7 @@ import FortunnaFactoryABI from "@/assets/FortunnaFactory.json";
 import { FACTORY_ADDRESS, FIREBASE_DATABASE_NAME, PoolMode, SupportedChains, TOAST_MESSAGE } from "@/constants";
 import { toast } from "react-toastify";
 import { database } from "@/utils/firebase";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, setDoc, doc } from "firebase/firestore";
 
 type componentProps = {
   // onNext: MouseEventHandler<HTMLButtonElement>;
@@ -241,18 +241,34 @@ export default function CreateFarmReview({
 
   const savePool = (poolAddress: string) => {
     const currentDT = new Date().getTime();
-    addDoc(dbInstance, {
-        id: 0,
-        name: poolName,
-        address: poolAddress,
-        type: mode[0],
-        poolLogo: poolImage,
-        tokenALogo: tokenALogo,
-        tokenBLogo: tokenBLogo,
-        createdAt: currentDT
+    
+    setDoc(doc(dbInstance, poolName), {
+      id: 0,
+      name: poolName,
+      address: poolAddress,
+      type: mode[0],
+      poolLogo: poolImage,
+      tokenALogo: tokenALogo,
+      tokenBLogo: tokenBLogo,
+      createdAt: currentDT,
+      visible: false
     })
-        .then(() => {
-        })
+    .then(() => {
+    })
+
+    // addDoc(dbInstance, {
+    //     id: 0,
+    //     name: poolName,
+    //     address: poolAddress,
+    //     type: mode[0],
+    //     poolLogo: poolImage,
+    //     tokenALogo: tokenALogo,
+    //     tokenBLogo: tokenBLogo,
+    //     createdAt: currentDT,
+    //     visible: false
+    // })
+    //     .then(() => {
+    //     })
 
   }
   const onApproveToken = async (
@@ -319,7 +335,7 @@ export default function CreateFarmReview({
       for(index = 0; index < txHash.length; index ++) {   
         const confirmation = await publicClient.waitForTransactionReceipt({
           hash:txHash[index],
-          timeout: 10000
+          timeout: 100000
         });
         if (waitPoolAddress) {
           return confirmation.logs[confirmation.logs.length - 1].topics[1];

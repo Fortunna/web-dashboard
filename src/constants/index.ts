@@ -51,7 +51,8 @@ export interface PoolCollection {
     poolLogo: string,
     tokenALogo: string,
     tokenBLogo: string,
-    createdAt: number
+    createdAt: number,
+    visible: boolean
 };
 
 export interface TokenInfos {
