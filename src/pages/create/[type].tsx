@@ -59,10 +59,10 @@ export default function Create() {
     if (router.query?.type) {
       if (router.query?.type == "pool") {
         setTitle("Create Pool");
-        setPoolMode(PoolMode.UNISWAP_POOL);
+        setPoolMode(PoolMode.CLASSIC_FARM);
       } else {
         setTitle("Create Farm");
-        setPoolMode(PoolMode.CLASSIC_FARM);
+        setPoolMode(PoolMode.UNISWAP_POOL);
       }
     }
   }, [router]);

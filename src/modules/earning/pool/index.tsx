@@ -2,10 +2,14 @@ import { AnimateWhileInView } from "@/animations";
 import Button from "@/components/button";
 import PageWrapper from "@/components/pageWrapper";
 import Typography from "@/components/typography";
-import { PoolCollection } from "@/constants";
-import FarmList from "@/widget/earning/farmList/index.tsx";
+import { PoolCollection, PoolMode, TOAST_MESSAGE, TokenInfos } from "@/constants";
+import FarmList from "@/widget/earning/farmList/index";
 import PoolList from "@/widget/earning/poolList";
 import React, { useState } from "react";
+import { useNetwork } from "wagmi";
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+import ActionModal from "../actionModal";
 
 const AccountBalance = () => {
   return (
@@ -61,7 +65,13 @@ type PoolModuleType = {
 export default function PoolModule({
   poolData 
 } : PoolModuleType) {
+  const {chain} = useNetwork();
   const [openActionModal, setOpenActionModal] = useState(false);
+  const [selectedFarm, setSelectedFarm] = useState(-1);
+  const [activePoolAddress, setActivePoolAddress] = useState<string>();
+  const [tokenAInfo, setTokenAInfo] = useState<TokenInfos>();
+  const [tokenBInfo, setTokenBInfo] = useState<TokenInfos>();
+  const [depositWithdrawIndex, setDepositWithdrawIndex] = useState<number>(0);
   const [selectedPool, setSelectedPool] = useState(-1);
 
   return (
@@ -120,17 +130,37 @@ export default function PoolModule({
                     active={index == selectedPool}
                     pool = {_list}
                     onStake={() => {
+                      if (!chain) {
+                        toast.error(TOAST_MESSAGE.CONNECT_WALLET, {
+                          position: toast.POSITION.TOP_CENTER
+                        });
+                        return;
+                      }
                       if (index == selectedPool) {
                         setSelectedPool(-1);
                       } else {
                         setSelectedPool(index);
                       }
                     }}
+                    onOpenActionModal={() => setOpenActionModal(true)}
+                    onSetTokenAInfo={setTokenAInfo}
+                    onSetTokenBInfo={setTokenBInfo}
+                    onSelectedIndex = {setDepositWithdrawIndex}
                   />
                 </div>
               </AnimateWhileInView>
             );
           })}
+          {openActionModal ? (
+            <ActionModal
+              tokenAInfo={tokenAInfo!} 
+              tokenBInfo={tokenBInfo!}
+              pool = {activePoolAddress!}
+              poolMode = {PoolMode.CLASSIC_FARM}
+              onClose={() => setOpenActionModal(false)} 
+              index = {depositWithdrawIndex}
+            />
+          ) : null}
         </>
       </PageWrapper>
     </div>

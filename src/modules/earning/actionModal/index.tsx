@@ -6,18 +6,26 @@ import { Dai, Usdc, Usdt, Close } from "@/components/icons";
 import Rewards from "./rewards";
 import Withdraw from "./withdraw";
 import classNames from "classnames";
-import { BalanceShowDecimals, TokenInfos } from "@/constants";
+import { BalanceShowDecimals, PoolMode, TokenInfos } from "@/constants";
 import { ethers } from "ethers";
 import { convertUnderDecimals } from "@/utils";
 
 type componentProps = {
   tokenAInfo: TokenInfos,
   tokenBInfo: TokenInfos,
-  pool: string
-  onClose: () => void;
-  index: number;
+  pool: string,
+  poolMode: PoolMode,
+  onClose: () => void,
+  index: number
 };
-export default function ActionModal({ tokenAInfo, tokenBInfo, pool, onClose, index }: componentProps) {
+export default function ActionModal({ 
+  tokenAInfo, 
+  tokenBInfo, 
+  pool, 
+  poolMode, 
+  onClose, 
+  index 
+}: componentProps) {
   const header = [
     {
       title: "Deposit",
@@ -29,17 +37,6 @@ export default function ActionModal({ tokenAInfo, tokenBInfo, pool, onClose, ind
       subtitle: "Pool Balance",
       key: "withdraw",
     }
-  ];
-
-  const data = [
-    {
-      value: "21 USDC",
-      icon: <Usdc />,
-    },
-    {
-      value: "29 USDT",
-      icon: <Usdt />,
-    },
   ];
 
   const [currentData, setCurrentData] = useState(header[index]);
@@ -132,8 +129,8 @@ export default function ActionModal({ tokenAInfo, tokenBInfo, pool, onClose, ind
         </div>
 
         <>
-          {currentData.key == header[0].key ? <Deposit tokenAInfo={tokenAInfo} tokenBInfo={tokenBInfo} pool={pool} onClose = {onClose}/> : null}
-          {currentData.key == header[1].key ? <Withdraw tokenAInfo={tokenAInfo} tokenBInfo={tokenBInfo} pool={pool} onClose = {onClose} /> : null}
+          {currentData.key == header[0].key ? <Deposit tokenAInfo={tokenAInfo} tokenBInfo={tokenBInfo} pool={pool} poolMode = {poolMode} onClose = {onClose}/> : null}
+          {currentData.key == header[1].key ? <Withdraw tokenAInfo={tokenAInfo} tokenBInfo={tokenBInfo} pool={pool} poolMode = {poolMode} onClose = {onClose} /> : null}
         </>
       </Modal>
     </div>

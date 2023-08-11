@@ -2,25 +2,28 @@ import Button from "@/components/button";
 import { Dai, Usdc, Usdt } from "@/components/icons";
 import TextInput from "@/components/input";
 import Typography from "@/components/typography";
-import { TOAST_MESSAGE, TokenInfos } from "@/constants";
+import { PoolMode, TOAST_MESSAGE, TokenInfos } from "@/constants";
 import { ethers } from "ethers";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import FortunnaTokenABI from "@/assets/FortunnaToken.json";
 import FortunnaPoolABI from "@/assets/FortunnaPool.json";
+import FortunnaUniswapV3PoolABI from "@/assets/FortunaUniswapV3Pool.json";
 import { Address, usePublicClient, useWalletClient } from "wagmi";
 
 type componentProps = {
   tokenAInfo: TokenInfos,
   tokenBInfo: TokenInfos,
   pool: string,
+  poolMode: PoolMode,
   onClose: () => void;
 };
 export default function Withdraw({
   tokenAInfo,
   tokenBInfo,
   pool,
+  poolMode,
   onClose
 }:componentProps) {
 
@@ -71,6 +74,24 @@ export default function Withdraw({
 
   }
 
+  const onUniswapV3Withdraw = async (amount :any) => {
+
+    const txApproveStaking:any = await walletClient!.writeContract({
+      address: pool as Address,
+      abi: FortunnaUniswapV3PoolABI,
+      functionName: "withdraw",
+      args:[
+        amount
+      ]
+    });
+
+    const confirmation = await publicClient.waitForTransactionReceipt({
+      hash:txApproveStaking
+    });
+    
+    console.log("withdraw confirm", confirmation);
+  }
+
   const onBurnStakeToken = async(amount:any) => {
 
     const txApproveStaking:any = await walletClient!.writeContract({
@@ -112,13 +133,17 @@ export default function Withdraw({
     setStatus(true);
     try {
 
-      const amount = await onCalculateLPTokenAmount();
+      if (poolMode == PoolMode.CLASSIC_FARM) {
+        const amount = await onCalculateLPTokenAmount();
 
-      console.log('amount', amount);
+        console.log('amount', amount);
 
-      await onWithdraw(amount);
+        await onWithdraw(amount);
 
-      await onBurnStakeToken(amount);
+        await onBurnStakeToken(amount);
+      } else {
+        await onUniswapV3Withdraw(tokenAInput);
+      }
 
       toast.success(TOAST_MESSAGE.TRANSACTION_SUBMITTED, {
         position: toast.POSITION.TOP_CENTER

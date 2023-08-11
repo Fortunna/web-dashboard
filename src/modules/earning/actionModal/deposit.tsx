@@ -7,7 +7,8 @@ import Typography from "@/components/typography";
 import ERC20TokenABI from "@/assets/ERC20ABI.json";
 import FortunnaTokenABI from "@/assets/FortunnaToken.json";
 import FortunnaPoolABI from "@/assets/FortunnaPool.json";
-import { TOAST_MESSAGE, TokenInfos } from "@/constants";
+import FortunnaUnivswapV3PoolABI from "@/assets/FortunaUniswapV3Pool.json";
+import { PoolMode, TOAST_MESSAGE, TokenInfos } from "@/constants";
 import { ethers } from "ethers";
 import React, { useEffect, useState } from "react";
 import { Address, usePublicClient, useWalletClient } from "wagmi";
@@ -18,12 +19,14 @@ type componentProps = {
   tokenAInfo: TokenInfos,
   tokenBInfo: TokenInfos,
   pool: string,
+  poolMode: PoolMode,
   onClose: () => void;
 };
 export default function Deposit({
   tokenAInfo,
   tokenBInfo,
   pool,
+  poolMode,
   onClose
 }:componentProps) {
 
@@ -172,6 +175,30 @@ export default function Deposit({
     });
 
   }
+
+  const onStakeUniswapV3Pool = async () => {
+
+    const amountA = ethers.parseUnits(tokenAInput, tokenAInfo.tokenBalanceInfo?.decimals);
+    const amountB = ethers.parseUnits(tokenBInput, tokenBInfo.tokenBalanceInfo?.decimals);
+
+    const txStake:any = await walletClient?.writeContract({
+      address: pool as Address,
+      abi: FortunnaUnivswapV3PoolABI,
+      functionName: "stake",
+      args: [
+        amountA,
+        amountB
+      ]
+    });
+
+    const confirmation = await publicClient.waitForTransactionReceipt({
+      hash:txStake,
+      timeout:1000000
+    });
+
+
+
+  }
   const onHandleDeposit = async () => {
 
     const minAAmount = ethers.formatUnits(tokenAInfo.minStakeAmount, tokenAInfo.tokenBalanceInfo?.decimals);
@@ -216,11 +243,16 @@ export default function Deposit({
       const pre = await onTokenPreparation();
       if (!pre) {
         setStatus(false);
+        return;
       }
 
-      const value = await onMintLPToken();
-      
-      await onStakeLPToken(value);
+      if (poolMode == PoolMode.CLASSIC_FARM) {
+        const value = await onMintLPToken();
+        
+        await onStakeLPToken(value);
+      } else {
+        await onStakeUniswapV3Pool();
+      }
 
       toast.success(TOAST_MESSAGE.TRANSACTION_SUBMITTED, {
         position: toast.POSITION.TOP_CENTER

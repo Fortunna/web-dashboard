@@ -5,7 +5,7 @@ import Image from "next/image";
 import { ArrowUp, Curve, Dai, Usdc, Usdt } from "@/components/icons";
 import ActivityChart from "./activityChart";
 import FarmActionModal from "./actionModal";
-import FortunnaPoolABI from "@/assets/FortunnaPool.json";
+import FortunnaPoolABI from "@/assets/FortunaUniswapV3Pool.json";
 import FortunnaToken from "@/assets/FortunnaToken.json";
 import { Address, useBalance, usePublicClient, useWalletClient } from "wagmi";
 import { ethers } from "ethers";
@@ -59,61 +59,22 @@ export default function FarmList({
     address:walletClient?.account.address,
     watch: true
   });
-  
-  const {data: stakeLPBalance} = useBalance({
-    token: stakingToken as Address,
-    address:walletClient?.account.address,
-    watch: true
-  });
-  
-  const rewardLPBalance = useBalance({
-    token: rewardToken as Address,
-    address:walletClient?.account.address,
-    watch: true
-  });
 
   const readTokensInfo = async () => {
     
-    const staking_Token:any = await publicClient.readContract( {
-      address: pool.address as Address,
-      abi: FortunnaPoolABI,
-      functionName: "stakingToken"
-    });
-
-    const reward_Token:any = await publicClient.readContract( {
-      address: pool.address as Address,
-      abi: FortunnaPoolABI,
-      functionName: "rewardToken"
-    });
-
-    const scalar_Params:any = await publicClient.readContract( {
-      address: pool.address as Address,
-      abi: FortunnaPoolABI,
-      functionName: "scalarParams"
-    });
-
-    if (scalar_Params.length > 0) {
-      const [minAAmount, minBAmount] = await readMin_MaxAmount(staking_Token, scalar_Params[3]);
-      const [maxAMounnt, maxBAmount] = await readMin_MaxAmount(staking_Token, scalar_Params[4]);
-      setMinStakeAmount([minAAmount, minBAmount]);
-      setMaxStakeAmount([maxAMounnt, maxBAmount]);
-    }
-    setStakingToken(staking_Token);
-    setRewardToken(reward_Token);
-
     const tokenA_Address:any = await publicClient.readContract( {
-      address: staking_Token as Address,
-      abi: FortunnaToken,
-      functionName: "underlyingTokens",
+      address: pool.address as Address,
+      abi: FortunnaPoolABI,
+      functionName: "tokens",
       args:[
         0
       ]
     });
 
     const tokenB_Address:any = await publicClient.readContract( {
-      address: staking_Token as Address,
-      abi: FortunnaToken,
-      functionName: "underlyingTokens",
+      address: pool.address as Address,
+      abi: FortunnaPoolABI,
+      functionName: "tokens",
       args:[
         1
       ]
@@ -121,34 +82,62 @@ export default function FarmList({
 
     setTokenAAddress(tokenA_Address);
     setTokenBAddress(tokenB_Address);
+    // const staking_Token:any = await publicClient.readContract( {
+    //   address: pool.address as Address,
+    //   abi: FortunnaPoolABI,
+    //   functionName: "stakingToken"
+    // });
+
+    // const reward_Token:any = await publicClient.readContract( {
+    //   address: pool.address as Address,
+    //   abi: FortunnaPoolABI,
+    //   functionName: "rewardToken"
+    // });
+
+    // const scalar_Params:any = await publicClient.readContract( {
+    //   address: pool.address as Address,
+    //   abi: FortunnaPoolABI,
+    //   functionName: "scalarParams"
+    // });
+
+    // if (scalar_Params.length > 0) {
+    //   const [minAAmount, minBAmount] = await readMin_MaxAmount(staking_Token, scalar_Params[3]);
+    //   const [maxAMounnt, maxBAmount] = await readMin_MaxAmount(staking_Token, scalar_Params[4]);
+    //   setMinStakeAmount([minAAmount, minBAmount]);
+    //   setMaxStakeAmount([maxAMounnt, maxBAmount]);
+    // }
+    // setStakingToken(staking_Token);
+    // setRewardToken(reward_Token);
+
 
   }
 
-  const readMin_MaxAmount = async(tokenAddress:string, amount: string) => {
+  const readRewardAmount = async() => {
 
-    const tokenA_Amount:any = await publicClient.readContract( {
-      address: tokenAddress as Address,
-      abi: FortunnaToken,
-      functionName: "calcUnderlyingTokensInOrOutPerFortunnaToken",
+    const tokenAReward:any = await publicClient.readContract( {
+      address: pool.address as Address,
+      abi: FortunnaPoolABI,
+      functionName: "earned",
       args:[
-        0,
-        amount
+        walletClient?.account.address,
+        0
       ]
     });
 
-    const tokenB_Amount:any = await publicClient.readContract( {
-      address: tokenAddress as Address,
-      abi: FortunnaToken,
-      functionName: "calcUnderlyingTokensInOrOutPerFortunnaToken",
+    const tokenBReward:any = await publicClient.readContract( {
+      address: pool.address as Address,
+      abi: FortunnaPoolABI,
+      functionName: "earned",
       args:[
-        1,
-        amount
+        walletClient?.account.address,
+        0
       ]
     });
 
-    return [tokenA_Amount, tokenB_Amount];
+    setTokenARewardBalance(tokenAReward);
+    setTokenBRewardBalance(tokenBReward);
+
   }
-
   const readStaking_RewardInfo = async (tokenAddress: string, stake_reward: boolean) => {
 
     let lpAmount = 0;
@@ -186,8 +175,6 @@ export default function FarmList({
         lpAmount
       ]
     });
-    // console.log('tokenA_Balance', tokenA_Balance);
-    // console.log('tokenB_Balance', tokenB_Balance);
 
     if (stake_reward) {
       setTokenAStakeBalance(tokenA_Balance);
@@ -202,19 +189,17 @@ export default function FarmList({
   const onGetReward = async() => {
 
     const txReward:any = await walletClient!.writeContract({
-      address: pool.address as Address,
-      abi: FortunnaPoolABI,
+      address: rewardToken as Address,
+      abi: FortunnaTokenABI,
       functionName: "getReward"
     });
-
+  
     const confirmation = await publicClient.waitForTransactionReceipt({
       hash:txReward,
       timeout:100000
     });
-    
-    console.log("reward confirm", confirmation);
-    
-    return BigInt(confirmation.logs[1].data).toString(10);
+
+    console.log('getReward confirm', confirmation);
 
   }
 
@@ -239,25 +224,37 @@ export default function FarmList({
   }
 
   useEffect(() => {
+    if (!walletClient?.chain)
+      return;
     if (active) {
       readTokensInfo();
     }
   }, [active]);
 
   useEffect(() => {
-    if (stakingToken) {
-      readStaking_RewardInfo(stakingToken, true);
-    }
-    if (rewardToken)
-      readStaking_RewardInfo(rewardToken, false);
-  }, [tokenABalance, tokenBBalance, stakeLPBalance, rewardLPBalance])
+    if (!walletClient?.chain)
+      return;
+
+      readRewardAmount();
+    // if (stakingToken) {
+    //   readStaking_RewardInfo(stakingToken, true);
+    // }
+    // if (rewardToken)
+    //   readStaking_RewardInfo(rewardToken, false);
+  }, [tokenABalance, tokenBBalance])
 
   const onHandleDepositActionModal = (event: any) => {
+    if (!walletClient?.chain)
+      return;
+
     onSelectedIndex(0);
     onHandleActionModal(event);
   }
 
   const onHandleWithdrawActionModal = (event: any) => {
+    if (!walletClient?.chain)
+      return;
+
     onSelectedIndex(1);
     onHandleActionModal(event);
   }
@@ -269,10 +266,10 @@ export default function FarmList({
       tokenBalanceInfo: tokenABalance,
       tokenStakeBalance: tokenAStakeBalance,
       tokenRewardBalance: tokenARewardBalance,
-      stakeTokenAddress: stakingToken,
-      rewardTokenAddress: rewardToken,
-      minStakeAmount: minStakeAmount[0],
-      maxStakeAmount: maxStakeAmount[0]
+      stakeTokenAddress: pool.address,
+      rewardTokenAddress: "",
+      minStakeAmount: "0",
+      maxStakeAmount: tokenABalance?.value.toString()
     } as TokenInfos;
 
     const tokenBInfo = {
@@ -280,11 +277,10 @@ export default function FarmList({
       tokenBalanceInfo: tokenBBalance,
       tokenStakeBalance: tokenBStakeBalance,
       tokenRewardBalance: tokenBRewardBalance,
-      stakeTokenAddress: stakingToken,
-      rewardTokenAddress: rewardToken,
-      minStakeAmount: minStakeAmount[1],
-      maxStakeAmount: maxStakeAmount[1]
-
+      stakeTokenAddress: pool.address,
+      rewardTokenAddress: "",
+      minStakeAmount: "0",
+      maxStakeAmount: tokenBBalance?.value.toString()
     } as TokenInfos;
 
     onSetTokenAInfo(tokenAInfo);
@@ -299,8 +295,6 @@ export default function FarmList({
       const amount = await onGetReward();
 
       console.log('reward amount', amount);
-
-      await onBurnReward(amount);
 
       toast.success(TOAST_MESSAGE.TRANSACTION_SUBMITTED, {
         position: toast.POSITION.TOP_CENTER
@@ -346,7 +340,7 @@ export default function FarmList({
       </div>
     );
   };
-  
+
   return (
     <div
       style={{ backgroundColor: "rgba(27, 28, 32, 0.6)" }}
