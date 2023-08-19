@@ -114,7 +114,7 @@ export const TOP_MENU_DATA = [
   },
   {
     name: "Create",
-    to: "/create",
+    to: "/create/farm",
     icon: (
       <svg
         width="24"
