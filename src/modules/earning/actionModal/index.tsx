@@ -118,7 +118,7 @@ export default function ActionModal({
                           `${currentData.key == header[0].key ? convertUnderDecimals(ethers.formatUnits(tokenBInfo.tokenBalanceInfo.value, tokenBInfo.tokenBalanceInfo?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) :
                           currentData.key == header[1].key ? convertUnderDecimals(ethers.formatUnits(tokenBInfo.tokenStakeBalance, tokenBInfo.tokenBalanceInfo?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) :
                           ethers.formatUnits(tokenBInfo.tokenRewardBalance, tokenBInfo.tokenBalanceInfo?.decimals)} 
-                          ${tokenAInfo.tokenBalanceInfo.symbol}`
+                          ${tokenBInfo.tokenBalanceInfo.symbol}`
                         }
                       />
                     </div>

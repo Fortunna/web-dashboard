@@ -81,6 +81,7 @@ export default function Create() {
             <Typography label={title} variant="title" className="mb-[20px]" />
             <Stepper current={isActiveSteeper} headers={steeperHeader}>
               <FarmInformation
+                poolMode={poolMode}
                 onNext={() => {
                   setActiveSteeper(steeperHeader[1].key);
                 }}

@@ -155,6 +155,19 @@
     },
     {
         "inputs": [],
+        "name": "INITIAL_SQRT_PRICE_X96",
+        "outputs": [
+            {
+                "internalType": "uint160",
+                "name": "",
+                "type": "uint160"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
         "name": "LIQUIDITY_ADDITION_DEADLINE_DURATION",
         "outputs": [
             {
@@ -168,25 +181,31 @@
     },
     {
         "inputs": [],
-        "name": "POOL_FEE",
-        "outputs": [
-            {
-                "internalType": "uint24",
-                "name": "",
-                "type": "uint24"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
         "name": "REWARDS_DURATION",
         "outputs": [
             {
                 "internalType": "uint256",
                 "name": "",
                 "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            }
+        ],
+        "name": "depositOf",
+        "outputs": [
+            {
+                "internalType": "uint128",
+                "name": "",
+                "type": "uint128"
             }
         ],
         "stateMutability": "view",

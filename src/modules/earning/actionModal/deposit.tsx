@@ -213,6 +213,13 @@ export default function Deposit({
       return;
     }
 
+    if (poolMode == PoolMode.UNISWAP_POOL && parseFloat(tokenAInput) != parseFloat(tokenBInput)) {
+      toast.error(TOAST_MESSAGE.AMOUNT_MUST_BE_SAME, {
+        position: toast.POSITION.TOP_CENTER
+      });
+      return;
+    }
+
     const minAAmountstr = minAAmount + " " + tokenAInfo.tokenBalanceInfo?.symbol;
     const minBAmountstr = minBAmount + " " + tokenBInfo.tokenBalanceInfo?.symbol;
 
@@ -223,7 +230,6 @@ export default function Deposit({
       });
       return;
     }
-
 
     const maxAAmountstr = maxAAmount + " " + tokenAInfo.tokenBalanceInfo?.symbol;
     const maxBAmountstr = maxBAmount + " " + tokenBInfo.tokenBalanceInfo?.symbol;
