@@ -7,7 +7,7 @@ import {
   useNetwork
 } from "wagmi";
 import React, { MouseEventHandler, useCallback, useEffect, useState } from "react";
-import { SupportedChains, TOAST_MESSAGE } from "@/constants";
+import { PoolMode, SupportedChains, TOAST_MESSAGE } from "@/constants";
 import { getTokenInfo } from "@/api";
 import { useFarm } from "@/hooks/useFarm";
 import {toast} from 'react-toastify';
@@ -15,9 +15,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import { checkAddressValidation } from "@/utils";
 
 type componentProps = {
+  poolMode: PoolMode;
   onNext: MouseEventHandler<HTMLButtonElement>;
 };
-export default function FarmInformation({ onNext }: componentProps) {
+export default function FarmInformation({ poolMode, onNext }: componentProps) {
 
   const [showAErrorBorder, setShowAErrorBorder] = useState<boolean>();
   const [showBErrorBorder, setShowBErrorBorder] = useState<boolean>();
@@ -82,6 +83,13 @@ export default function FarmInformation({ onNext }: componentProps) {
 
     if (!chain) {
       toast.error(TOAST_MESSAGE.CONNECT_WALLET, {
+        position: toast.POSITION.TOP_CENTER
+      });
+      return;
+    }
+
+    if (poolMode == PoolMode.UNISWAP_POOL && tokenAAddress > tokenBAddress) {
+      toast.error(TOAST_MESSAGE.TOKENA_ADDRESS_MUST_BE_LESS_THAN_TOKENB_ADDRESS, {
         position: toast.POSITION.TOP_CENTER
       });
       return;

@@ -418,7 +418,8 @@ export default function CreateFarmReview({
         ]);            
       }
 
-      const tx = await walletClient?.writeContract({
+      let tx;
+      await walletClient?.writeContract({
         address: FACTORY_ADDRESS[chain.id as SupportedChains] as Address,
         abi: FortunnaFactoryABI,
         functionName: "createPool",
@@ -452,6 +453,9 @@ export default function CreateFarmReview({
           ]],
           account: walletClient.account.address,
           value: parseEther(costFarm)
+      }).then(arg => {
+        console.log('finished transaction', arg);
+        tx = arg;
       });
 
       const address_res = await onWaitTransactionReceipt([tx], true);
@@ -565,9 +569,10 @@ export default function CreateFarmReview({
                 size="big"
                 label={!txStatus ? "Submit" : "Progress..."}
                 disabled = {txStatus}
-              />
+                />
+                </div>
             </div>
-          </div>
+
         </>
       </Card>
     </div>

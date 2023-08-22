@@ -136,13 +136,14 @@ export default function Withdraw({
       if (poolMode == PoolMode.CLASSIC_FARM) {
         const amount = await onCalculateLPTokenAmount();
 
-        console.log('amount', amount);
-
         await onWithdraw(amount);
 
         await onBurnStakeToken(amount);
       } else {
-        await onUniswapV3Withdraw(tokenAInput);
+
+        const tokenInput = ethers.parseUnits(tokenAInput, tokenAInfo.tokenBalanceInfo?.decimals);
+
+        await onUniswapV3Withdraw(tokenInput);
       }
 
       toast.success(TOAST_MESSAGE.TRANSACTION_SUBMITTED, {
@@ -177,6 +178,9 @@ export default function Withdraw({
                   onChange={(e) => {
                     if (validNumber.test(e.target.value)) {
                       setTokenAInput(e.target.value);
+                      if (poolMode == PoolMode.UNISWAP_POOL)
+                        setTokenBInput(e.target.value);
+
                     }
                   }}
                 />
@@ -195,6 +199,8 @@ export default function Withdraw({
                   onChange={(e) => {
                     if (validNumber.test(e.target.value)) {
                       setTokenBInput(e.target.value);
+                      if (poolMode == PoolMode.UNISWAP_POOL)
+                        setTokenAInput(e.target.value);
                     }
                   }}
                 />

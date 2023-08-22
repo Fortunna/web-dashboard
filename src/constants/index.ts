@@ -23,6 +23,8 @@ export enum TOAST_MESSAGE {
     USER_REJECTED = "User rejeceted transaction!",
     UNEXPECTED_ERROR = "Unexpected error!",
     POOL_CREATED_SUCCESSFULLY = "Pool created successfully!",
+    TOKENA_ADDRESS_MUST_BE_LESS_THAN_TOKENB_ADDRESS = "Token A Address must be less than Token B",
+    AMOUNT_MUST_BE_SAME = "Amounts must be same!",
     TRANSACTION_SUBMITTED = "Transaction submitted successfully!"
 
 };
@@ -38,7 +40,7 @@ type FactoryAddressType = {[chainId in SupportedChains]: string; }
 
 export const FACTORY_ADDRESS: FactoryAddressType = {
     1: "0xB8e4E0dF38005893CEaf45a7911Fc7DA9Fe50aD1",
-    5: "0xfBB400aC812541b05525bf511f560e1B1Ac9f0E3",
+    5: "0xc11782a349080f459E9172eB1087D675df87c664",
     56: "0xB8e4E0dF38005893CEaf45a7911Fc7DA9Fe50aD1",
     97: "0xB8e4E0dF38005893CEaf45a7911Fc7DA9Fe50aD1",
 }

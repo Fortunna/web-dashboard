@@ -82,33 +82,6 @@ export default function FarmList({
 
     setTokenAAddress(tokenA_Address);
     setTokenBAddress(tokenB_Address);
-    // const staking_Token:any = await publicClient.readContract( {
-    //   address: pool.address as Address,
-    //   abi: FortunnaPoolABI,
-    //   functionName: "stakingToken"
-    // });
-
-    // const reward_Token:any = await publicClient.readContract( {
-    //   address: pool.address as Address,
-    //   abi: FortunnaPoolABI,
-    //   functionName: "rewardToken"
-    // });
-
-    // const scalar_Params:any = await publicClient.readContract( {
-    //   address: pool.address as Address,
-    //   abi: FortunnaPoolABI,
-    //   functionName: "scalarParams"
-    // });
-
-    // if (scalar_Params.length > 0) {
-    //   const [minAAmount, minBAmount] = await readMin_MaxAmount(staking_Token, scalar_Params[3]);
-    //   const [maxAMounnt, maxBAmount] = await readMin_MaxAmount(staking_Token, scalar_Params[4]);
-    //   setMinStakeAmount([minAAmount, minBAmount]);
-    //   setMaxStakeAmount([maxAMounnt, maxBAmount]);
-    // }
-    // setStakingToken(staking_Token);
-    // setRewardToken(reward_Token);
-
 
   }
 
@@ -130,60 +103,27 @@ export default function FarmList({
       functionName: "earned",
       args:[
         walletClient?.account.address,
-        0
+        1
       ]
     });
 
     setTokenARewardBalance(tokenAReward);
     setTokenBRewardBalance(tokenBReward);
-
+    setRewardBalance(tokenAReward + tokenBReward);
   }
-  const readStaking_RewardInfo = async (tokenAddress: string, stake_reward: boolean) => {
+  const readStaking_RewardInfo = async () => {
 
-    let lpAmount = 0;
-    const res:any = await publicClient.readContract( {
+    const tokenLP_Balance:any = await publicClient.readContract( {
       address: pool.address as Address,
       abi: FortunnaPoolABI,
-      functionName: "usersInfo",
+      functionName: "depositOf",
       args:[
         walletClient?.account.address
       ]
     });
-    
-    if (stake_reward) {
-      lpAmount = res[0];
-    } else {
-      lpAmount = res[1];
-      setRewardBalance(lpAmount);
-    }
-    const tokenA_Balance:any = await publicClient.readContract( {
-      address: tokenAddress as Address,
-      abi: FortunnaToken,
-      functionName: "calcUnderlyingTokensInOrOutPerFortunnaToken",
-      args:[
-        0,
-        lpAmount
-      ]
-    });
 
-    const tokenB_Balance:any = await publicClient.readContract( {
-      address: tokenAddress as Address,
-      abi: FortunnaToken,
-      functionName: "calcUnderlyingTokensInOrOutPerFortunnaToken",
-      args:[
-        1,
-        lpAmount
-      ]
-    });
-
-    if (stake_reward) {
-      setTokenAStakeBalance(tokenA_Balance);
-      setTokenBStakeBalance(tokenB_Balance);
-    } else {
-      setTokenARewardBalance(tokenA_Balance);
-      setTokenBRewardBalance(tokenB_Balance);
-    }
-
+    setTokenAStakeBalance(tokenLP_Balance.toString());
+    setTokenBStakeBalance(tokenLP_Balance.toString());
   }
 
   const onGetReward = async() => {
@@ -203,26 +143,6 @@ export default function FarmList({
 
   }
 
-  const onBurnReward = async (amount:any) => {
-
-    const txBurn:any = await walletClient!.writeContract({
-      address: rewardToken as Address,
-      abi: FortunnaTokenABI,
-      functionName: "burn",
-      args:[
-        walletClient?.account.address,
-        amount
-      ]
-    });
-  
-    const confirmation = await publicClient.waitForTransactionReceipt({
-      hash:txBurn,
-      timeout:100000
-    });
-
-    console.log('burn confirm', confirmation);
-  }
-
   useEffect(() => {
     if (!walletClient?.chain)
       return;
@@ -236,11 +156,7 @@ export default function FarmList({
       return;
 
       readRewardAmount();
-    // if (stakingToken) {
-    //   readStaking_RewardInfo(stakingToken, true);
-    // }
-    // if (rewardToken)
-    //   readStaking_RewardInfo(rewardToken, false);
+      readStaking_RewardInfo();
   }, [tokenABalance, tokenBBalance])
 
   const onHandleDepositActionModal = (event: any) => {
@@ -502,8 +418,8 @@ export default function FarmList({
                   label="Available Balance"
                 />
                 <Assets 
-                  tokenA = {!stakingToken ? "--" : convertUnderDecimals(ethers.formatUnits(tokenAStakeBalance, tokenABalance?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE)  + " " + tokenABalance?.symbol}
-                  tokenB = {!stakingToken ? "--" : convertUnderDecimals(ethers.formatUnits(tokenBStakeBalance, tokenBBalance?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) + " " + tokenBBalance?.symbol}
+                  tokenA = {!tokenAStakeBalance ? "--" : convertUnderDecimals(ethers.formatUnits(tokenAStakeBalance, tokenABalance?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE)  + " " + tokenABalance?.symbol}
+                  tokenB = {!tokenBStakeBalance ? "--" : convertUnderDecimals(ethers.formatUnits(tokenBStakeBalance, tokenBBalance?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) + " " + tokenBBalance?.symbol}
                 />
                 <Button
                   className="w-full mt-9"
@@ -522,8 +438,8 @@ export default function FarmList({
                   label="Current Rewards"
                 />
                 <Assets 
-                  tokenA = {!rewardToken ? "--" : convertUnderDecimals(ethers.formatUnits(tokenARewardBalance, tokenABalance?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) + " " + tokenABalance?.symbol}
-                  tokenB = {!rewardToken ? "--" : convertUnderDecimals(ethers.formatUnits(tokenBRewardBalance, tokenBBalance?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) + " " + tokenBBalance?.symbol}
+                  tokenA = {!tokenARewardBalance ? "--" : convertUnderDecimals(ethers.formatUnits(tokenARewardBalance, tokenABalance?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) + " " + tokenABalance?.symbol}
+                  tokenB = {!tokenBRewardBalance ? "--" : convertUnderDecimals(ethers.formatUnits(tokenBRewardBalance, tokenBBalance?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) + " " + tokenBBalance?.symbol}
                 />
                 <Button
                   className="w-full mt-9"
