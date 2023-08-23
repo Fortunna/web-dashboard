@@ -242,7 +242,7 @@ export default function CreateFarmReview({
   const savePool = (poolAddress: string) => {
     const currentDT = new Date().getTime();
     
-    setDoc(doc(dbInstance, poolName), {
+    setDoc(doc(dbInstance, poolName.replace("/", "-")), {
       id: 0,
       name: poolName,
       address: poolAddress,
@@ -318,7 +318,7 @@ export default function CreateFarmReview({
     }
 
     if (parseFloat(tokenBBalance!.formatted) < tokenBRewardInit ||
-        parseFloat(tokenABalance!.formatted) < tokenBRewardQt) {
+        parseFloat(tokenBBalance!.formatted) < tokenBRewardQt) {
       toast.error(`Not enough ${tokenBSymbol} balance for deposit or reward!`, {
         position: toast.POSITION.TOP_CENTER
       });
