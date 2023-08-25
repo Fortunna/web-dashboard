@@ -148,17 +148,20 @@ export default function PoolList({
       ]
     });
 
-    const tokenB_Address:any = await publicClient.readContract( {
-      address: staking_Token as Address,
-      abi: FortunnaToken,
-      functionName: "underlyingTokens",
-      args:[
-        1
-      ]
-    });
-
     setTokenAAddress(tokenA_Address);
-    setTokenBAddress(tokenB_Address);
+    let tokenB_Address:any;
+    if (pool.tokenCount == 2) {
+      tokenB_Address = await publicClient.readContract( {
+        address: staking_Token as Address,
+        abi: FortunnaToken,
+        functionName: "underlyingTokens",
+        args:[
+          1
+        ]
+      });
+      setTokenBAddress(tokenB_Address);
+    }
+
 
   }
 
@@ -174,15 +177,18 @@ export default function PoolList({
       ]
     });
 
-    const tokenB_Amount:any = await publicClient.readContract( {
-      address: tokenAddress as Address,
-      abi: FortunnaToken,
-      functionName: "calcUnderlyingTokensInOrOutPerFortunnaToken",
-      args:[
-        1,
-        amount
-      ]
-    });
+    let tokenB_Amount:any;
+    if (pool.tokenCount == 2) {
+      tokenB_Amount = await publicClient.readContract( {
+        address: tokenAddress as Address,
+        abi: FortunnaToken,
+        functionName: "calcUnderlyingTokensInOrOutPerFortunnaToken",
+        args:[
+          1,
+          amount
+        ]
+      });
+    }
 
     return [tokenA_Amount, tokenB_Amount];
   }
@@ -215,24 +221,29 @@ export default function PoolList({
       ]
     });
 
-    const tokenB_Balance:any = await publicClient.readContract( {
-      address: tokenAddress as Address,
-      abi: FortunnaToken,
-      functionName: "calcUnderlyingTokensInOrOutPerFortunnaToken",
-      args:[
-        1,
-        lpAmount
-      ]
-    });
+    let tokenB_Balance:any;
+    if (pool.tokenCount == 2) {
+        tokenB_Balance = await publicClient.readContract( {
+        address: tokenAddress as Address,
+        abi: FortunnaToken,
+        functionName: "calcUnderlyingTokensInOrOutPerFortunnaToken",
+        args:[
+          1,
+          lpAmount
+        ]
+      });
+    }
     // console.log('tokenA_Balance', tokenA_Balance);
     // console.log('tokenB_Balance', tokenB_Balance);
 
     if (stake_reward) {
       setTokenAStakeBalance(tokenA_Balance);
-      setTokenBStakeBalance(tokenB_Balance);
+      if (pool.tokenCount == 2)
+        setTokenBStakeBalance(tokenB_Balance);
     } else {
       setTokenARewardBalance(tokenA_Balance);
-      setTokenBRewardBalance(tokenB_Balance);
+      if (pool.tokenCount == 2)
+        setTokenBRewardBalance(tokenB_Balance);
     }
 
   }
@@ -369,28 +380,46 @@ export default function PoolList({
     tokenA: string, 
     tokenB: string
   }) => {
+    
     return (
       <div>
         <div
             className="flex items-center mt-2"
           >
-              <Usdc />
+              <Image
+                  height={40}
+                  className="ms-3 mr-2"
+                  width={30}
+                  src={pool.tokenALogo.length ? pool.tokenALogo : "/default_token.png"}
+                  alt="img"
+              />
+                      
               <Typography
                 label={tokenA}
                 className="!font-inter !text-secondary ml-2"
                 variant="body3"
               />
         </div>
+        { pool.tokenCount > 1 && 
         <div
             className="flex items-center mt-2"
           >
-              <Usdt />
+              {
+                <Image
+                  height={40}
+                  className="ms-3 mr-2"
+                  width={30}
+                  src={pool.tokenBLogo.length ? pool.tokenBLogo : "/default_token.png"}
+                  alt="img"
+                />
+              }
               <Typography
                 label={tokenB}
                 className="!font-inter !text-secondary ml-2"
                 variant="body3"
               />
         </div>
+        }
       </div>
     );
   };
@@ -539,7 +568,7 @@ export default function PoolList({
                   onClick={onHandleDepositActionModal}
                   rounded
                   theme="secondary-solid"
-                  disabled = {tokenAAddress && tokenBAddress && tokenABalance && tokenABalance?.value > 0 ?false:true}
+                  disabled = {tokenAAddress  && tokenABalance && tokenABalance?.value > 0 ?false:true}
                   label="Deposit"
                 />
               {/* <Typography

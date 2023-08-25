@@ -1,8 +1,9 @@
 import Button from "@/components/button";
 import { Dai, Usdc, Usdt } from "@/components/icons";
+import Image from "next/image";
 import TextInput from "@/components/input";
 import Typography from "@/components/typography";
-import { PoolMode, TOAST_MESSAGE, TokenInfos } from "@/constants";
+import { PoolCollection, PoolMode, TOAST_MESSAGE, TokenInfos } from "@/constants";
 import { ethers } from "ethers";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
@@ -15,7 +16,7 @@ import { Address, usePublicClient, useWalletClient } from "wagmi";
 type componentProps = {
   tokenAInfo: TokenInfos,
   tokenBInfo: TokenInfos,
-  pool: string,
+  pool: PoolCollection,
   poolMode: PoolMode,
   onClose: () => void;
 };
@@ -39,15 +40,20 @@ export default function Withdraw({
 
   const onCalculateLPTokenAmount = async () => {
     
+    let tokenArray = [];
     const tokenAAmount = ethers.parseUnits(tokenAInput, tokenAInfo.tokenBalanceInfo?.decimals);
-    const tokenBAmount = ethers.parseUnits(tokenBInput, tokenBInfo.tokenBalanceInfo?.decimals);
+    tokenArray.push([0, tokenAAmount]);
+    if (tokenBInfo.tokenAddress) {
+      const tokenBAmount = ethers.parseUnits(tokenBInput, tokenBInfo.tokenBalanceInfo?.decimals);
+      tokenArray.push([1,tokenBAmount]);
+    }
 
     const txCalculate:any = await publicClient.readContract({
-      address: pool as Address,
+      address: pool.address as Address,
       abi: FortunnaPoolABI,
       functionName: "calculateFortunnaTokens",
       args:[
-        [[0,tokenAAmount],[1,tokenBAmount]],
+        tokenArray,
         tokenAInfo.stakeTokenAddress
       ]
     });
@@ -58,7 +64,7 @@ export default function Withdraw({
   const onWithdraw = async (amount: any) => {
 
     const txApproveStaking:any = await walletClient!.writeContract({
-      address: pool as Address,
+      address: pool.address as Address,
       abi: FortunnaPoolABI,
       functionName: "withdraw",
       args:[
@@ -77,7 +83,7 @@ export default function Withdraw({
   const onUniswapV3Withdraw = async (amount :any) => {
 
     const txApproveStaking:any = await walletClient!.writeContract({
-      address: pool as Address,
+      address: pool.address as Address,
       abi: FortunnaUniswapV3PoolABI,
       functionName: "withdraw",
       args:[
@@ -117,12 +123,14 @@ export default function Withdraw({
     const tokenAInputAmount = parseFloat(tokenAInput);
     const tokenBInputAmount = parseFloat(tokenBInput);
     const tokenABalance = ethers.formatUnits(tokenAInfo.tokenStakeBalance.toString(), tokenAInfo.tokenBalanceInfo?.decimals);
-    const tokenBBalance = ethers.formatUnits(tokenBInfo.tokenStakeBalance.toString(), tokenBInfo.tokenBalanceInfo?.decimals);
+    let tokenBBalance = "0";
+    if (tokenBInfo.tokenAddress)
+      tokenBBalance = ethers.formatUnits(tokenBInfo.tokenStakeBalance.toString(), tokenBInfo.tokenBalanceInfo?.decimals);
 
     if (tokenAInputAmount == 0 ||
-        tokenBInputAmount == 0 || 
         tokenAInputAmount > parseFloat(tokenABalance) ||
-        tokenBInputAmount > parseFloat(tokenBBalance)
+        (tokenBInfo.tokenAddress && (tokenBInputAmount == 0 || 
+        tokenBInputAmount > parseFloat(tokenBBalance)))
     ){
       toast.error(TOAST_MESSAGE.DATA_INCORRECT, {
         position: toast.POSITION.TOP_CENTER
@@ -170,7 +178,13 @@ export default function Withdraw({
           <div className="flex items-center w-full justify-center">
             <div>
               <div className="flex items-center mb-7 overflow-hidden relative">
-                <Usdc />
+                <Image
+                    height={40}
+                    className="ms-3 mr-2"
+                    width={30}
+                    src={pool.tokenALogo.length ? pool.tokenALogo : "/default_token.png"}
+                    alt="img"
+                />
                 <TextInput
                   value={tokenAInput}
                   id="withdraw-3"
@@ -190,8 +204,15 @@ export default function Withdraw({
                   className="!font-inter !text-secondary"
                 />
               </div>
+              { tokenBInfo.tokenAddress && 
               <div className="flex items-center">
-                <Usdt />
+                <Image
+                    height={40}
+                    className="ms-3 mr-2"
+                    width={30}
+                    src={pool.tokenBLogo.length ? pool.tokenBLogo : "/default_token.png"}
+                    alt="img"
+                />
                 <TextInput
                   id="withdraw"
                   value={tokenBInput}
@@ -210,6 +231,7 @@ export default function Withdraw({
                   className="!font-inter !text-secondary"
                 />
               </div>
+              }
             </div>
           </div>
         </div>
