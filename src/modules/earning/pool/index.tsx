@@ -68,7 +68,7 @@ export default function PoolModule({
   const {chain} = useNetwork();
   const [openActionModal, setOpenActionModal] = useState(false);
   const [selectedFarm, setSelectedFarm] = useState(-1);
-  const [activePoolAddress, setActivePoolAddress] = useState<string>();
+  const [activePool, setActivePool] = useState<PoolCollection>();
   const [tokenAInfo, setTokenAInfo] = useState<TokenInfos>();
   const [tokenBInfo, setTokenBInfo] = useState<TokenInfos>();
   const [depositWithdrawIndex, setDepositWithdrawIndex] = useState<number>(0);
@@ -141,6 +141,7 @@ export default function PoolModule({
                       } else {
                         setSelectedPool(index);
                       }
+                      setActivePool(_list)
                     }}
                     onOpenActionModal={() => setOpenActionModal(true)}
                     onSetTokenAInfo={setTokenAInfo}
@@ -155,7 +156,7 @@ export default function PoolModule({
             <ActionModal
               tokenAInfo={tokenAInfo!} 
               tokenBInfo={tokenBInfo!}
-              pool = {activePoolAddress!}
+              pool = {activePool!}
               poolMode = {PoolMode.CLASSIC_FARM}
               onClose={() => setOpenActionModal(false)} 
               index = {depositWithdrawIndex}

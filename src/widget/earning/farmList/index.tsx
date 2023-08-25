@@ -236,7 +236,13 @@ export default function FarmList({
         <div
             className="flex items-center mt-2"
           >
-              <Usdc />
+              <Image
+                  height={40}
+                  className="ms-3 mr-2"
+                  width={30}
+                  src={pool.tokenALogo.length ? pool.tokenALogo : "/default_token.png"}
+                  alt="img"
+              />
               <Typography
                 label={tokenA}
                 className="!font-inter !text-secondary ml-2"
@@ -246,7 +252,13 @@ export default function FarmList({
         <div
             className="flex items-center mt-2"
           >
-              <Usdt />
+              <Image
+                  height={40}
+                  className="ms-3 mr-2"
+                  width={30}
+                  src={pool.tokenBLogo.length ? pool.tokenBLogo : "/default_token.png"}
+                  alt="img"
+              />
               <Typography
                 label={tokenB}
                 className="!font-inter !text-secondary ml-2"

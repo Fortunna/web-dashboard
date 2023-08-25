@@ -251,7 +251,8 @@ export default function CreateFarmReview({
       tokenALogo: tokenALogo,
       tokenBLogo: tokenBLogo,
       createdAt: currentDT,
-      visible: false
+      visible: false,
+      tokenCount: tokenAAddress && tokenBAddress ? 2 : 1
     })
     .then(() => {
     })
@@ -316,6 +317,9 @@ export default function CreateFarmReview({
       });
       return false;
     }
+
+    if (!tokenBAddress)
+      return true;
 
     if (parseFloat(tokenBBalance!.formatted) < tokenBRewardInit ||
         parseFloat(tokenBBalance!.formatted) < tokenBRewardQt) {
@@ -403,22 +407,37 @@ export default function CreateFarmReview({
 
       if (mode[0] == PoolMode.CLASSIC_FARM) {
 
+        let txArray = [];
         const [txApprove1, txApprove2] = await onApproveToken(tokenAAddress, stakingToken[0], rewardingToken[0]);
-        const [txApprove3, txApprove4] = await onApproveToken(tokenBAddress, stakingToken[0], rewardingToken[0]);
+        txArray.push(txApprove1);
+        txArray.push(txApprove2);
 
+        if (tokenBAddress) {
+          const [txApprove3, txApprove4] = await onApproveToken(tokenBAddress, stakingToken[0], rewardingToken[0]);
+          txArray.push(txApprove3);
+          txArray.push(txApprove4);
+        }
         toast.success(TOAST_MESSAGE.WAITING_APPROVE_TRANSACTION, {
           position: toast.POSITION.TOP_CENTER
         });
 
-        await onWaitTransactionReceipt([
-          txApprove1, 
-          txApprove2,
-          txApprove3,
-          txApprove4
-        ]);            
+        await onWaitTransactionReceipt(txArray);            
       }
 
       let tx;
+      let tokenArray = [];
+      let tokenRewardQtArray = [];
+      let tokenRewardInitArray = [];
+      if (tokenAAddress) {
+        tokenArray.push(tokenAAddress);
+        tokenRewardQtArray.push([0,ethers.parseUnits(tokenARewardQt.toString(), tokenADecimal)]);
+        tokenRewardInitArray.push([0,ethers.parseUnits(tokenARewardInit.toString(), tokenADecimal)]);
+      }
+      if (tokenBAddress) {
+        tokenArray.push(tokenBAddress);
+        tokenRewardQtArray.push([0,ethers.parseUnits(tokenBRewardQt.toString(), tokenBDecimal)]);
+        tokenRewardInitArray.push([0,ethers.parseUnits(tokenBRewardInit.toString(), tokenBDecimal)]);
+      }
       await walletClient?.writeContract({
         address: FACTORY_ADDRESS[chain.id as SupportedChains] as Address,
         abi: FortunnaFactoryABI,
@@ -441,15 +460,9 @@ export default function CreateFarmReview({
             ["0xC36442b4a4522E871399CD717aBDD847Ab11FE88"]
           ],
           [
-            [tokenAAddress, tokenBAddress],
-            [
-              [0,ethers.parseUnits(tokenARewardQt.toString(), tokenADecimal)],
-              [1,ethers.parseUnits(tokenBRewardQt.toString(), tokenBDecimal)]
-            ],
-            [
-              [0,ethers.parseUnits(tokenARewardInit.toString(), tokenADecimal)],
-              [1,ethers.parseUnits(tokenBRewardInit.toString(), tokenBDecimal)]
-            ]
+            tokenArray,
+            tokenRewardQtArray,
+            tokenRewardInitArray
           ]],
           account: walletClient.account.address,
           value: parseEther(costFarm)

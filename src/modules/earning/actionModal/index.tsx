@@ -2,18 +2,19 @@ import Modal from "@/components/modal";
 import Typography from "@/components/typography";
 import React, { ChangeEventHandler, useState } from "react";
 import Deposit from "./deposit";
+import Image from "next/image";
 import { Dai, Usdc, Usdt, Close } from "@/components/icons";
 import Rewards from "./rewards";
 import Withdraw from "./withdraw";
 import classNames from "classnames";
-import { BalanceShowDecimals, PoolMode, TokenInfos } from "@/constants";
+import { BalanceShowDecimals, PoolCollection, PoolMode, TokenInfos } from "@/constants";
 import { ethers } from "ethers";
 import { convertUnderDecimals } from "@/utils";
 
 type componentProps = {
   tokenAInfo: TokenInfos,
   tokenBInfo: TokenInfos,
-  pool: string,
+  pool: PoolCollection,
   poolMode: PoolMode,
   onClose: () => void,
   index: number
@@ -96,7 +97,6 @@ export default function ActionModal({
                 <div className="flex mt-3">
                     <div className="flex  mr-3 items-center">
                       <Usdc/>
-
                       <Typography
                         variant="body3"
                         className="!text-secondary ms-2 "
@@ -108,6 +108,7 @@ export default function ActionModal({
                         }
                       />
                     </div>
+                    { tokenBInfo.tokenAddress && 
                     <div className="flex  mr-3 items-center">
                       <Usdt/>
 
@@ -122,6 +123,7 @@ export default function ActionModal({
                         }
                       />
                     </div>
+                    }
                 </div>
               </div>
             </div>

@@ -8,7 +8,7 @@ import ERC20TokenABI from "@/assets/ERC20ABI.json";
 import FortunnaTokenABI from "@/assets/FortunnaToken.json";
 import FortunnaPoolABI from "@/assets/FortunnaPool.json";
 import FortunnaUnivswapV3PoolABI from "@/assets/FortunaUniswapV3Pool.json";
-import { PoolMode, TOAST_MESSAGE, TokenInfos } from "@/constants";
+import { PoolCollection, PoolMode, TOAST_MESSAGE, TokenInfos } from "@/constants";
 import { ethers } from "ethers";
 import React, { useEffect, useState } from "react";
 import { Address, usePublicClient, useWalletClient } from "wagmi";
@@ -18,7 +18,7 @@ import { error } from "highcharts";
 type componentProps = {
   tokenAInfo: TokenInfos,
   tokenBInfo: TokenInfos,
-  pool: string,
+  pool: PoolCollection,
   poolMode: PoolMode,
   onClose: () => void;
 };
@@ -36,8 +36,6 @@ export default function Deposit({
   const [tokenBInput, setTokenBInput] = useState<string>("0");
   const [sliderAVal, setSliderAVal] = useState<number>(0);
   const [sliderBVal, setSliderBVal] = useState<number>(0);
-  const tokenABalance = ethers.formatUnits(tokenAInfo.tokenBalanceInfo.value, tokenAInfo.tokenBalanceInfo?.decimals);
-  const tokenBBalance = ethers.formatUnits(tokenBInfo.tokenBalanceInfo.value, tokenBInfo.tokenBalanceInfo?.decimals);
   const [status, setStatus] = useState<boolean>(false);
 
   let validNumber = new RegExp(/^\d*\.?\d*$/);
@@ -101,8 +99,10 @@ export default function Deposit({
   useEffect(() => {
     const valA = parseFloat(ethers.formatUnits(tokenAInfo.maxStakeAmount, tokenAInfo.tokenBalanceInfo?.decimals)) * sliderAVal / 100;
     setTokenAInput(valA.toString());
-    const valB = parseFloat(ethers.formatUnits(tokenBInfo.maxStakeAmount, tokenBInfo.tokenBalanceInfo?.decimals)) * sliderBVal / 100;
-    setTokenBInput(valB.toString());
+    if (tokenBInfo.tokenAddress) {
+      const valB = parseFloat(ethers.formatUnits(tokenBInfo.maxStakeAmount, tokenBInfo.tokenBalanceInfo?.decimals)) * sliderBVal / 100;
+      setTokenBInput(valB.toString());
+    }
   }, [sliderAVal, sliderBVal])
 
   const onTokenPreparation = async () => {
@@ -114,6 +114,9 @@ export default function Deposit({
         return false;
     }
     
+    if (!tokenBInfo.tokenAddress)
+      return true;
+  
     const allowanceTokenB = await checkAllowance(tokenBInfo.tokenAddress, tokenBInfo.stakeTokenAddress, ethers.parseUnits(tokenBInput, tokenBInfo.tokenBalanceInfo?.decimals), ERC20TokenABI);
     if (!allowanceTokenB) {
       const approve_res = await approveToken(tokenBInfo.tokenAddress, tokenBInfo.stakeTokenAddress, ERC20TokenABI);
@@ -127,16 +130,25 @@ export default function Deposit({
 
   const onMintLPToken = async () => {
 
+    console.log('onMintLPToken');
+    let params:any;
+    if (tokenBInfo.tokenAddress) {
+      params = 
+      [
+        ethers.parseUnits(tokenAInput.toString(), tokenAInfo.tokenBalanceInfo?.decimals),
+        ethers.parseUnits(tokenBInput.toString(), tokenBInfo.tokenBalanceInfo?.decimals)
+      ];
+    } else {
+      params = [ethers.parseUnits(tokenAInput.toString(), tokenAInfo.tokenBalanceInfo?.decimals)];
+    }
+
     const txMint:any = await walletClient!.writeContract({
       address: tokenAInfo.stakeTokenAddress as Address,
       abi: FortunnaTokenABI,
       functionName: "mint",
       args:[
         walletClient?.account.address,
-        [
-          ethers.parseUnits(tokenAInput.toString(), tokenAInfo.tokenBalanceInfo?.decimals),
-          ethers.parseUnits(tokenBInput.toString(), tokenBInfo.tokenBalanceInfo?.decimals)
-        ]
+        params
       ]
     });
     
@@ -145,24 +157,24 @@ export default function Deposit({
       timeout:1000000
     });
 
-    const amount = BigInt(confirmation.logs[2].data).toString(10);
+    const amount = BigInt(confirmation.logs[tokenBInfo.tokenAddress ? 2 : 1].data).toString(10);
 
     return amount;
   }
 
   const onStakeLPToken = async (amount :string) => {
 
-    const allowanceTokenA = await checkAllowance(tokenAInfo.stakeTokenAddress, pool, BigInt(amount), FortunnaTokenABI);
+    const allowanceTokenA = await checkAllowance(tokenAInfo.stakeTokenAddress, pool.address, BigInt(amount), FortunnaTokenABI);
 
     if (!allowanceTokenA) {
-      const approve_res = await approveToken(tokenAInfo.stakeTokenAddress, pool, FortunnaTokenABI);
+      const approve_res = await approveToken(tokenAInfo.stakeTokenAddress, pool.address, FortunnaTokenABI);
       if (!approve_res){
         throw error("");
       }
     }
 
     const txStake:any = await walletClient?.writeContract({
-      address: pool as Address,
+      address: pool.address as Address,
       abi: FortunnaPoolABI,
       functionName: "stake",
       args: [
@@ -179,16 +191,22 @@ export default function Deposit({
   const onStakeUniswapV3Pool = async () => {
 
     const amountA = ethers.parseUnits(tokenAInput, tokenAInfo.tokenBalanceInfo?.decimals);
-    const amountB = ethers.parseUnits(tokenBInput, tokenBInfo.tokenBalanceInfo?.decimals);
+    let params:any;
+    if (tokenBInfo.tokenAddress) {
 
-    const txStake:any = await walletClient?.writeContract({
-      address: pool as Address,
-      abi: FortunnaUnivswapV3PoolABI,
-      functionName: "stake",
-      args: [
+      const amountB = ethers.parseUnits(tokenBInput, tokenBInfo.tokenBalanceInfo?.decimals);
+      params = [
         amountA,
         amountB
-      ]
+      ];
+    } else {
+      params = [amountA];
+    }
+    const txStake:any = await walletClient?.writeContract({
+      address: pool.address as Address,
+      abi: FortunnaUnivswapV3PoolABI,
+      functionName: "stake",
+      args: params
     });
 
     const confirmation = await publicClient.waitForTransactionReceipt({
@@ -201,12 +219,8 @@ export default function Deposit({
   }
   const onHandleDeposit = async () => {
 
-    const minAAmount = ethers.formatUnits(tokenAInfo.minStakeAmount, tokenAInfo.tokenBalanceInfo?.decimals);
-    const minBAmount = ethers.formatUnits(tokenBInfo.minStakeAmount, tokenAInfo.tokenBalanceInfo?.decimals);
-    const maxAAmount = ethers.formatUnits(tokenAInfo.maxStakeAmount, tokenAInfo.tokenBalanceInfo?.decimals);
-    const maxBAmount = ethers.formatUnits(tokenBInfo.maxStakeAmount, tokenAInfo.tokenBalanceInfo?.decimals);
 
-    if (parseFloat(tokenAInput) == 0 || parseFloat(tokenBInput) == 0) {
+    if (parseFloat(tokenAInput) == 0 || (tokenBInfo.tokenAddress && parseFloat(tokenBInput) == 0)) {
       toast.error(TOAST_MESSAGE.DATA_INCORRECT, {
         position: toast.POSITION.TOP_CENTER
       });
@@ -220,23 +234,38 @@ export default function Deposit({
       return;
     }
 
+    const minAAmount = ethers.formatUnits(tokenAInfo.minStakeAmount, tokenAInfo.tokenBalanceInfo?.decimals);
+    const maxAAmount = ethers.formatUnits(tokenAInfo.maxStakeAmount, tokenAInfo.tokenBalanceInfo?.decimals);
     const minAAmountstr = minAAmount + " " + tokenAInfo.tokenBalanceInfo?.symbol;
-    const minBAmountstr = minBAmount + " " + tokenBInfo.tokenBalanceInfo?.symbol;
+    const maxAAmountstr = maxAAmount + " " + tokenAInfo.tokenBalanceInfo?.symbol;
+    let max_msg = `Please input less than ${maxAAmount}`;
+    let min_msg = `Please input more than ${minAAmount}`;
+
+    let minBAmount = "0";
+    let maxBAmount = "0";
+    let minBAmountstr = "0";
+    let maxBAmountstr = "0";
+    if (tokenBInfo.tokenAddress) {
+      minBAmount = ethers.formatUnits(tokenBInfo.minStakeAmount, tokenAInfo.tokenBalanceInfo?.decimals);
+      maxBAmount = ethers.formatUnits(tokenBInfo.maxStakeAmount, tokenAInfo.tokenBalanceInfo?.decimals);
+      minBAmountstr = minBAmount + " " + tokenBInfo.tokenBalanceInfo?.symbol;
+      maxBAmountstr = maxBAmount + " " + tokenBInfo.tokenBalanceInfo?.symbol;
+
+      max_msg += ` and ${maxBAmountstr}`;
+      min_msg += ` and ${minBAmountstr}`;
+    }
 
     if (parseFloat(tokenAInput) < parseFloat(minAAmount) || 
         parseFloat(tokenBInput) < parseFloat(minBAmount)) {
-      toast.error(`Please input more than ${minAAmountstr} and ${minBAmountstr}`, {
+      toast.error(min_msg, {
         position: toast.POSITION.TOP_CENTER
       });
       return;
     }
 
-    const maxAAmountstr = maxAAmount + " " + tokenAInfo.tokenBalanceInfo?.symbol;
-    const maxBAmountstr = maxBAmount + " " + tokenBInfo.tokenBalanceInfo?.symbol;
-
     if (parseFloat(tokenAInput) > parseFloat(maxAAmount) ||
         parseFloat(tokenBInput) > parseFloat(maxBAmount)) {
-          toast.error(`Please input less than ${maxAAmountstr} and ${maxBAmountstr}`, {
+          toast.error(max_msg, {
             position: toast.POSITION.TOP_CENTER
           });
           return;
@@ -251,6 +280,7 @@ export default function Deposit({
         setStatus(false);
         return;
       }
+
 
       if (poolMode == PoolMode.CLASSIC_FARM) {
         const value = await onMintLPToken();
@@ -274,8 +304,6 @@ export default function Deposit({
     }
     setStatus(false);
   }
-
-  console.log('tokenAInfo', tokenAInfo, tokenAInput);
 
   return (
     <div className="">
@@ -323,6 +351,7 @@ export default function Deposit({
           </div>
         </div>
       </div>
+      { tokenBInfo.tokenAddress && 
       <div className="grid grid-cols-[30%_auto] mt-[20px]">
         <div>
           <Typography
@@ -366,6 +395,7 @@ export default function Deposit({
           </div>
         </div>
       </div>
+      }
 
       <div className="w-[80%] mt-[35px] mb-[28px] mx-auto">
         <div className="flex items-center mb-[28px]">

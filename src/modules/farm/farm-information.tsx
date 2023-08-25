@@ -87,7 +87,7 @@ export default function FarmInformation({ poolMode, onNext }: componentProps) {
       });
       return;
     }
-
+    
     if (poolMode == PoolMode.UNISWAP_POOL && tokenAAddress > tokenBAddress) {
       toast.error(TOAST_MESSAGE.TOKENA_ADDRESS_MUST_BE_LESS_THAN_TOKENB_ADDRESS, {
         position: toast.POSITION.TOP_CENTER
@@ -96,8 +96,8 @@ export default function FarmInformation({ poolMode, onNext }: componentProps) {
     }
 
     if (!poolName ||
-        !tokenASymbol || !tokenADecimal ||
-        !tokenBSymbol || !tokenBDecimal
+        (!tokenASymbol && !tokenBSymbol) ||
+        (!tokenADecimal && !tokenBDecimal)
       ) {
       setShowAErrorBorder(true);
       toast.error(TOAST_MESSAGE.FILL_FIELD, {
