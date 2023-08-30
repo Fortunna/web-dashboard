@@ -96,7 +96,13 @@ export default function ActionModal({
                 />
                 <div className="flex mt-3">
                     <div className="flex  mr-3 items-center">
-                      <Usdc/>
+                      <Image
+                        height={40}
+                        className="ms-3 mr-2"
+                        width={30}
+                        src={pool.tokenALogo.length ? pool.tokenALogo : "/default_token.png"}
+                        alt="img"
+                      />
                       <Typography
                         variant="body3"
                         className="!text-secondary ms-2 "
@@ -110,7 +116,13 @@ export default function ActionModal({
                     </div>
                     { tokenBInfo.tokenAddress && 
                     <div className="flex  mr-3 items-center">
-                      <Usdt/>
+                      <Image
+                        height={40}
+                        className="ms-3 mr-2"
+                        width={30}
+                        src={pool.tokenBLogo.length ? pool.tokenBLogo : "/default_token.png"}
+                        alt="img"
+                      />
 
                       <Typography
                         variant="body3"

@@ -452,7 +452,7 @@ export default function CreateFarmReview({
             parseInt(lockupPeriod) * 24 * 60 * 60,
             withdrawFee ? parseInt(lossPercentage) * 100 : 0,
             0,
-            rewardToken === 1 ? tokenARewardDis * 100 : tokenBRewardDis * 100,
+            rewardToken === 2 ? tokenBRewardDis * 100 : tokenARewardDis * 100,
             "0x0000000000000000000000000000000000000000000000000000000000000003",
             rewardToken === 1 ? "0x0000000000000000000000000000000000000000000000000000000000000001" :
             rewardToken === 2 ? "0x0000000000000000000000000000000000000000000000000000000000000002" :
