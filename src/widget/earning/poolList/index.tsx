@@ -131,10 +131,10 @@ export default function PoolList({
     });
 
     if (scalar_Params.length > 0) {
-      const [minAAmount, minBAmount] = await readMin_MaxAmount(staking_Token, scalar_Params[3]);
-      const [maxAMounnt, maxBAmount] = await readMin_MaxAmount(staking_Token, scalar_Params[4]);
-      setMinStakeAmount([minAAmount, minBAmount]);
-      setMaxStakeAmount([maxAMounnt, maxBAmount]);
+      // const [minAAmount, minBAmount] = await readMin_MaxAmount(staking_Token, scalar_Params[3]);
+      // const [maxAMounnt, maxBAmount] = await readMin_MaxAmount(staking_Token, scalar_Params[4]);
+      setMinStakeAmount([scalar_Params[3], scalar_Params[3]]);
+      setMaxStakeAmount([scalar_Params[4], scalar_Params[4]]);
     }
     setStakingToken(staking_Token);
     setRewardToken(reward_Token);
