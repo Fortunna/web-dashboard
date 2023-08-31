@@ -216,7 +216,6 @@ export default function Deposit({
       timeout: 1000000
     });
 
-    console.log('onMintLPToken', confirmation);
     const amount = BigInt(confirmation.logs[confirmation.logs.length - 1].data).toString(10);
 
     return amount;
