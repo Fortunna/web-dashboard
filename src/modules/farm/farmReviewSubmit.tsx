@@ -333,7 +333,6 @@ export default function CreateFarmReview({
   }
   const onWaitTransactionReceipt = async (txHash: any, waitPoolAddress = false) => {
 
-    console.log('txHash', txHash);
     let index;
     try {
       for (index = 0; index < txHash.length; index++) {
@@ -472,7 +471,6 @@ export default function CreateFarmReview({
       });
 
       const address_res = await onWaitTransactionReceipt([tx], true);
-      console.log('address_res', address_res);
 
       if (address_res) {
         const address = removeForwardZero(address_res);
