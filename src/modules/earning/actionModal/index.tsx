@@ -19,13 +19,13 @@ type componentProps = {
   onClose: () => void,
   index: number
 };
-export default function ActionModal({ 
-  tokenAInfo, 
-  tokenBInfo, 
-  pool, 
-  poolMode, 
-  onClose, 
-  index 
+export default function ActionModal({
+  tokenAInfo,
+  tokenBInfo,
+  pool,
+  poolMode,
+  onClose,
+  index
 }: componentProps) {
   const header = [
     {
@@ -50,7 +50,7 @@ export default function ActionModal({
         visible={true}
       >
         <div>
-          <div className="flex item-center" style={{justifyContent: "space-between"}}>
+          <div className="flex item-center" style={{ justifyContent: "space-between" }}>
             <div className="flex items-center ">
               {header.map((_header, index) => {
                 const activeContainerStyles = classNames({
@@ -76,7 +76,7 @@ export default function ActionModal({
               })}
             </div>
             <div className="cursor-pointer" onClick={onClose}>
-              <Close/>
+              <Close />
             </div>
           </div>
 
@@ -95,26 +95,26 @@ export default function ActionModal({
                   label={currentData.subtitle}
                 />
                 <div className="flex mt-3">
-                    <div className="flex  mr-3 items-center">
-                      <Image
-                        height={40}
-                        className="ms-3 mr-2"
-                        width={30}
-                        src={pool.tokenALogo.length ? pool.tokenALogo : "/default_token.png"}
-                        alt="img"
-                      />
-                      <Typography
-                        variant="body3"
-                        className="!text-secondary ms-2 "
-                        label={
-                          `${currentData.key == header[0].key ? convertUnderDecimals(ethers.formatUnits(tokenAInfo.tokenBalanceInfo.value, tokenAInfo.tokenBalanceInfo?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) :
+                  <div className="flex  mr-3 items-center">
+                    <Image
+                      height={40}
+                      className="ms-3 mr-2"
+                      width={30}
+                      src={pool.tokenALogo.length ? pool.tokenALogo : "/default_token.png"}
+                      alt="img"
+                    />
+                    <Typography
+                      variant="body3"
+                      className="!text-secondary ms-2 "
+                      label={
+                        `${currentData.key == header[0].key ? convertUnderDecimals(ethers.formatUnits(tokenAInfo.tokenBalanceInfo.value, tokenAInfo.tokenBalanceInfo?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) :
                           currentData.key == header[1].key ? convertUnderDecimals(ethers.formatUnits(tokenAInfo.tokenStakeBalance, tokenAInfo.tokenBalanceInfo?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) :
-                          ethers.formatUnits(tokenAInfo.tokenRewardBalance, tokenAInfo.tokenBalanceInfo?.decimals)} 
+                            ethers.formatUnits(tokenAInfo.tokenRewardBalance, tokenAInfo.tokenBalanceInfo?.decimals)} 
                           ${tokenAInfo.tokenBalanceInfo.symbol}`
-                        }
-                      />
-                    </div>
-                    { tokenBInfo.tokenAddress && 
+                      }
+                    />
+                  </div>
+                  {tokenBInfo.tokenAddress &&
                     <div className="flex  mr-3 items-center">
                       <Image
                         height={40}
@@ -129,13 +129,13 @@ export default function ActionModal({
                         className="!text-secondary ms-2 "
                         label={
                           `${currentData.key == header[0].key ? convertUnderDecimals(ethers.formatUnits(tokenBInfo.tokenBalanceInfo.value, tokenBInfo.tokenBalanceInfo?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) :
-                          currentData.key == header[1].key ? convertUnderDecimals(ethers.formatUnits(tokenBInfo.tokenStakeBalance, tokenBInfo.tokenBalanceInfo?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) :
-                          ethers.formatUnits(tokenBInfo.tokenRewardBalance, tokenBInfo.tokenBalanceInfo?.decimals)} 
+                            currentData.key == header[1].key ? convertUnderDecimals(ethers.formatUnits(tokenBInfo.tokenStakeBalance, tokenBInfo.tokenBalanceInfo?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) :
+                              ethers.formatUnits(tokenBInfo.tokenRewardBalance, tokenBInfo.tokenBalanceInfo?.decimals)} 
                           ${tokenBInfo.tokenBalanceInfo.symbol}`
                         }
                       />
                     </div>
-                    }
+                  }
                 </div>
               </div>
             </div>
@@ -143,8 +143,8 @@ export default function ActionModal({
         </div>
 
         <>
-          {currentData.key == header[0].key ? <Deposit tokenAInfo={tokenAInfo} tokenBInfo={tokenBInfo} pool={pool} poolMode = {poolMode} onClose = {onClose}/> : null}
-          {currentData.key == header[1].key ? <Withdraw tokenAInfo={tokenAInfo} tokenBInfo={tokenBInfo} pool={pool} poolMode = {poolMode} onClose = {onClose} /> : null}
+          {currentData.key == header[0].key ? <Deposit tokenAInfo={tokenAInfo} tokenBInfo={tokenBInfo} pool={pool} poolMode={poolMode} onClose={onClose} /> : null}
+          {currentData.key == header[1].key ? <Withdraw tokenAInfo={tokenAInfo} tokenBInfo={tokenBInfo} pool={pool} poolMode={poolMode} onClose={onClose} /> : null}
         </>
       </Modal>
     </div>
