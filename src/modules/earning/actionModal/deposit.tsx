@@ -8,12 +8,14 @@ import ERC20TokenABI from "@/assets/ERC20ABI.json";
 import FortunnaTokenABI from "@/assets/FortunnaToken.json";
 import FortunnaPoolABI from "@/assets/FortunnaPool.json";
 import FortunnaUnivswapV3PoolABI from "@/assets/FortunaUniswapV3Pool.json";
-import { PoolCollection, PoolMode, TOAST_MESSAGE, TokenInfos } from "@/constants";
+import { BalanceShowDecimals, PoolCollection, PoolMode, TOAST_MESSAGE, TokenInfos } from "@/constants";
 import { ethers } from "ethers";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Address, usePublicClient, useWalletClient } from "wagmi";
 import { toast } from "react-toastify";
 import { error } from "highcharts";
+import useDebounce from "@/hooks/useDebounce";
+import { convertUnderDecimals } from "@/utils";
 
 type componentProps = {
   tokenAInfo: TokenInfos,
@@ -34,11 +36,18 @@ export default function Deposit({
   const publicClient = usePublicClient();
   const [tokenAInput, setTokenAInput] = useState<string>("0");
   const [tokenBInput, setTokenBInput] = useState<string>("0");
+  const tokenAValue = useDebounce(tokenAInput, 500);
+  const tokenBValue = useDebounce(tokenBInput, 500);
   const [sliderAVal, setSliderAVal] = useState<number>(0);
   const [sliderBVal, setSliderBVal] = useState<number>(0);
   const [status, setStatus] = useState<boolean>(false);
+  const [totalLPToken, setTotalLPToken] = useState<string>("0");
 
   let validNumber = new RegExp(/^\d*\.?\d*$/);
+
+  const tokenSymbol = tokenBInfo.tokenAddress ?
+    ` fts${tokenAInfo.tokenBalanceInfo.symbol}x${tokenBInfo.tokenBalanceInfo.symbol}x` :
+    ` fts${tokenAInfo.tokenBalanceInfo.symbol}x`;
 
   const checkAllowance = async (
     tokenAddress: any,
@@ -96,6 +105,31 @@ export default function Deposit({
 
   }
 
+  const onGetLPTokenAmount = async (
+    tokenAddress: string,
+    tokenAmount: any,
+    tokenIndex: number
+  ) => {
+    try {
+      const txTokenAmount: any = await publicClient.readContract({
+        address: tokenAddress as Address,
+        abi: FortunnaTokenABI,
+        functionName: "calcFortunnaTokensInOrOutPerUnderlyingToken",
+        args: [
+          tokenIndex,
+          tokenAmount
+        ]
+      });
+
+      return txTokenAmount;
+    } catch (ex) {
+      console.log('ex', ex);
+      toast.error(TOAST_MESSAGE.UNEXPECTED_ERROR, {
+        position: toast.POSITION.TOP_CENTER
+      });
+    }
+  }
+
   useEffect(() => {
     const valA = parseFloat(ethers.formatUnits(tokenAInfo.maxStakeAmount, tokenAInfo.tokenBalanceInfo?.decimals)) * sliderAVal / 100;
     setTokenAInput(valA.toString());
@@ -104,6 +138,32 @@ export default function Deposit({
       setTokenBInput(valB.toString());
     }
   }, [sliderAVal, sliderBVal])
+
+  useEffect(() => {
+    if (poolMode != PoolMode.CLASSIC_FARM)
+      return;
+
+    const onCalculateLP = async () => {
+      let BValu = 0;
+      let AValu = await onGetLPTokenAmount(tokenAInfo.stakeTokenAddress, ethers.parseUnits(tokenAValue, tokenAInfo.tokenBalanceInfo?.decimals), 0);
+      if (tokenBInfo.tokenAddress) {
+        BValu = await onGetLPTokenAmount(tokenAInfo.stakeTokenAddress, ethers.parseUnits(tokenBValue, tokenBInfo.tokenBalanceInfo?.decimals), 1);
+      }
+      if (AValu) {
+        const totalLP = parseFloat(ethers.formatUnits(AValu, tokenAInfo.tokenBalanceInfo?.decimals)) +
+          parseFloat(ethers.formatUnits(BValu, tokenBInfo.tokenBalanceInfo?.decimals));
+
+        setTotalLPToken(convertUnderDecimals(totalLP.toString(), BalanceShowDecimals.FARM_SHOW_BALANCE));
+      }
+    }
+
+    if (tokenAValue || tokenBValue) {
+      onCalculateLP();
+    } else {
+      setTotalLPToken("0");
+    }
+
+  }, [tokenAValue, tokenBValue])
 
   const onTokenPreparation = async () => {
 
@@ -130,7 +190,6 @@ export default function Deposit({
 
   const onMintLPToken = async () => {
 
-    console.log('onMintLPToken');
     let params: any;
     if (tokenBInfo.tokenAddress) {
       params =
@@ -157,7 +216,8 @@ export default function Deposit({
       timeout: 1000000
     });
 
-    const amount = BigInt(confirmation.logs[tokenBInfo.tokenAddress ? 2 : 1].data).toString(10);
+    console.log('onMintLPToken', confirmation);
+    const amount = BigInt(confirmation.logs[confirmation.logs.length - 1].data).toString(10);
 
     return amount;
   }
@@ -236,40 +296,21 @@ export default function Deposit({
 
     const minAAmount = ethers.formatUnits(tokenAInfo.minStakeAmount, tokenAInfo.tokenBalanceInfo?.decimals);
     const maxAAmount = ethers.formatUnits(tokenAInfo.maxStakeAmount, tokenAInfo.tokenBalanceInfo?.decimals);
-    const minAAmountstr = minAAmount + " " + tokenAInfo.tokenBalanceInfo?.symbol;
-    const maxAAmountstr = maxAAmount + " " + tokenAInfo.tokenBalanceInfo?.symbol;
-    let max_msg = `Please input less than ${maxAAmount}`;
-    let min_msg = `Please input more than ${minAAmount}`;
 
-    let minBAmount = "0";
-    let maxBAmount = "0";
-    let minBAmountstr = "0";
-    let maxBAmountstr = "0";
-    if (tokenBInfo.tokenAddress) {
-      minBAmount = ethers.formatUnits(tokenBInfo.minStakeAmount, tokenAInfo.tokenBalanceInfo?.decimals);
-      maxBAmount = ethers.formatUnits(tokenBInfo.maxStakeAmount, tokenAInfo.tokenBalanceInfo?.decimals);
-      minBAmountstr = minBAmount + " " + tokenBInfo.tokenBalanceInfo?.symbol;
-      maxBAmountstr = maxBAmount + " " + tokenBInfo.tokenBalanceInfo?.symbol;
-
-      max_msg += ` and ${maxBAmountstr}`;
-      min_msg += ` and ${minBAmountstr}`;
-    }
-
-    if (parseFloat(tokenAInput) < parseFloat(minAAmount) ||
-      parseFloat(tokenBInput) < parseFloat(minBAmount)) {
+    let max_msg = `LP Token must be less than ${maxAAmount} ${tokenSymbol}`;
+    let min_msg = `LP Token must be more than ${minAAmount} ${tokenSymbol}`;
+    if (parseFloat(totalLPToken) < parseFloat(minAAmount)) {
       toast.error(min_msg, {
         position: toast.POSITION.TOP_CENTER
       });
       return;
     }
 
-    if (parseFloat(tokenAInput) > parseFloat(maxAAmount) ||
-      parseFloat(tokenBInput) > parseFloat(maxBAmount)) {
+    if (parseFloat(totalLPToken) > parseFloat(maxAAmount)) {
       toast.error(max_msg, {
         position: toast.POSITION.TOP_CENTER
       });
       return;
-
     }
 
     setStatus(true);
@@ -284,7 +325,6 @@ export default function Deposit({
 
       if (poolMode == PoolMode.CLASSIC_FARM) {
         const value = await onMintLPToken();
-
         await onStakeLPToken(value);
       } else {
         await onStakeUniswapV3Pool();
@@ -397,8 +437,26 @@ export default function Deposit({
         </div>
       }
 
+      {poolMode == PoolMode.CLASSIC_FARM &&
+        <div className="grid grid-cols-[30%_auto] mt-[20px]">
+          <Typography
+            variant="heading"
+            className="!font-aeonik-pro !text-[#FCFCFC] ps-[30%] mt-1"
+            label="LP Token"
+          />
+          <div className="w-[70%]">
+            <Typography
+              variant="heading"
+              className="!font-aeonik-pro !text-[#DE1EFD] mt-1"
+              label={totalLPToken + tokenSymbol}
+            />
+          </div>
+        </div>
+      }
+
       <div className="w-[80%] mt-[35px] mb-[28px] mx-auto">
         <div className="flex items-center mb-[28px]">
+
           {/* <div className="mr-9">
             <Typography
               label="Lockup Period"
