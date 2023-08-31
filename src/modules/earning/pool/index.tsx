@@ -63,9 +63,9 @@ type PoolModuleType = {
 }
 
 export default function PoolModule({
-  poolData 
-} : PoolModuleType) {
-  const {chain} = useNetwork();
+  poolData
+}: PoolModuleType) {
+  const { chain } = useNetwork();
   const [openActionModal, setOpenActionModal] = useState(false);
   const [selectedFarm, setSelectedFarm] = useState(-1);
   const [activePool, setActivePool] = useState<PoolCollection>();
@@ -128,7 +128,7 @@ export default function PoolModule({
                 <div className="mb-[32px] overflow-hidden relative">
                   <PoolList
                     active={index == selectedPool}
-                    pool = {_list}
+                    pool={_list}
                     onStake={() => {
                       if (!chain) {
                         toast.error(TOAST_MESSAGE.CONNECT_WALLET, {
@@ -146,7 +146,7 @@ export default function PoolModule({
                     onOpenActionModal={() => setOpenActionModal(true)}
                     onSetTokenAInfo={setTokenAInfo}
                     onSetTokenBInfo={setTokenBInfo}
-                    onSelectedIndex = {setDepositWithdrawIndex}
+                    onSelectedIndex={setDepositWithdrawIndex}
                   />
                 </div>
               </AnimateWhileInView>
@@ -154,12 +154,12 @@ export default function PoolModule({
           })}
           {openActionModal ? (
             <ActionModal
-              tokenAInfo={tokenAInfo!} 
+              tokenAInfo={tokenAInfo!}
               tokenBInfo={tokenBInfo!}
-              pool = {activePool!}
-              poolMode = {PoolMode.CLASSIC_FARM}
-              onClose={() => setOpenActionModal(false)} 
-              index = {depositWithdrawIndex}
+              pool={activePool!}
+              poolMode={PoolMode.CLASSIC_FARM}
+              onClose={() => setOpenActionModal(false)}
+              index={depositWithdrawIndex}
             />
           ) : null}
         </>

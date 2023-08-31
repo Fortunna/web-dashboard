@@ -29,19 +29,19 @@ export default function CreateFarmReview({
   mode
 }: componentProps) {
 
-  const {chain} = useNetwork();
-  const {data:walletClient} = useWalletClient();
+  const { chain } = useNetwork();
+  const { data: walletClient } = useWalletClient();
   const publicClient = usePublicClient();
-  const { data:balance, isError, isLoading } = useBalance({
-    address:walletClient?.account.address,
-    watch:true
+  const { data: balance, isError, isLoading } = useBalance({
+    address: walletClient?.account.address,
+    watch: true
   });
   const [txStatus, setTxStatus] = useState<boolean>(false);
-  
+
   const {
     poolName,
     poolImage,
-    tokenAAddress, 
+    tokenAAddress,
     tokenASymbol,
     tokenADecimal,
     tokenALogo,
@@ -71,18 +71,18 @@ export default function CreateFarmReview({
     costFarm
   } = useFarm();
 
-  const {data: tokenABalance} = useBalance({
+  const { data: tokenABalance } = useBalance({
     token: tokenAAddress as Address,
-    address:walletClient?.account.address,
+    address: walletClient?.account.address,
     watch: true
   });
 
-  const {data: tokenBBalance} = useBalance({
+  const { data: tokenBBalance } = useBalance({
     token: tokenBAddress as Address,
-    address:walletClient?.account.address,
+    address: walletClient?.account.address,
     watch: true
   });
-  
+
   const data = [
     {
       name: "Pool Name",
@@ -241,7 +241,7 @@ export default function CreateFarmReview({
 
   const savePool = (poolAddress: string) => {
     const currentDT = new Date().getTime();
-    
+
     setDoc(doc(dbInstance, poolName.replace("/", "-")), {
       id: 0,
       name: poolName,
@@ -254,8 +254,8 @@ export default function CreateFarmReview({
       visible: false,
       tokenCount: tokenAAddress && tokenBAddress ? 2 : 1
     })
-    .then(() => {
-    })
+      .then(() => {
+      })
 
     // addDoc(dbInstance, {
     //     id: 0,
@@ -273,16 +273,16 @@ export default function CreateFarmReview({
 
   }
   const onApproveToken = async (
-    tokenAddress: string, 
-    stakingAddress: string, 
+    tokenAddress: string,
+    stakingAddress: string,
     rewardingAddress: string
   ) => {
 
-    const txApproveStaking:any = await walletClient!.writeContract({
+    const txApproveStaking: any = await walletClient!.writeContract({
       address: tokenAddress as Address,
       abi: ERC20TokenABI,
       functionName: "approve",
-      args:[
+      args: [
         stakingAddress,
         ethers.MaxUint256
       ]
@@ -292,7 +292,7 @@ export default function CreateFarmReview({
       address: tokenAddress as Address,
       abi: ERC20TokenABI,
       functionName: "approve",
-      args:[
+      args: [
         rewardingAddress,
         ethers.MaxUint256
       ]
@@ -311,7 +311,7 @@ export default function CreateFarmReview({
     }
 
     if (parseFloat(tokenABalance!.formatted) < tokenARewardInit ||
-        parseFloat(tokenABalance!.formatted) < tokenARewardQt) {
+      parseFloat(tokenABalance!.formatted) < tokenARewardQt) {
       toast.error(`Not enough ${tokenASymbol} balance for deposit or reward!`, {
         position: toast.POSITION.TOP_CENTER
       });
@@ -322,7 +322,7 @@ export default function CreateFarmReview({
       return true;
 
     if (parseFloat(tokenBBalance!.formatted) < tokenBRewardInit ||
-        parseFloat(tokenBBalance!.formatted) < tokenBRewardQt) {
+      parseFloat(tokenBBalance!.formatted) < tokenBRewardQt) {
       toast.error(`Not enough ${tokenBSymbol} balance for deposit or reward!`, {
         position: toast.POSITION.TOP_CENTER
       });
@@ -335,10 +335,10 @@ export default function CreateFarmReview({
 
     console.log('txHash', txHash);
     let index;
-    try{    
-      for(index = 0; index < txHash.length; index ++) {   
+    try {
+      for (index = 0; index < txHash.length; index++) {
         const confirmation = await publicClient.waitForTransactionReceipt({
-          hash:txHash[index],
+          hash: txHash[index],
           timeout: 100000
         });
         if (waitPoolAddress) {
@@ -347,7 +347,7 @@ export default function CreateFarmReview({
       }
     } catch (ex) {
 
-    } 
+    }
 
     return "";
   }
@@ -360,9 +360,9 @@ export default function CreateFarmReview({
       });
       return;
     }
-        
+
     if (!onCheckBalanceForPool()) {
-      return; 
+      return;
     }
 
     setTxStatus(true);
@@ -375,22 +375,22 @@ export default function CreateFarmReview({
         functionName: "getPoolsLength"
       });
 
-      const stakingToken:any = await publicClient.readContract({
+      const stakingToken: any = await publicClient.readContract({
         address: FACTORY_ADDRESS[chain.id as SupportedChains] as Address,
         abi: FortunnaFactoryABI,
         functionName: "predictFortunnaTokenAddress",
-        args:[
+        args: [
           0,
           poolLength,
           true
         ]
       });
 
-      const rewardingToken:any = await publicClient.readContract({
+      const rewardingToken: any = await publicClient.readContract({
         address: FACTORY_ADDRESS[chain.id as SupportedChains] as Address,
         abi: FortunnaFactoryABI,
         functionName: "predictFortunnaTokenAddress",
-        args:[
+        args: [
           0,
           poolLength,
           false
@@ -421,7 +421,7 @@ export default function CreateFarmReview({
           position: toast.POSITION.TOP_CENTER
         });
 
-        await onWaitTransactionReceipt(txArray);            
+        await onWaitTransactionReceipt(txArray);
       }
 
       let tx;
@@ -430,33 +430,33 @@ export default function CreateFarmReview({
       let tokenRewardInitArray = [];
       if (tokenAAddress) {
         tokenArray.push(tokenAAddress);
-        tokenRewardQtArray.push([0,ethers.parseUnits(tokenARewardQt.toString(), tokenADecimal)]);
-        tokenRewardInitArray.push([0,ethers.parseUnits(tokenARewardInit.toString(), tokenADecimal)]);
+        tokenRewardQtArray.push([0, ethers.parseUnits(tokenARewardQt.toString(), tokenADecimal)]);
+        tokenRewardInitArray.push([0, ethers.parseUnits(tokenARewardInit.toString(), tokenADecimal)]);
       }
       if (tokenBAddress) {
         tokenArray.push(tokenBAddress);
-        tokenRewardQtArray.push([0,ethers.parseUnits(tokenBRewardQt.toString(), tokenBDecimal)]);
-        tokenRewardInitArray.push([0,ethers.parseUnits(tokenBRewardInit.toString(), tokenBDecimal)]);
+        tokenRewardQtArray.push([0, ethers.parseUnits(tokenBRewardQt.toString(), tokenBDecimal)]);
+        tokenRewardInitArray.push([0, ethers.parseUnits(tokenBRewardInit.toString(), tokenBDecimal)]);
       }
       await walletClient?.writeContract({
         address: FACTORY_ADDRESS[chain.id as SupportedChains] as Address,
         abi: FortunnaFactoryABI,
         functionName: "createPool",
-        args:[
+        args: [
           [
             mode[0],
-            new Date(startTime).getTime(),
-            new Date(endTime).getTime(),
+            new Date(startTime).getTime() / 1000,
+            new Date(endTime).getTime() / 1000,
             ethers.parseUnits(minimumStakeAmount.toString(), tokenADecimal),
             ethers.parseUnits(maximumStakeAmount.toString(), tokenADecimal),
             parseInt(lockupPeriod) * 24 * 60 * 60,
             withdrawFee ? parseInt(lossPercentage) * 100 : 0,
             0,
-            rewardToken === 1 ? tokenARewardDis * 100 : tokenBRewardDis * 100,
+            rewardToken === 2 ? tokenBRewardDis * 100 : tokenARewardDis * 100,
             "0x0000000000000000000000000000000000000000000000000000000000000003",
             rewardToken === 1 ? "0x0000000000000000000000000000000000000000000000000000000000000001" :
-            rewardToken === 2 ? "0x0000000000000000000000000000000000000000000000000000000000000002" :
-                               "0x0000000000000000000000000000000000000000000000000000000000000003",
+              rewardToken === 2 ? "0x0000000000000000000000000000000000000000000000000000000000000002" :
+                "0x0000000000000000000000000000000000000000000000000000000000000003",
             ["0xC36442b4a4522E871399CD717aBDD847Ab11FE88"]
           ],
           [
@@ -464,8 +464,8 @@ export default function CreateFarmReview({
             tokenRewardQtArray,
             tokenRewardInitArray
           ]],
-          account: walletClient.account.address,
-          value: parseEther(costFarm)
+        account: walletClient.account.address,
+        value: parseEther(costFarm)
       }).then(arg => {
         console.log('finished transaction', arg);
         tx = arg;
@@ -572,7 +572,7 @@ export default function CreateFarmReview({
                 className="!px-12"
                 size="big"
                 label="Back"
-                disabled = {txStatus}
+                disabled={txStatus}
               />
               <div className="mx-4"></div>
               <Button
@@ -581,10 +581,10 @@ export default function CreateFarmReview({
                 onClick={onSubmit}
                 size="big"
                 label={!txStatus ? "Submit" : "Progress..."}
-                disabled = {txStatus}
-                />
-                </div>
+                disabled={txStatus}
+              />
             </div>
+          </div>
 
         </>
       </Card>

@@ -28,9 +28,9 @@ export default function Deposit({
   pool,
   poolMode,
   onClose
-}:componentProps) {
+}: componentProps) {
 
-  const {data:walletClient} = useWalletClient();
+  const { data: walletClient } = useWalletClient();
   const publicClient = usePublicClient();
   const [tokenAInput, setTokenAInput] = useState<string>("0");
   const [tokenBInput, setTokenBInput] = useState<string>("0");
@@ -46,8 +46,8 @@ export default function Deposit({
     stakeAmount: any,
     abi: any
   ) => {
-    
-    const txAllowanceStaking:any = await publicClient.readContract({
+
+    const txAllowanceStaking: any = await publicClient.readContract({
       address: tokenAddress as Address,
       abi,
       functionName: "allowance",
@@ -56,7 +56,7 @@ export default function Deposit({
         stakingAddress
       ]
     });
-    
+
     if (txAllowanceStaking < stakeAmount)
       return false;
 
@@ -70,19 +70,19 @@ export default function Deposit({
   ) => {
 
     try {
-      const txApproveStaking:any = await walletClient!.writeContract({
+      const txApproveStaking: any = await walletClient!.writeContract({
         address: tokenAddress as Address,
         abi,
         functionName: "approve",
-        args:[
+        args: [
           stakingAddress,
           ethers.MaxUint256
         ]
       });
 
       const confirmation = await publicClient.waitForTransactionReceipt({
-        hash:txApproveStaking,
-        timeout:1000000
+        hash: txApproveStaking,
+        timeout: 1000000
       });
       return true;
     } catch (ex) {
@@ -91,7 +91,7 @@ export default function Deposit({
         position: toast.POSITION.TOP_CENTER
       });
     }
-    
+
     return false;
 
   }
@@ -113,10 +113,10 @@ export default function Deposit({
       if (!approve_res)
         return false;
     }
-    
+
     if (!tokenBInfo.tokenAddress)
       return true;
-  
+
     const allowanceTokenB = await checkAllowance(tokenBInfo.tokenAddress, tokenBInfo.stakeTokenAddress, ethers.parseUnits(tokenBInput, tokenBInfo.tokenBalanceInfo?.decimals), ERC20TokenABI);
     if (!allowanceTokenB) {
       const approve_res = await approveToken(tokenBInfo.tokenAddress, tokenBInfo.stakeTokenAddress, ERC20TokenABI);
@@ -131,30 +131,30 @@ export default function Deposit({
   const onMintLPToken = async () => {
 
     console.log('onMintLPToken');
-    let params:any;
+    let params: any;
     if (tokenBInfo.tokenAddress) {
-      params = 
-      [
-        ethers.parseUnits(tokenAInput.toString(), tokenAInfo.tokenBalanceInfo?.decimals),
-        ethers.parseUnits(tokenBInput.toString(), tokenBInfo.tokenBalanceInfo?.decimals)
-      ];
+      params =
+        [
+          ethers.parseUnits(tokenAInput.toString(), tokenAInfo.tokenBalanceInfo?.decimals),
+          ethers.parseUnits(tokenBInput.toString(), tokenBInfo.tokenBalanceInfo?.decimals)
+        ];
     } else {
       params = [ethers.parseUnits(tokenAInput.toString(), tokenAInfo.tokenBalanceInfo?.decimals)];
     }
 
-    const txMint:any = await walletClient!.writeContract({
+    const txMint: any = await walletClient!.writeContract({
       address: tokenAInfo.stakeTokenAddress as Address,
       abi: FortunnaTokenABI,
       functionName: "mint",
-      args:[
+      args: [
         walletClient?.account.address,
         params
       ]
     });
-    
+
     const confirmation = await publicClient.waitForTransactionReceipt({
-      hash:txMint,
-      timeout:1000000
+      hash: txMint,
+      timeout: 1000000
     });
 
     const amount = BigInt(confirmation.logs[tokenBInfo.tokenAddress ? 2 : 1].data).toString(10);
@@ -162,18 +162,18 @@ export default function Deposit({
     return amount;
   }
 
-  const onStakeLPToken = async (amount :string) => {
+  const onStakeLPToken = async (amount: string) => {
 
     const allowanceTokenA = await checkAllowance(tokenAInfo.stakeTokenAddress, pool.address, BigInt(amount), FortunnaTokenABI);
 
     if (!allowanceTokenA) {
       const approve_res = await approveToken(tokenAInfo.stakeTokenAddress, pool.address, FortunnaTokenABI);
-      if (!approve_res){
+      if (!approve_res) {
         throw error("");
       }
     }
 
-    const txStake:any = await walletClient?.writeContract({
+    const txStake: any = await walletClient?.writeContract({
       address: pool.address as Address,
       abi: FortunnaPoolABI,
       functionName: "stake",
@@ -182,8 +182,8 @@ export default function Deposit({
       ]
     });
     const confirmation = await publicClient.waitForTransactionReceipt({
-      hash:txStake,
-      timeout:1000000
+      hash: txStake,
+      timeout: 1000000
     });
 
   }
@@ -191,7 +191,7 @@ export default function Deposit({
   const onStakeUniswapV3Pool = async () => {
 
     const amountA = ethers.parseUnits(tokenAInput, tokenAInfo.tokenBalanceInfo?.decimals);
-    let params:any;
+    let params: any;
     if (tokenBInfo.tokenAddress) {
 
       const amountB = ethers.parseUnits(tokenBInput, tokenBInfo.tokenBalanceInfo?.decimals);
@@ -202,7 +202,7 @@ export default function Deposit({
     } else {
       params = [amountA];
     }
-    const txStake:any = await walletClient?.writeContract({
+    const txStake: any = await walletClient?.writeContract({
       address: pool.address as Address,
       abi: FortunnaUnivswapV3PoolABI,
       functionName: "stake",
@@ -210,8 +210,8 @@ export default function Deposit({
     });
 
     const confirmation = await publicClient.waitForTransactionReceipt({
-      hash:txStake,
-      timeout:1000000
+      hash: txStake,
+      timeout: 1000000
     });
 
 
@@ -255,8 +255,8 @@ export default function Deposit({
       min_msg += ` and ${minBAmountstr}`;
     }
 
-    if (parseFloat(tokenAInput) < parseFloat(minAAmount) || 
-        parseFloat(tokenBInput) < parseFloat(minBAmount)) {
+    if (parseFloat(tokenAInput) < parseFloat(minAAmount) ||
+      parseFloat(tokenBInput) < parseFloat(minBAmount)) {
       toast.error(min_msg, {
         position: toast.POSITION.TOP_CENTER
       });
@@ -264,17 +264,17 @@ export default function Deposit({
     }
 
     if (parseFloat(tokenAInput) > parseFloat(maxAAmount) ||
-        parseFloat(tokenBInput) > parseFloat(maxBAmount)) {
-          toast.error(max_msg, {
-            position: toast.POSITION.TOP_CENTER
-          });
-          return;
+      parseFloat(tokenBInput) > parseFloat(maxBAmount)) {
+      toast.error(max_msg, {
+        position: toast.POSITION.TOP_CENTER
+      });
+      return;
 
-      }
+    }
 
     setStatus(true);
 
-    try{
+    try {
       const pre = await onTokenPreparation();
       if (!pre) {
         setStatus(false);
@@ -284,7 +284,7 @@ export default function Deposit({
 
       if (poolMode == PoolMode.CLASSIC_FARM) {
         const value = await onMintLPToken();
-        
+
         await onStakeLPToken(value);
       } else {
         await onStakeUniswapV3Pool();
@@ -295,7 +295,7 @@ export default function Deposit({
       });
 
       onClose();
-      
+
     } catch (ex) {
       console.log('ex', ex);
       toast.error(TOAST_MESSAGE.USER_REJECTED, {
@@ -327,15 +327,15 @@ export default function Deposit({
             }}
             rightComponent={
               <div className="flex h-full  py-2 items-center justify-center cursor-pointer" onClick={(e) => {
-                  setTokenAInput(ethers.formatUnits(tokenAInfo.maxStakeAmount, tokenAInfo.tokenBalanceInfo?.decimals));
-                  setSliderAVal(100);
-                }}>
+                setTokenAInput(ethers.formatUnits(tokenAInfo.maxStakeAmount, tokenAInfo.tokenBalanceInfo?.decimals));
+                setSliderAVal(100);
+              }}>
                 <div className="h-full w-[1px] bg-secondary"></div>
                 <Typography
                   variant="body0.5"
                   className="!font-inter ml-[10px] mr-[14px] text-secondary"
                   label="MAX"
-                  
+
                 />
               </div>
             }
@@ -343,58 +343,58 @@ export default function Deposit({
           />
 
           <div className="mt-[18px]">
-            <Slider 
-              className="" 
-              sliderValue = {sliderAVal}
+            <Slider
+              className=""
+              sliderValue={sliderAVal}
               setSliderValue={setSliderAVal}
             />
           </div>
         </div>
       </div>
-      { tokenBInfo.tokenAddress && 
-      <div className="grid grid-cols-[30%_auto] mt-[20px]">
-        <div>
-          <Typography
-            variant="heading"
-            className="!font-aeonik-pro !text-[#FCFCFC] ps-[30%] mt-1"
-            label={tokenBInfo.tokenBalanceInfo.symbol}
-          />
-        </div>
-        <div className="w-[70%]">
-          <TextInput
-            value={tokenBInput}
-            id="oo"
-            rounded
-            onChange={(e) => {
-              if (validNumber.test(e.target.value)) {
-                setTokenBInput(e.target.value);
-              }
-            }}
-            rightComponent={
-              <div className="flex h-full  py-2 items-center justify-center cursor-pointer" onClick={
-                (e) => {
-                  setTokenBInput(ethers.formatUnits(tokenBInfo.maxStakeAmount, tokenBInfo.tokenBalanceInfo?.decimals));
-                  setSliderBVal(100);
-                }}>
-                <div className="h-full w-[1px] bg-secondary"></div>
-                <Typography
-                  variant="body0.5"
-                  className="!font-inter ml-[10px] mr-[14px] text-secondary"
-                  label="MAX"
-                />
-              </div>
-            }
-            className="focus:outline-none w-full focus:border-[#AC6AFF] !border-[#AC6AFF]"
-          />
-          <div className="mt-[18px]">
-            <Slider 
-              className="" 
-              sliderValue = {sliderBVal}
-              setSliderValue={setSliderBVal}
+      {tokenBInfo.tokenAddress &&
+        <div className="grid grid-cols-[30%_auto] mt-[20px]">
+          <div>
+            <Typography
+              variant="heading"
+              className="!font-aeonik-pro !text-[#FCFCFC] ps-[30%] mt-1"
+              label={tokenBInfo.tokenBalanceInfo.symbol}
             />
           </div>
+          <div className="w-[70%]">
+            <TextInput
+              value={tokenBInput}
+              id="oo"
+              rounded
+              onChange={(e) => {
+                if (validNumber.test(e.target.value)) {
+                  setTokenBInput(e.target.value);
+                }
+              }}
+              rightComponent={
+                <div className="flex h-full  py-2 items-center justify-center cursor-pointer" onClick={
+                  (e) => {
+                    setTokenBInput(ethers.formatUnits(tokenBInfo.maxStakeAmount, tokenBInfo.tokenBalanceInfo?.decimals));
+                    setSliderBVal(100);
+                  }}>
+                  <div className="h-full w-[1px] bg-secondary"></div>
+                  <Typography
+                    variant="body0.5"
+                    className="!font-inter ml-[10px] mr-[14px] text-secondary"
+                    label="MAX"
+                  />
+                </div>
+              }
+              className="focus:outline-none w-full focus:border-[#AC6AFF] !border-[#AC6AFF]"
+            />
+            <div className="mt-[18px]">
+              <Slider
+                className=""
+                sliderValue={sliderBVal}
+                setSliderValue={setSliderBVal}
+              />
+            </div>
+          </div>
         </div>
-      </div>
       }
 
       <div className="w-[80%] mt-[35px] mb-[28px] mx-auto">
