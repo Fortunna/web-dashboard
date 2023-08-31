@@ -42,7 +42,6 @@ export default function Deposit({
   const [sliderBVal, setSliderBVal] = useState<number>(0);
   const [status, setStatus] = useState<boolean>(false);
   const [totalLPToken, setTotalLPToken] = useState<string>("0");
-  // const [LPTokenSymbol, setLPTokenSymbol] = useState<string>("");
 
   let validNumber = new RegExp(/^\d*\.?\d*$/);
 
@@ -141,10 +140,13 @@ export default function Deposit({
   }, [sliderAVal, sliderBVal])
 
   useEffect(() => {
+    if (poolMode != PoolMode.CLASSIC_FARM)
+      return;
+
     const onCalculateLP = async () => {
       let BValu = 0;
       let AValu = await onGetLPTokenAmount(tokenAInfo.stakeTokenAddress, ethers.parseUnits(tokenAValue, tokenAInfo.tokenBalanceInfo?.decimals), 0);
-      if (tokenBValue) {
+      if (tokenBInfo.tokenAddress) {
         BValu = await onGetLPTokenAmount(tokenAInfo.stakeTokenAddress, ethers.parseUnits(tokenBValue, tokenBInfo.tokenBalanceInfo?.decimals), 1);
       }
       if (AValu) {
@@ -323,7 +325,6 @@ export default function Deposit({
 
       if (poolMode == PoolMode.CLASSIC_FARM) {
         const value = await onMintLPToken();
-        console.log('value', value);
         await onStakeLPToken(value);
       } else {
         await onStakeUniswapV3Pool();
@@ -436,20 +437,22 @@ export default function Deposit({
         </div>
       }
 
-      <div className="grid grid-cols-[30%_auto] mt-[20px]">
-        <Typography
-          variant="heading"
-          className="!font-aeonik-pro !text-[#FCFCFC] ps-[30%] mt-1"
-          label="LP Token"
-        />
-        <div className="w-[70%]">
+      {poolMode == PoolMode.CLASSIC_FARM &&
+        <div className="grid grid-cols-[30%_auto] mt-[20px]">
           <Typography
             variant="heading"
-            className="!font-aeonik-pro !text-[#DE1EFD] mt-1"
-            label={totalLPToken + tokenSymbol}
+            className="!font-aeonik-pro !text-[#FCFCFC] ps-[30%] mt-1"
+            label="LP Token"
           />
+          <div className="w-[70%]">
+            <Typography
+              variant="heading"
+              className="!font-aeonik-pro !text-[#DE1EFD] mt-1"
+              label={totalLPToken + tokenSymbol}
+            />
+          </div>
         </div>
-      </div>
+      }
 
       <div className="w-[80%] mt-[35px] mb-[28px] mx-auto">
         <div className="flex items-center mb-[28px]">
