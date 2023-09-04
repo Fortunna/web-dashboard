@@ -4,7 +4,7 @@ import FormGroup from "@/components/form/form-group";
 import Radio from "@/components/radio";
 import Typography from "@/components/typography";
 import React, { ChangeEventHandler, MouseEventHandler, useEffect, useState } from "react";
-import {ethers} from 'ethers';
+import { ethers } from 'ethers';
 import { useFarm } from "@/hooks/useFarm";
 import FortunnaFactoryABI from "@/assets/FortunnaFactory.json";
 import { useNetwork, useWalletClient, usePublicClient, Address } from "wagmi";
@@ -20,8 +20,9 @@ export default function CreateFarmReward({
   onNext,
   onPrevious,
 }: componentProps) {
-  
+
   const {
+    tokenBAddress,
     tokenARewardQt,
     setTokenARewardQt,
     tokenARewardDis,
@@ -36,6 +37,8 @@ export default function CreateFarmReward({
     setTokenBRewardInit,
     rewardToken,
     setRewardToken,
+    setTokenARewardDur,
+    setTokenBRewardDur,
     costFarm,
     setCostFarm
   } = useFarm();
@@ -46,18 +49,18 @@ export default function CreateFarmReward({
   const [BInit, setBInit] = useState<string>(tokenBRewardInit.toString());
   const [ADis, setADis] = useState<string>(tokenARewardDis.toString());
   const [BDis, setBDis] = useState<string>(tokenBRewardDis.toString());
-  const {chain} = useNetwork();
+  const { chain } = useNetwork();
   const chainId = chain?.id;
-  const {data:walletClient} = useWalletClient({chainId});
+  const { data: walletClient } = useWalletClient({ chainId });
   const publicClient = usePublicClient();
   let validNumber = new RegExp(/^\d*\.?\d*$/);
 
   useEffect(() => {
-    const setCost = async() => {
+    const setCost = async () => {
 
       try {
 
-        const info:any = await publicClient.readContract({
+        const info: any = await publicClient.readContract({
           address: FACTORY_ADDRESS[chain?.id as SupportedChains] as Address,
           abi: FortunnaFactoryABI,
           functionName: "paymentInfo",
@@ -69,34 +72,59 @@ export default function CreateFarmReward({
     }
     if (walletClient && chain)
       setCost();
-    
+
   }, [walletClient, chain]);
-  
+
   const onChangeSelection = (event: { target: { value: any; }; }) => {
     const selectedToken = event.target.value;
     setRewardToken(selectedToken);
+    if (selectedToken == 1) {
+      setBQuant('0');
+      setBDis('0');
+      setBInit('0');
+    } else if (selectedToken == 2) {
+      setAQuant('0');
+      setADis('0');
+      setAInit('0');
+    }
   }
+
+  const onChangeADurationSelection = (event: { target: { value: any; }; }) => {
+    const selectedToken = event.target.value;
+    setTokenARewardDur(selectedToken == 0 ? 1 : selectedToken == 1 ? 7 : 30);
+  }
+
+  const onChangeBDurationSelection = (event: { target: { value: any; }; }) => {
+    const selectedToken = event.target.value;
+    setTokenBRewardDur(selectedToken == 0 ? 1 : selectedToken == 1 ? 7 : 30);
+  }
+
   const onHandleNext = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 
-    if (!chain){
+    if (!chain) {
       toast.error(TOAST_MESSAGE.CONNECT_WALLET, {
         position: toast.POSITION.TOP_CENTER
       });
       return;
     }
 
-    if (rewardToken != 2 && (!AQuant.length || AQuant === "0")) {
-      toast.error(TOAST_MESSAGE.FILL_FIELD, {
-        position: toast.POSITION.TOP_CENTER
-      });
-      return;
+    if (tokenBAddress) {
+      if (rewardToken != 2 && (!AQuant.length || AQuant === "0")) {
+        toast.error(TOAST_MESSAGE.FILL_FIELD, {
+          position: toast.POSITION.TOP_CENTER
+        });
+        return;
+      }
+      if (rewardToken != 1 && (!BQuant.length || BQuant === "0")) {
+        toast.error(TOAST_MESSAGE.FILL_FIELD, {
+          position: toast.POSITION.TOP_CENTER
+        });
+        return;
+      }
+    } else {
+      setRewardToken(1);
     }
-    if (rewardToken != 1 && (!BQuant.length || BQuant === "0")) {
-      toast.error(TOAST_MESSAGE.FILL_FIELD, {
-        position: toast.POSITION.TOP_CENTER
-      });
-      return;
-    }
+
 
     setTokenARewardQt(!AQuant.length ? 0 : parseFloat(AQuant));
     setTokenBRewardQt(!BQuant.length ? 0 : parseFloat(BQuant));
@@ -104,7 +132,7 @@ export default function CreateFarmReward({
     setTokenBRewardInit(!BInit.length ? 0 : parseFloat(BInit));
     setTokenARewardDis(!ADis.length ? 0 : parseFloat(ADis));
     setTokenBRewardDis(!BDis.length ? 0 : parseFloat(BDis));
-    
+
     onNext(event);
   }
 
@@ -117,21 +145,31 @@ export default function CreateFarmReward({
             variant="body1"
             className="!text-secondary mb-[18px] !font-aeonik-pro"
           />
-          <FormGroup
-            useSelect
-            options={[
-              { title: "Both (Token A and Token B)" },
-              { title: "Token A" },
-              { title: "Token B" },
-            ]}
-            containerClassName="w-full mb-[28px]"
-            selectClassName="w-full"
-            inputPlaceholder="Rewards Token"
-            id="Rewards Token"
-            label="Rewards Token"
-            onChange={onChangeSelection}
-            value = {rewardToken.toString()}
-          />
+          {tokenBAddress ?
+            <FormGroup
+              useSelect
+              options={[
+                { title: "Both (Token A and Token B)" },
+                { title: "Token A" },
+                { title: "Token B" },
+              ]}
+              containerClassName="w-full mb-[28px]"
+              selectClassName="w-full"
+              inputPlaceholder="Rewards Token"
+              id="Rewards Token"
+              label="Rewards Token"
+              onChange={onChangeSelection}
+              value={rewardToken.toString()}
+            /> :
+            <FormGroup
+              containerClassName="w-full mb-[16px]"
+              inputClassName="w-full"
+              id="Rewards Token"
+              label="Rewards Token"
+              disabled={true}
+              value={"Token A"}
+            />
+          }
 
           <div className="md:grid grid-cols-2 gap-24">
             <div>
@@ -154,12 +192,13 @@ export default function CreateFarmReward({
                   }
                 }}
                 value={AQuant}
+                disabled={rewardToken != 2 ? false : true}
               />
               <FormGroup
                 containerClassName="w-full mb-[16px]"
                 inputClassName="w-full"
-                id="Reward Distribution"
-                label="Reward Distribution"
+                id="Reward Distribution Frequency"
+                label="Reward Distribution Frequency"
                 inputPlaceholder="Ex. 5%"
                 onChange={(event) => {
                   const val = event.target.value;
@@ -168,6 +207,7 @@ export default function CreateFarmReward({
                   }
                 }}
                 value={ADis}
+                disabled={rewardToken != 2 ? false : true}
               />
 
               <Typography
@@ -190,14 +230,16 @@ export default function CreateFarmReward({
               <FormGroup
                 useSelect
                 options={[
-                  { title: "Weekly - 1 days" },
-                  { title: "Weekly - 2 days" },
-                  { title: "Weekly - 3 days" },
+                  { title: "Daily - 24h" },
+                  { title: "Weekly - 7 days" },
+                  { title: "Monthly - 30 days" },
                 ]}
                 containerClassName="w-full mb-4"
                 selectClassName="w-full"
                 id="Reward Distribution Duration"
                 label="Reward Distribution Duration"
+                onChange={onChangeADurationSelection}
+                disabled={rewardToken != 2 ? false : true}
               />
 
               <FormGroup
@@ -213,6 +255,7 @@ export default function CreateFarmReward({
                   }
                 }}
                 value={AInit}
+                disabled={rewardToken != 2 ? false : true}
               />
             </div>
             <div>
@@ -235,12 +278,13 @@ export default function CreateFarmReward({
                   }
                 }}
                 value={BQuant}
+                disabled={rewardToken != 1 ? false : true}
               />
               <FormGroup
                 containerClassName="w-full mb-[16px]"
                 inputClassName="w-full"
-                id="Reward Distribution"
-                label="Reward Distribution"
+                id="Reward Distribution Frequency"
+                label="Reward Distribution Frequency"
                 inputPlaceholder="Ex. 5%"
                 onChange={(event) => {
                   const val = event.target.value;
@@ -249,6 +293,7 @@ export default function CreateFarmReward({
                   }
                 }}
                 value={BDis}
+                disabled={rewardToken != 1 ? false : true}
               />
 
               <Typography
@@ -271,14 +316,16 @@ export default function CreateFarmReward({
               <FormGroup
                 useSelect
                 options={[
-                  { title: "Weekly - 1 days" },
-                  { title: "Weekly - 2 days" },
-                  { title: "Weekly - 3 days" },
+                  { title: "Daily - 24h" },
+                  { title: "Weekly - 7 days" },
+                  { title: "Monthly - 30 days" },
                 ]}
                 containerClassName="w-full mb-4"
                 selectClassName="w-full"
                 id="Reward Distribution Duration"
                 label="Reward Distribution Duration"
+                disabled={rewardToken != 1 ? false : true}
+                onChange={onChangeBDurationSelection}
               />
 
               <FormGroup
@@ -294,6 +341,7 @@ export default function CreateFarmReward({
                   }
                 }}
                 value={BInit}
+                disabled={rewardToken != 1 ? false : true}
               />
             </div>
           </div>
