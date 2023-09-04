@@ -3,10 +3,10 @@ import Button from "@/components/button";
 import Modal from "@/components/modal";
 import PageWrapper from "@/components/pageWrapper";
 import Typography from "@/components/typography";
-import FarmList from "@/widget/earning/farmList/index.tsx";
+import FarmList from "@/widget/earning/farmList/index";
 import React, { useEffect, useState } from "react";
-import ActionModal from "./actionModal";
-import { PoolCollection, TOAST_MESSAGE, TokenInfos } from "@/constants";
+import ActionModal from "../actionModal";
+import { PoolCollection, PoolMode, TOAST_MESSAGE, TokenInfos } from "@/constants";
 import { useNetwork } from "wagmi";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
@@ -70,7 +70,7 @@ export default function FramingModule({
   const {chain} = useNetwork();
   const [openActionModal, setOpenActionModal] = useState(false);
   const [selectedFarm, setSelectedFarm] = useState(-1);
-  const [activePoolAddress, setActivePoolAddress] = useState<string>();
+  const [activePool, setActivePool] = useState<PoolCollection>();
   const [tokenAInfo, setTokenAInfo] = useState<TokenInfos>();
   const [tokenBInfo, setTokenBInfo] = useState<TokenInfos>();
   const [depositWithdrawIndex, setDepositWithdrawIndex] = useState<number>(0);
@@ -143,7 +143,7 @@ export default function FramingModule({
                       } else {
                         setSelectedFarm(index);
                       }
-                      setActivePoolAddress(_list.address)
+                      setActivePool(_list)
                     }}
                     onOpenActionModal={() => setOpenActionModal(true)}
                     onSetTokenAInfo={setTokenAInfo}
@@ -158,7 +158,8 @@ export default function FramingModule({
             <ActionModal
               tokenAInfo={tokenAInfo!} 
               tokenBInfo={tokenBInfo!}
-              pool = {activePoolAddress!}
+              pool = {activePool!}
+              poolMode = {PoolMode.UNISWAP_POOL}
               onClose={() => setOpenActionModal(false)} 
               index = {depositWithdrawIndex}
             />

@@ -6,7 +6,6 @@ import DashboardLayout from "@/layouts";
 import FramingModule from "@/modules/earning/farming";
 import PoolModule from "@/modules/earning/pool";
 import { getToken } from "@/utils/auth";
-import FarmList from "@/widget/earning/farmList/index.tsx";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { collection, getDocs } from 'firebase/firestore';
@@ -40,6 +39,9 @@ export default function HomePage() {
       let tempPoolArray: PoolCollection[] = [];
       let tempFarmArray: PoolCollection[] = [];
       poolsArray.map((poolItem:PoolCollection) => {
+        if (!poolItem.visible)
+          return;
+
         if (poolItem.type == PoolMode.CLASSIC_FARM) {
           tempPoolArray.push(poolItem);
         } else if (poolItem.type == PoolMode.UNISWAP_POOL) {
@@ -48,7 +50,6 @@ export default function HomePage() {
       });
       tempPoolArray = tempPoolArray.sort((a:PoolCollection, b:PoolCollection) => b.createdAt - a.createdAt);
       tempFarmArray = tempFarmArray.sort((a:PoolCollection, b:PoolCollection) => b.createdAt - a.createdAt);
-      console.log('tempPoolArray', tempPoolArray);
       setPoolArray(tempPoolArray);
       setFarmArray(tempFarmArray);
     }
@@ -70,16 +71,17 @@ export default function HomePage() {
   const handleSelect = (props: { key: string }) => {
     router.push(`/earn/${props.key}`);
   };
+
   return (
     <DashboardLayout>
       {/* <Button theme="secondary" label="jkdjdjdj" /> */}
       <PageWrapper>
         <TabComponent onSelect={handleSelect} current={currentTab} data={data}>
           <div>
-            <FramingModule poolData = {poolArray}/>
+            <FramingModule poolData = {farmArray}/>
           </div>
           <div>
-            <PoolModule poolData = {farmArray}/>
+            <PoolModule poolData = {poolArray}/>
           </div>
           <div>{/* <FramingModule /> */}</div>
         </TabComponent>

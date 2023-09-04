@@ -59,10 +59,10 @@ export default function Create() {
     if (router.query?.type) {
       if (router.query?.type == "pool") {
         setTitle("Create Pool");
-        setPoolMode(PoolMode.UNISWAP_POOL);
+        setPoolMode(PoolMode.CLASSIC_FARM);
       } else {
         setTitle("Create Farm");
-        setPoolMode(PoolMode.CLASSIC_FARM);
+        setPoolMode(PoolMode.UNISWAP_POOL);
       }
     }
   }, [router]);
@@ -81,6 +81,7 @@ export default function Create() {
             <Typography label={title} variant="title" className="mb-[20px]" />
             <Stepper current={isActiveSteeper} headers={steeperHeader}>
               <FarmInformation
+                poolMode={poolMode}
                 onNext={() => {
                   setActiveSteeper(steeperHeader[1].key);
                 }}
