@@ -151,7 +151,7 @@ export default function Sidebar({
                 <div key={index} className="">
                   <MenuItem
                     to={_data.to}
-                    active={menuIsActive(_data.key)}
+                    active={menuIsActive(_data?.key || "")}
                     type="main"
                     data={_data}
                   />
