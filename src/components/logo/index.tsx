@@ -135,3 +135,151 @@ export default function AppLogo({ ...props }) {
     </svg>
   );
 }
+
+export const SingleLogo = ({
+  useBlackAndWhite = false,
+  className,
+}: {
+  useBlackAndWhite?: boolean;
+  className?: string;
+}) => {
+  return (
+    <svg
+      width={32}
+      height={32}
+      className={className}
+      viewBox="0 0 32 32"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <circle
+        cx={16}
+        cy={16}
+        r={16}
+        fill={useBlackAndWhite ? "black" : "#EDF0F4"}
+      />
+      <rect
+        x="4.66675"
+        y="15.6445"
+        width="23.1111"
+        height="1.44444"
+        rx="0.722222"
+        fill={useBlackAndWhite ? "#fff" : "#DE1EFD"}
+      />
+      <rect
+        x="21.3677"
+        y="17.7675"
+        width="3.71256"
+        height="1.44444"
+        rx="0.722222"
+        transform="rotate(23.0936 21.3677 17.7675)"
+        fill={useBlackAndWhite ? "#fff" : "#DE1EFD"}
+      />
+      <rect
+        x="7.77563"
+        y="11.9717"
+        width="3.70863"
+        height="1.44444"
+        rx="0.722222"
+        transform="rotate(23.0936 7.77563 11.9717)"
+        fill={useBlackAndWhite ? "#fff" : "#DE1EFD"}
+      />
+      <rect
+        x="20.8591"
+        y="13.5285"
+        width="3.71256"
+        height="1.44444"
+        rx="0.722222"
+        transform="rotate(-21.9064 20.8591 13.5285)"
+        fill={useBlackAndWhite ? "#fff" : "#DE1EFD"}
+      />
+      <rect
+        x="7.14966"
+        y="19.041"
+        width="3.70863"
+        height="1.44444"
+        rx="0.722222"
+        transform="rotate(-21.9064 7.14966 19.041)"
+        fill={useBlackAndWhite ? "#fff" : "#DE1EFD"}
+      />
+      <rect
+        x="17.5015"
+        y="10.8898"
+        width="3.71256"
+        height="1.44444"
+        rx="0.722222"
+        transform="rotate(-66.9064 17.5015 10.8898)"
+        fill={useBlackAndWhite ? "#fff" : "#DE1EFD"}
+      />
+      <rect
+        x="11.7056"
+        y="24.4824"
+        width="3.70863"
+        height="1.44444"
+        rx="0.722222"
+        transform="rotate(-66.9064 11.7056 24.4824)"
+        fill={useBlackAndWhite ? "#fff" : "#DE1EFD"}
+      />
+      <rect
+        x="13.262"
+        y="11.3984"
+        width="3.71256"
+        height="1.44444"
+        rx="0.722222"
+        transform="rotate(-111.906 13.262 11.3984)"
+        fill={useBlackAndWhite ? "#fff" : "#DE1EFD"}
+      />
+      <rect
+        x="18.7749"
+        y="25.1082"
+        width="3.70863"
+        height="1.44444"
+        rx="0.722222"
+        transform="rotate(-111.906 18.7749 25.1082)"
+        fill={useBlackAndWhite ? "#fff" : "#DE1EFD"}
+      />
+      <rect
+        x="16.8"
+        y="4.66701"
+        width="23.1111"
+        height="1.44444"
+        rx="0.722222"
+        transform="rotate(90 16.8 4.66701)"
+        fill={useBlackAndWhite ? "#fff" : "#DE1EFD"}
+      />
+      <rect
+        x="8.42236"
+        y="7.55589"
+        width="23.1111"
+        height="1.44444"
+        rx="0.722222"
+        transform="rotate(45 8.42236 7.55589)"
+        fill={useBlackAndWhite ? "#fff" : "#DE1EFD"}
+      />
+      <rect
+        x="24.6001"
+        y="8.42285"
+        width="23.1111"
+        height="1.44444"
+        rx="0.722222"
+        transform="rotate(135 24.6001 8.42285)"
+        fill={useBlackAndWhite ? "#fff" : "#DE1EFD"}
+      />
+      <circle
+        cx="5.67779"
+        cy="11.4556"
+        r="0.722222"
+        fill={useBlackAndWhite ? "#fff" : "#DE1EFD"}
+      />
+      <circle
+        cx="2.88889"
+        cy="2.88889"
+        r="2.16667"
+        transform="matrix(-1 0 0 1 19.1111 13.334)"
+        fill="#EDF0F4"
+        stroke={useBlackAndWhite ? "#fff" : "#DE1EFD"}
+        strokeWidth="1.44444"
+      />
+    </svg>
+  );
+};

@@ -10,11 +10,17 @@ import { Address, useBalance, usePublicClient, useWalletClient } from "wagmi";
 import FortunnaPoolABI from "@/assets/FortunnaPool.json";
 import FortunnaToken from "@/assets/FortunnaToken.json";
 import FortunnaTokenABI from "@/assets/FortunnaToken.json";
-import { BalanceShowDecimals, PoolCollection, TOAST_MESSAGE, TokenInfos } from "@/constants";
+import {
+  BalanceShowDecimals,
+  PoolCollection,
+  TOAST_MESSAGE,
+  TokenInfos,
+} from "@/constants";
 import { toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import { convertUnderDecimals } from "@/utils";
 import { ethers } from "ethers";
+import AppLogo, { SingleLogo } from "@/components/logo";
 // import FarmActionModal from "./actionModal";
 
 const activeTokenData = [
@@ -62,15 +68,14 @@ export default function PoolList({
   onSetTokenBInfo,
   onSelectedIndex,
 }: {
-  pool: PoolCollection
-  onStake: React.MouseEventHandler<HTMLButtonElement>,
-  active: boolean,
-  onOpenActionModal: () => void,
-  onSetTokenAInfo: (x?: TokenInfos) => void,
-  onSetTokenBInfo: (x?: TokenInfos) => void,
-  onSelectedIndex: (x?: any) => void
+  pool: PoolCollection;
+  onStake: React.MouseEventHandler<HTMLButtonElement>;
+  active: boolean;
+  onOpenActionModal: () => void;
+  onSetTokenAInfo: (x?: TokenInfos) => void;
+  onSetTokenBInfo: (x?: TokenInfos) => void;
+  onSelectedIndex: (x?: any) => void;
 }) {
-
   const { data: walletClient } = useWalletClient();
   const publicClient = usePublicClient();
   const [tokenAAddress, setTokenAAddress] = useState<string>("");
@@ -89,45 +94,44 @@ export default function PoolList({
   const { data: tokenABalance } = useBalance({
     token: tokenAAddress as Address,
     address: walletClient?.account.address,
-    watch: true
+    watch: true,
   });
 
   const { data: tokenBBalance } = useBalance({
     token: tokenBAddress as Address,
     address: walletClient?.account.address,
-    watch: true
+    watch: true,
   });
 
   const { data: stakeLPBalance } = useBalance({
     token: stakingToken as Address,
     address: walletClient?.account.address,
-    watch: true
+    watch: true,
   });
 
   const rewardLPBalance = useBalance({
     token: rewardToken as Address,
     address: walletClient?.account.address,
-    watch: true
+    watch: true,
   });
 
   const readTokensInfo = async () => {
-
     const staking_Token: any = await publicClient.readContract({
       address: pool.address as Address,
       abi: FortunnaPoolABI,
-      functionName: "stakingToken"
+      functionName: "stakingToken",
     });
 
     const reward_Token: any = await publicClient.readContract({
       address: pool.address as Address,
       abi: FortunnaPoolABI,
-      functionName: "rewardToken"
+      functionName: "rewardToken",
     });
 
     const scalar_Params: any = await publicClient.readContract({
       address: pool.address as Address,
       abi: FortunnaPoolABI,
-      functionName: "scalarParams"
+      functionName: "scalarParams",
     });
 
     if (scalar_Params.length > 0) {
@@ -143,9 +147,7 @@ export default function PoolList({
       address: staking_Token as Address,
       abi: FortunnaToken,
       functionName: "underlyingTokens",
-      args: [
-        0
-      ]
+      args: [0],
     });
 
     setTokenAAddress(tokenA_Address);
@@ -155,26 +157,18 @@ export default function PoolList({
         address: staking_Token as Address,
         abi: FortunnaToken,
         functionName: "underlyingTokens",
-        args: [
-          1
-        ]
+        args: [1],
       });
       setTokenBAddress(tokenB_Address);
     }
-
-
-  }
+  };
 
   const readMin_MaxAmount = async (tokenAddress: string, amount: string) => {
-
     const tokenA_Amount: any = await publicClient.readContract({
       address: tokenAddress as Address,
       abi: FortunnaToken,
       functionName: "calcUnderlyingTokensInOrOutPerFortunnaToken",
-      args: [
-        0,
-        amount
-      ]
+      args: [0, amount],
     });
 
     let tokenB_Amount: any;
@@ -183,35 +177,30 @@ export default function PoolList({
         address: tokenAddress as Address,
         abi: FortunnaToken,
         functionName: "calcUnderlyingTokensInOrOutPerFortunnaToken",
-        args: [
-          1,
-          amount
-        ]
+        args: [1, amount],
       });
     }
 
     return [tokenA_Amount, tokenB_Amount];
-  }
+  };
 
-  const readStaking_RewardInfo = async (tokenAddress: string, stake_reward: boolean) => {
-
+  const readStaking_RewardInfo = async (
+    tokenAddress: string,
+    stake_reward: boolean
+  ) => {
     let lpAmount = 0;
     const res: any = await publicClient.readContract({
       address: pool.address as Address,
       abi: FortunnaPoolABI,
       functionName: "usersInfo",
-      args: [
-        walletClient?.account.address
-      ]
+      args: [walletClient?.account.address],
     });
 
     const reward_res: any = await publicClient.readContract({
       address: pool.address as Address,
       abi: FortunnaPoolABI,
       functionName: "pendingRewards",
-      args: [
-        walletClient?.account.address
-      ]
+      args: [walletClient?.account.address],
     });
 
     if (stake_reward) {
@@ -224,10 +213,7 @@ export default function PoolList({
       address: tokenAddress as Address,
       abi: FortunnaToken,
       functionName: "calcUnderlyingTokensInOrOutPerFortunnaToken",
-      args: [
-        0,
-        lpAmount
-      ]
+      args: [0, lpAmount],
     });
 
     let tokenB_Balance: any;
@@ -236,10 +222,7 @@ export default function PoolList({
         address: tokenAddress as Address,
         abi: FortunnaToken,
         functionName: "calcUnderlyingTokensInOrOutPerFortunnaToken",
-        args: [
-          1,
-          lpAmount
-        ]
+        args: [1, lpAmount],
       });
     }
     // console.log('tokenA_Balance', tokenA_Balance);
@@ -247,91 +230,76 @@ export default function PoolList({
 
     if (stake_reward) {
       setTokenAStakeBalance(tokenA_Balance);
-      if (pool.tokenCount == 2)
-        setTokenBStakeBalance(tokenB_Balance);
+      if (pool.tokenCount == 2) setTokenBStakeBalance(tokenB_Balance);
     } else {
       setTokenARewardBalance(tokenA_Balance);
-      if (pool.tokenCount == 2)
-        setTokenBRewardBalance(tokenB_Balance);
+      if (pool.tokenCount == 2) setTokenBRewardBalance(tokenB_Balance);
     }
-
-  }
+  };
 
   const onGetReward = async () => {
-
     const txReward: any = await walletClient!.writeContract({
       address: pool.address as Address,
       abi: FortunnaPoolABI,
-      functionName: "getReward"
+      functionName: "getReward",
     });
 
     const confirmation = await publicClient.waitForTransactionReceipt({
       hash: txReward,
-      timeout: 100000
+      timeout: 100000,
     });
 
     console.log("reward confirm", confirmation);
 
     return BigInt(confirmation.logs[1].data).toString(10);
-
-  }
+  };
 
   const onBurnReward = async (amount: any) => {
-
     const txBurn: any = await walletClient!.writeContract({
       address: rewardToken as Address,
       abi: FortunnaTokenABI,
       functionName: "burn",
-      args: [
-        walletClient?.account.address,
-        amount
-      ]
+      args: [walletClient?.account.address, amount],
     });
 
     const confirmation = await publicClient.waitForTransactionReceipt({
       hash: txBurn,
-      timeout: 100000
+      timeout: 100000,
     });
 
-    console.log('burn confirm', confirmation);
-  }
+    console.log("burn confirm", confirmation);
+  };
 
   useEffect(() => {
-    if (!walletClient?.chain)
-      return;
+    if (!walletClient?.chain) return;
     if (active) {
       readTokensInfo();
     }
   }, [active]);
 
   useEffect(() => {
-    if (!walletClient?.chain)
-      return;
+    if (!walletClient?.chain) return;
     if (stakingToken) {
       readStaking_RewardInfo(stakingToken, true);
     }
-    if (rewardToken)
-      readStaking_RewardInfo(rewardToken, false);
-  }, [tokenABalance, tokenBBalance, stakeLPBalance, rewardLPBalance])
+    if (rewardToken) readStaking_RewardInfo(rewardToken, false);
+  }, [tokenABalance, tokenBBalance, stakeLPBalance, rewardLPBalance]);
 
   const onHandleDepositActionModal = (event: any) => {
-    if (!walletClient?.chain)
-      return;
+    if (!walletClient?.chain) return;
 
     onSelectedIndex(0);
     onHandleActionModal(event);
-  }
+  };
 
   const onHandleWithdrawActionModal = (event: any) => {
-    if (!walletClient?.chain)
-      return;
+    if (!walletClient?.chain) return;
 
     onSelectedIndex(1);
     onHandleActionModal(event);
-  }
+  };
 
   const onHandleActionModal = (event: any) => {
-
     const tokenAInfo = {
       tokenAddress: tokenAAddress,
       tokenBalanceInfo: tokenABalance,
@@ -340,7 +308,7 @@ export default function PoolList({
       stakeTokenAddress: stakingToken,
       rewardTokenAddress: rewardToken,
       minStakeAmount: minStakeAmount[0],
-      maxStakeAmount: maxStakeAmount[0]
+      maxStakeAmount: maxStakeAmount[0],
     } as TokenInfos;
 
     const tokenBInfo = {
@@ -351,55 +319,46 @@ export default function PoolList({
       stakeTokenAddress: stakingToken,
       rewardTokenAddress: rewardToken,
       minStakeAmount: minStakeAmount[1],
-      maxStakeAmount: maxStakeAmount[1]
-
+      maxStakeAmount: maxStakeAmount[1],
     } as TokenInfos;
 
     onSetTokenAInfo(tokenAInfo);
     onSetTokenBInfo(tokenBInfo);
     onOpenActionModal();
-  }
+  };
 
   const onClaimReward = async (event: any) => {
-
     setRewardStatus(true);
     try {
       const amount = await onGetReward();
 
-      console.log('reward amount', amount);
+      console.log("reward amount", amount);
 
       await onBurnReward(amount);
 
       toast.success(TOAST_MESSAGE.TRANSACTION_SUBMITTED, {
-        position: toast.POSITION.TOP_CENTER
+        position: toast.POSITION.TOP_CENTER,
       });
     } catch (ex) {
-      console.log('ex', ex);
+      console.log("ex", ex);
       toast.error(TOAST_MESSAGE.UNEXPECTED_ERROR, {
-        position: toast.POSITION.TOP_CENTER
+        position: toast.POSITION.TOP_CENTER,
       });
     }
 
     setRewardStatus(false);
-  }
-  const Assets = ({
-    tokenA,
-    tokenB
-  }: {
-    tokenA: string,
-    tokenB: string
-  }) => {
-
+  };
+  const Assets = ({ tokenA, tokenB }: { tokenA: string; tokenB: string }) => {
     return (
       <div>
-        <div
-          className="flex items-center mt-2"
-        >
+        <div className="flex items-center mt-2">
           <Image
             height={40}
             className="ms-3 mr-2"
             width={30}
-            src={pool.tokenALogo.length ? pool.tokenALogo : "/default_token.png"}
+            src={
+              pool.tokenALogo.length ? pool.tokenALogo : "/default_token.png"
+            }
             alt="img"
           />
 
@@ -409,16 +368,18 @@ export default function PoolList({
             variant="body3"
           />
         </div>
-        {pool.tokenCount > 1 &&
-          <div
-            className="flex items-center mt-2"
-          >
+        {pool.tokenCount > 1 && (
+          <div className="flex items-center mt-2">
             {
               <Image
                 height={40}
                 className="ms-3 mr-2"
                 width={30}
-                src={pool.tokenBLogo.length ? pool.tokenBLogo : "/default_token.png"}
+                src={
+                  pool.tokenBLogo.length
+                    ? pool.tokenBLogo
+                    : "/default_token.png"
+                }
                 alt="img"
               />
             }
@@ -428,7 +389,7 @@ export default function PoolList({
               variant="body3"
             />
           </div>
-        }
+        )}
       </div>
     );
   };
@@ -442,9 +403,27 @@ export default function PoolList({
       <div className="lg:flex lg:flex-row justify-between">
         <div className="lg:w-[70%]">
           <div className="flex flex-row items-center">
-            <div className="flex mr-4">
-              <div>
-                <BnB />
+            <div className="flex">
+              <div
+                className={`flex mr-4 ${
+                  pool.name.trim() == "FTA/FTB Staking" ? "" : "hidden"
+                }`}
+              >
+                <div className="-ml-3">
+                  <SingleLogo />
+                </div>
+                <div className="-ml-3">
+                  <SingleLogo useBlackAndWhite />
+                </div>
+              </div>
+              <div
+                className={`flex mr-4 ${
+                  pool.name.trim() == "FTB Staking" ? "" : "hidden"
+                }`}
+              >
+                <div className="-ml-3">
+                  <SingleLogo />
+                </div>
               </div>
             </div>
             <Typography variant="subtitle" label={pool.name} />
@@ -452,18 +431,17 @@ export default function PoolList({
 
           <div className="lg:grid lg:grid-cols-4 gap-10 mt-[32px] ">
             <div>
-              {" "}
               <Typography
                 variant="body3"
                 className="!font-poppins-light text-light-2"
                 label="Platform"
               />
               <div className="flex items-center mt-2">
-                <Ankr />
+                <SingleLogo className="!w-7 h-auto" />
                 <Typography
                   variant="heading"
                   className="ml-[8px] !font-poppins-semi-bold"
-                  label="Ankr"
+                  label="Fortuna"
                 />
               </div>
             </div>
@@ -483,7 +461,7 @@ export default function PoolList({
                 <Typography
                   variant="heading"
                   className="!font-poppins-semi-bold"
-                  label="5%"
+                  label="Custom"
                 />
               </div>
             </div>
@@ -496,7 +474,7 @@ export default function PoolList({
               <Typography
                 variant="heading"
                 className="!font-poppins-semi-bold mt-2"
-                label="$15,000,000"
+                label="-"
               />
             </div>
             <div>
@@ -508,7 +486,7 @@ export default function PoolList({
               <Typography
                 variant="heading"
                 className="!font-poppins-semi-bold mt-2"
-                label="$500,000,000"
+                label="-"
               />
             </div>
           </div>
@@ -567,8 +545,32 @@ export default function PoolList({
                 label="Wallet Balance"
               />
               <Assets
-                tokenA={!tokenAAddress || !tokenABalance ? "--" : convertUnderDecimals(ethers.formatUnits(tokenABalance!.value, tokenABalance?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) + " " + tokenABalance?.symbol}
-                tokenB={!tokenBAddress || !tokenBBalance ? "--" : convertUnderDecimals(ethers.formatUnits(tokenBBalance!.value, tokenBBalance?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) + " " + tokenBBalance?.symbol}
+                tokenA={
+                  !tokenAAddress || !tokenABalance
+                    ? "--"
+                    : convertUnderDecimals(
+                        ethers.formatUnits(
+                          tokenABalance!.value,
+                          tokenABalance?.decimals
+                        ),
+                        BalanceShowDecimals.FARM_SHOW_BALANCE
+                      ) +
+                      " " +
+                      tokenABalance?.symbol
+                }
+                tokenB={
+                  !tokenBAddress || !tokenBBalance
+                    ? "--"
+                    : convertUnderDecimals(
+                        ethers.formatUnits(
+                          tokenBBalance!.value,
+                          tokenBBalance?.decimals
+                        ),
+                        BalanceShowDecimals.FARM_SHOW_BALANCE
+                      ) +
+                      " " +
+                      tokenBBalance?.symbol
+                }
               />
 
               <Button
@@ -577,7 +579,11 @@ export default function PoolList({
                 onClick={onHandleDepositActionModal}
                 rounded
                 theme="secondary-solid"
-                disabled={tokenAAddress && tokenABalance && tokenABalance?.value > 0 ? false : true}
+                disabled={
+                  tokenAAddress && tokenABalance && tokenABalance?.value > 0
+                    ? false
+                    : true
+                }
                 label="Deposit"
               />
               {/* <Typography
@@ -622,8 +628,32 @@ export default function PoolList({
                 label="Available Balance"
               />
               <Assets
-                tokenA={!stakingToken ? "--" : convertUnderDecimals(ethers.formatUnits(tokenAStakeBalance, tokenABalance?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) + " " + tokenABalance?.symbol}
-                tokenB={!stakingToken ? "--" : convertUnderDecimals(ethers.formatUnits(tokenBStakeBalance, tokenBBalance?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) + " " + tokenBBalance?.symbol}
+                tokenA={
+                  !stakingToken
+                    ? "--"
+                    : convertUnderDecimals(
+                        ethers.formatUnits(
+                          tokenAStakeBalance,
+                          tokenABalance?.decimals
+                        ),
+                        BalanceShowDecimals.FARM_SHOW_BALANCE
+                      ) +
+                      " " +
+                      tokenABalance?.symbol
+                }
+                tokenB={
+                  !stakingToken
+                    ? "--"
+                    : convertUnderDecimals(
+                        ethers.formatUnits(
+                          tokenBStakeBalance,
+                          tokenBBalance?.decimals
+                        ),
+                        BalanceShowDecimals.FARM_SHOW_BALANCE
+                      ) +
+                      " " +
+                      tokenBBalance?.symbol
+                }
               />
               <Button
                 className="w-full mt-9"
@@ -631,7 +661,12 @@ export default function PoolList({
                 rounded
                 theme="secondary-solid"
                 onClick={onHandleWithdrawActionModal}
-                disabled={parseFloat(tokenAStakeBalance) > 0 || parseFloat(tokenBStakeBalance) > 0 ? false : true}
+                disabled={
+                  parseFloat(tokenAStakeBalance) > 0 ||
+                  parseFloat(tokenBStakeBalance) > 0
+                    ? false
+                    : true
+                }
                 label="Withdraw"
               />
               {/* <Typography
@@ -677,8 +712,32 @@ export default function PoolList({
                 label="Current Rewards"
               />
               <Assets
-                tokenA={!rewardToken ? "--" : convertUnderDecimals(ethers.formatUnits(tokenARewardBalance, tokenABalance?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) + " " + tokenABalance?.symbol}
-                tokenB={!rewardToken ? "--" : convertUnderDecimals(ethers.formatUnits(tokenBRewardBalance, tokenBBalance?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) + " " + tokenBBalance?.symbol}
+                tokenA={
+                  !rewardToken
+                    ? "--"
+                    : convertUnderDecimals(
+                        ethers.formatUnits(
+                          tokenARewardBalance,
+                          tokenABalance?.decimals
+                        ),
+                        BalanceShowDecimals.FARM_SHOW_BALANCE
+                      ) +
+                      " " +
+                      tokenABalance?.symbol
+                }
+                tokenB={
+                  !rewardToken
+                    ? "--"
+                    : convertUnderDecimals(
+                        ethers.formatUnits(
+                          tokenBRewardBalance,
+                          tokenBBalance?.decimals
+                        ),
+                        BalanceShowDecimals.FARM_SHOW_BALANCE
+                      ) +
+                      " " +
+                      tokenBBalance?.symbol
+                }
               />
               <Button
                 className="w-full mt-9"

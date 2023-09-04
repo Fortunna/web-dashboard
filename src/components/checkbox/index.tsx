@@ -1,16 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 export default function CheckBox({
-  checked,
+  checked = false,
   id,
 }: {
   checked?: boolean;
   id: string;
 }) {
+  const [isChecked, setIsChecked] = useState(false);
+
+  useEffect(() => {
+    setIsChecked(checked);
+  }, [checked]);
   return (
     <div>
       <input
-        // checked={checked}
+        checked={isChecked}
         id={id}
         type="checkbox"
         value=""
