@@ -60,9 +60,11 @@ export default function Create() {
       if (router.query?.type == "pool") {
         setTitle("Create Pool");
         setPoolMode(PoolMode.CLASSIC_FARM);
+        setActiveSteeper(steeperHeader[0].key);
       } else {
-        setTitle("Create Farm");
+        setTitle("Create LP Pair");
         setPoolMode(PoolMode.UNISWAP_POOL);
+        setActiveSteeper(steeperHeader[0].key);
       }
     }
   }, [router]);

@@ -9,6 +9,7 @@ import ERC20TokenABI from "@/assets/ERC20ABI.json";
 import { useNetwork, useWalletClient, Address, useBalance, usePublicClient } from "wagmi";
 import { ethers, parseEther } from "ethers";
 import FortunnaFactoryABI from "@/assets/FortunnaFactory.json";
+import FortunnaClassicPool from "@/assets/FortunnaPool.json";
 import { FACTORY_ADDRESS, FIREBASE_DATABASE_NAME, PoolMode, SupportedChains, TOAST_MESSAGE } from "@/constants";
 import { toast } from "react-toastify";
 import { database } from "@/utils/firebase";
@@ -189,8 +190,8 @@ export default function CreateFarmReview({
           value: tokenARewardQt.toString(),
         },
         {
-          name: "Reward Distribution",
-          value: tokenARewardDis.toString(),
+          name: "Reward Distribution Frequency",
+          value: tokenARewardDis.toString() + " %",
         },
         {
           name: "Compounding",
@@ -215,8 +216,8 @@ export default function CreateFarmReview({
           value: tokenBRewardQt.toString(),
         },
         {
-          name: "Reward Distribution",
-          value: tokenBRewardDis.toString(),
+          name: "Reward Distribution Frequency",
+          value: tokenBRewardDis.toString() + " %",
         },
         {
           name: "Compounding",
@@ -299,6 +300,42 @@ export default function CreateFarmReview({
     });
 
     return [txApproveStaking, txApproveRewarding];
+  }
+
+  const onSetupForPool = async (poolAddress: string) => {
+
+    const rewardTokne: any = await publicClient!.readContract({
+      address: poolAddress as Address,
+      abi: FortunnaClassicPool,
+      functionName: "rewardToken"
+    });
+
+    const txApproveRewarding = await walletClient!.writeContract({
+      address: rewardTokne as Address,
+      abi: ERC20TokenABI,
+      functionName: "approve",
+      args: [
+        poolAddress,
+        ethers.MaxUint256
+      ]
+    });
+
+    await onWaitTransactionReceipt([txApproveRewarding]);
+
+    const txaddRewardStaking: any = await walletClient!.writeContract({
+      address: poolAddress as Address,
+      abi: FortunnaClassicPool,
+      functionName: "addExpectedRewardTokensBalanceToDistribute",
+    });
+
+    const txProvideRewardStaking: any = await walletClient!.writeContract({
+      address: poolAddress as Address,
+      abi: FortunnaClassicPool,
+      functionName: "providePartOfTotalRewards",
+    });
+
+    await onWaitTransactionReceipt([txaddRewardStaking, txProvideRewardStaking]);
+
   }
 
   const onCheckBalanceForPool = () => {
@@ -473,8 +510,11 @@ export default function CreateFarmReview({
       const address_res = await onWaitTransactionReceipt([tx], true);
 
       if (address_res) {
+
         const address = removeForwardZero(address_res);
         console.log('address', address);
+        // if (mode[0] == PoolMode.CLASSIC_FARM)
+        //   await onSetupForPool(address);
         savePool(address);
       }
 

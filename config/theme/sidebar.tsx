@@ -204,7 +204,7 @@ export const TOP_MENU_DATA = [
         ),
       },
       {
-        name: "Create Farm",
+        name: "Create LP Pair",
         to: "/create/farm",
         icon: (
           <svg

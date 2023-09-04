@@ -3,14 +3,14 @@ import Card from "@/components/card";
 import FormGroup from "@/components/form/form-group";
 import Radio from "@/components/radio";
 import Typography from "@/components/typography";
-import { 
+import {
   useNetwork
 } from "wagmi";
 import React, { MouseEventHandler, useCallback, useEffect, useState } from "react";
 import { PoolMode, SupportedChains, TOAST_MESSAGE } from "@/constants";
 import { getTokenInfo } from "@/api";
 import { useFarm } from "@/hooks/useFarm";
-import {toast} from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { checkAddressValidation } from "@/utils";
 
@@ -22,15 +22,15 @@ export default function FarmInformation({ poolMode, onNext }: componentProps) {
 
   const [showAErrorBorder, setShowAErrorBorder] = useState<boolean>();
   const [showBErrorBorder, setShowBErrorBorder] = useState<boolean>();
-
-  const {chain} = useNetwork();
+  const [tokenBInputDisabled, setTokenBInputDisabled] = useState<boolean>(true);
+  const { chain } = useNetwork();
 
   const {
     poolName,
     setPoolName,
     poolImage,
     setPoolImage,
-    tokenAAddress, 
+    tokenAAddress,
     setTokenAAddress,
     tokenASymbol,
     setTokenASymbol,
@@ -68,7 +68,7 @@ export default function FarmInformation({ poolMode, onNext }: componentProps) {
       return;
 
     const [symbol, decimal] = await getTokenInfo(address, chain.id!, chain.rpcUrls.default.http[0]);
-    
+
     if (symbol && decimal) {
       setTokenBSymbol(symbol);
       setTokenBDecimal(decimal);
@@ -87,8 +87,8 @@ export default function FarmInformation({ poolMode, onNext }: componentProps) {
       });
       return;
     }
-    
-    if (poolMode == PoolMode.UNISWAP_POOL && tokenAAddress > tokenBAddress) {
+
+    if (poolMode == PoolMode.UNISWAP_POOL && tokenAAddress > tokenBAddress && !tokenBInputDisabled) {
       toast.error(TOAST_MESSAGE.TOKENA_ADDRESS_MUST_BE_LESS_THAN_TOKENB_ADDRESS, {
         position: toast.POSITION.TOP_CENTER
       });
@@ -96,9 +96,9 @@ export default function FarmInformation({ poolMode, onNext }: componentProps) {
     }
 
     if (!poolName ||
-        (!tokenASymbol && !tokenBSymbol) ||
-        (!tokenADecimal && !tokenBDecimal)
-      ) {
+      (!tokenBInputDisabled && (!tokenASymbol || !tokenBSymbol)) ||
+      (tokenBInputDisabled && !tokenASymbol)
+    ) {
       setShowAErrorBorder(true);
       toast.error(TOAST_MESSAGE.FILL_FIELD, {
         position: toast.POSITION.TOP_CENTER
@@ -109,12 +109,12 @@ export default function FarmInformation({ poolMode, onNext }: componentProps) {
     onNext(event);
   }
 
-  const onSetPoolName = (event: {target: {value:any;};}) => {
+  const onSetPoolName = (event: { target: { value: any; }; }) => {
     const val = event.target.value;
     setPoolName(val);
   }
 
-  const onSetPoolImage = (event: {target: {value:any ;}; }) => {
+  const onSetPoolImage = (event: { target: { value: any; }; }) => {
     const val = event.target.value;
     setPoolImage(val);
   }
@@ -132,6 +132,17 @@ export default function FarmInformation({ poolMode, onNext }: componentProps) {
       setTokenBAddress(val);
   }
 
+  const onChangeSelection = (event: { target: { value: any; }; }) => {
+    const selectedToken = event.target.value;
+    if (selectedToken == 0) {
+      setTokenBInputDisabled(true);
+      setTokenBAddress("");
+    }
+    else {
+      setTokenBInputDisabled(false);
+    }
+  }
+
   useEffect(() => {
     if (chain != undefined) {
       setTokenAInfo(tokenAAddress);
@@ -143,10 +154,24 @@ export default function FarmInformation({ poolMode, onNext }: componentProps) {
     <div>
       <Card>
         <>
+
           <Typography
             label="(*) is required field."
             variant="body1"
             className="!text-secondary mb-[18px] !font-aeonik-pro"
+          />
+          <FormGroup
+            useSelect
+            options={[
+              { title: "Single Token" },
+              { title: "Dual Token" },
+            ]}
+            containerClassName="w-full mb-[28px]"
+            selectClassName="w-full"
+            inputPlaceholder="Pool Type"
+            id="Pool Type"
+            label="Pool Type"
+            onChange={onChangeSelection}
           />
           <FormGroup
             containerClassName="w-full mb-[24px]"
@@ -154,8 +179,8 @@ export default function FarmInformation({ poolMode, onNext }: componentProps) {
             inputPlaceholder="Ex. Fortuna Pool"
             id="label"
             label="Pool Name*"
-            onChange = {onSetPoolName}
-            value = {poolName}
+            onChange={onSetPoolName}
+            value={poolName}
           />
           <FormGroup
             containerClassName="w-full"
@@ -163,13 +188,13 @@ export default function FarmInformation({ poolMode, onNext }: componentProps) {
             id="Pool Image (Optional)"
             label="Pool Image (Optional)"
             inputPlaceholder="Ex. https://upload.fortuna.io"
-            onChange = {onSetPoolImage}
-            value = {poolImage}
+            onChange={onSetPoolImage}
+            value={poolImage}
           />
           <Typography
             variant="body2"
             className="!text-neutrals-5 my-7 !font-aeonik-pro-bold"
-            label={"Token Pair Information"}
+            label={"Tokens Info"}
           />
           <div className="md:grid grid-cols-2 gap-24">
             <div>
@@ -184,7 +209,7 @@ export default function FarmInformation({ poolMode, onNext }: componentProps) {
                 id="Contract Address"
                 label="Contract Address*"
                 inputPlaceholder="Ex. 0xbb9bc244d798123fde783fcc1c72d3bb8c189413"
-                inputAgain = {showAErrorBorder}
+                inputAgain={showAErrorBorder}
                 onChange={onChangeTokenA}
                 value={tokenAAddress}
               />
@@ -193,16 +218,16 @@ export default function FarmInformation({ poolMode, onNext }: componentProps) {
                 inputClassName="w-full"
                 id="Token Symbol"
                 label="Token Symbol*"
-                value = {tokenASymbol}
-                disabled = {true}
+                value={tokenASymbol}
+                disabled={true}
               />
               <FormGroup
                 containerClassName="w-full mb-[24px]"
                 inputClassName="w-full"
                 id="Token Decimals"
                 label="Token Decimals*"
-                value = {tokenADecimal.toString()}
-                disabled = {true}
+                value={tokenADecimal.toString()}
+                disabled={true}
               />
               <FormGroup
                 containerClassName="w-full mb-[24px]"
@@ -211,7 +236,7 @@ export default function FarmInformation({ poolMode, onNext }: componentProps) {
                 label="Token Logo URL (Optional)"
                 inputPlaceholder="Ex. https://upload.fortuna.io"
                 onChange={(event) => setTokenALogo(event.target.value)}
-                value = {tokenALogo}
+                value={tokenALogo}
               />
               <div className="mb-12">
                 <Typography
@@ -221,11 +246,11 @@ export default function FarmInformation({ poolMode, onNext }: componentProps) {
                 />
                 <Radio label="ETH" checked={
                   chain?.id !== SupportedChains.ETH_MAINNET
-                }/>
+                } />
                 <div className="mt-4"></div>
                 <Radio label="BSC" checked={
                   chain?.id === SupportedChains.BSC_TESTNET
-                  } />
+                } />
                 <div className="mt-4"></div>
                 <Typography
                   variant="body0.5"
@@ -245,25 +270,26 @@ export default function FarmInformation({ poolMode, onNext }: componentProps) {
                 id="Contract Address"
                 label="Contract Address*"
                 inputPlaceholder="Ex. 0xbb9bc244d798123fde783fcc1c72d3bb8c189413"
-                inputAgain = {showBErrorBorder}
+                inputAgain={showBErrorBorder}
                 onChange={onChangeTokenB}
                 value={tokenBAddress}
+                disabled={tokenBInputDisabled}
               />
               <FormGroup
                 containerClassName="w-full mb-[24px]"
                 inputClassName="w-full"
                 id="Token Symbol"
                 label="Token Symbol*"
-                disabled = {true}
-                value = {tokenBSymbol}
+                disabled={true}
+                value={tokenBSymbol}
               />
               <FormGroup
                 containerClassName="w-full mb-[24px]"
                 inputClassName="w-full"
                 id="Token Decimals"
                 label="Token Decimals*"
-                disabled = {true}
-                value = {tokenBDecimal.toString()}
+                disabled={true}
+                value={tokenBDecimal.toString()}
               />
               <FormGroup
                 containerClassName="w-full mb-[24px]"
@@ -272,7 +298,7 @@ export default function FarmInformation({ poolMode, onNext }: componentProps) {
                 label="Token Logo URL (Optional)"
                 inputPlaceholder="Ex. https://upload.fortuna.io"
                 onChange={(event) => setTokenBLogo(event.target.value)}
-                value = {tokenBLogo}
+                value={tokenBLogo}
               />
               <div className="mb-12">
                 <Typography
@@ -282,11 +308,11 @@ export default function FarmInformation({ poolMode, onNext }: componentProps) {
                 />
                 <Radio label="ETH" checked={
                   chain?.id !== SupportedChains.ETH_MAINNET
-                }/>
+                } />
                 <div className="mt-4"></div>
                 <Radio label="BSC" checked={
                   chain?.id === SupportedChains.BSC_TESTNET
-                  } />
+                } />
                 <div className="mt-4"></div>
                 <Typography
                   variant="body0.5"
@@ -302,7 +328,7 @@ export default function FarmInformation({ poolMode, onNext }: componentProps) {
               theme="secondary"
               className="!px-10"
               size="big"
-              label="Create Farm"
+              label="Create Pool"
               rightComponent={
                 <svg
                   className="ms-1"
