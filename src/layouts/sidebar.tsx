@@ -99,14 +99,13 @@ export default function Sidebar({
 
   const menuIsActive = (link: string) => {
     const getLink = asPath.split("/")[1];
-    let active = link.replace("/", "") == getLink;
+    let active = link?.replace("/", "") == getLink;
     return active;
   };
 
   const SubMenuIsActive = (mainLink: string, link: string) => {
     const mainIsActive = menuIsActive(mainLink);
     if (!mainIsActive) return false;
-
     const getLink = asPath.split("?")[0];
     let active = getLink.includes(link);
 
@@ -152,12 +151,12 @@ export default function Sidebar({
                 <div key={index} className="">
                   <MenuItem
                     to={_data.to}
-                    active={menuIsActive(_data.to)}
+                    active={menuIsActive(_data.key)}
                     type="main"
                     data={_data}
                   />
 
-                  {_data?.menu && menuIsActive(_data.to) ? (
+                  {_data?.menu && menuIsActive(_data.key) ? (
                     <div className="ps-9">
                       {_data?.menu?.map((_subMenu, _index) => {
                         return (
@@ -168,7 +167,7 @@ export default function Sidebar({
                             <AnimateFadeIn>
                               <MenuItem
                                 to={_subMenu.to}
-                                active={SubMenuIsActive(_data.to, _subMenu.to)}
+                                active={SubMenuIsActive(_data.key, _subMenu.to)}
                                 type="submenu"
                                 data={_subMenu}
                               />

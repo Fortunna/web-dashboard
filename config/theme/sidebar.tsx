@@ -1,6 +1,7 @@
 export const TOP_MENU_DATA = [
   {
     name: "Home",
+    key: "/",
     to: "/",
     icon: (
       <svg
@@ -21,6 +22,7 @@ export const TOP_MENU_DATA = [
   },
   {
     name: "Earn",
+    key: "earn",
     to: "/earn/farms",
     icon: (
       <svg
@@ -76,7 +78,7 @@ export const TOP_MENU_DATA = [
     menu: [
       {
         name: "Farms",
-        to: "/earn",
+        to: "/earn/farms",
         icon: (
           <svg
             width={24}
@@ -114,7 +116,8 @@ export const TOP_MENU_DATA = [
   },
   {
     name: "Create",
-    to: "/create",
+    key: "create",
+    to: "/create/farm",
     icon: (
       <svg
         width="24"
@@ -223,6 +226,7 @@ export const TOP_MENU_DATA = [
 
   {
     name: "AI Aggregator",
+    key: "ai-aggregator",
     to: "/ai-aggregator",
 
     icon: (
@@ -265,7 +269,7 @@ export const TOP_MENU_DATA = [
 export const BOTTOM_MENU_DATA = [
   {
     name: "Docs",
-    to: "https://fortuna-defi.gitbook.io/fortuna-product-docs/",
+    to: "https://fortunafi.io/docs.pdf",
     icon: (
       <svg
         width="44"
