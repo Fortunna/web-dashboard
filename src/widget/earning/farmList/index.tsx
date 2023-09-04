@@ -2,7 +2,7 @@ import Button from "@/components/button";
 import Typography from "@/components/typography";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { ArrowUp, Curve, Dai, Usdc, Usdt } from "@/components/icons";
+import { ArrowUp, Curve, Dai, Usdc, Usdt, WETH } from "@/components/icons";
 import ActivityChart from "./activityChart";
 import FarmActionModal from "./actionModal";
 import FortunnaPoolABI from "@/assets/FortunaUniswapV3Pool.json";
@@ -10,30 +10,35 @@ import FortunnaToken from "@/assets/FortunnaToken.json";
 import { Address, useBalance, usePublicClient, useWalletClient } from "wagmi";
 import { ethers } from "ethers";
 import FortunnaTokenABI from "@/assets/FortunnaToken.json";
-import { BalanceShowDecimals, PoolCollection, TOAST_MESSAGE, TokenInfos } from "@/constants";
+import {
+  BalanceShowDecimals,
+  PoolCollection,
+  TOAST_MESSAGE,
+  TokenInfos,
+} from "@/constants";
 import { toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import { convertUnderDecimals } from "@/utils";
+import AppLogo, { SingleLogo } from "@/components/logo";
 
 export default function FarmList({
   active,
   pool,
   onOpenActionModal,
-  onJoinPool, 
+  onJoinPool,
   onSetTokenAInfo,
   onSetTokenBInfo,
   onSelectedIndex,
 }: {
-  active: boolean,
-  pool: PoolCollection,
-  onOpenActionModal : () => void,
-  onJoinPool: () => void
-  onSetTokenAInfo: (x?: TokenInfos) => void,
-  onSetTokenBInfo: (x?: TokenInfos) => void,
-  onSelectedIndex: (x?: any) => void
+  active: boolean;
+  pool: PoolCollection;
+  onOpenActionModal: () => void;
+  onJoinPool: () => void;
+  onSetTokenAInfo: (x?: TokenInfos) => void;
+  onSetTokenBInfo: (x?: TokenInfos) => void;
+  onSelectedIndex: (x?: any) => void;
 }) {
-
-  const {data:walletClient} = useWalletClient();
+  const { data: walletClient } = useWalletClient();
   const publicClient = usePublicClient();
   const [tokenAAddress, setTokenAAddress] = useState<string>("");
   const [tokenBAddress, setTokenBAddress] = useState<string>("");
@@ -47,136 +52,113 @@ export default function FarmList({
   const [rewardToken, setRewardToken] = useState<string>("");
   const [rewardBalance, setRewardBalance] = useState<number>(0);
   const [rewardStatus, setRewardStatus] = useState<boolean>(false);
-  
-  const {data: tokenABalance} = useBalance({
+
+  const { data: tokenABalance } = useBalance({
     token: tokenAAddress as Address,
-    address:walletClient?.account.address,
-    watch: true
+    address: walletClient?.account.address,
+    watch: true,
   });
 
-  const {data: tokenBBalance} = useBalance({
+  const { data: tokenBBalance } = useBalance({
     token: tokenBAddress as Address,
-    address:walletClient?.account.address,
-    watch: true
+    address: walletClient?.account.address,
+    watch: true,
   });
 
   const readTokensInfo = async () => {
-    
-    const tokenA_Address:any = await publicClient.readContract( {
+    const tokenA_Address: any = await publicClient.readContract({
       address: pool.address as Address,
       abi: FortunnaPoolABI,
       functionName: "tokens",
-      args:[
-        0
-      ]
+      args: [0],
     });
 
-    const tokenB_Address:any = await publicClient.readContract( {
+    const tokenB_Address: any = await publicClient.readContract({
       address: pool.address as Address,
       abi: FortunnaPoolABI,
       functionName: "tokens",
-      args:[
-        1
-      ]
+      args: [1],
     });
 
     setTokenAAddress(tokenA_Address);
     setTokenBAddress(tokenB_Address);
+  };
 
-  }
-
-  const readRewardAmount = async() => {
-
-    const tokenAReward:any = await publicClient.readContract( {
+  const readRewardAmount = async () => {
+    const tokenAReward: any = await publicClient.readContract({
       address: pool.address as Address,
       abi: FortunnaPoolABI,
       functionName: "earned",
-      args:[
-        walletClient?.account.address,
-        0
-      ]
+      args: [walletClient?.account.address, 0],
     });
 
-    const tokenBReward:any = await publicClient.readContract( {
+    const tokenBReward: any = await publicClient.readContract({
       address: pool.address as Address,
       abi: FortunnaPoolABI,
       functionName: "earned",
-      args:[
-        walletClient?.account.address,
-        1
-      ]
+      args: [walletClient?.account.address, 1],
     });
 
     setTokenARewardBalance(tokenAReward);
     setTokenBRewardBalance(tokenBReward);
     setRewardBalance(tokenAReward + tokenBReward);
-  }
+  };
   const readStaking_RewardInfo = async () => {
-
-    const tokenLP_Balance:any = await publicClient.readContract( {
+    const tokenLP_Balance: any = await publicClient.readContract({
       address: pool.address as Address,
       abi: FortunnaPoolABI,
       functionName: "depositOf",
-      args:[
-        walletClient?.account.address
-      ]
+      args: [walletClient?.account.address],
     });
 
     setTokenAStakeBalance(tokenLP_Balance.toString());
     setTokenBStakeBalance(tokenLP_Balance.toString());
-  }
+  };
 
-  const onGetReward = async() => {
-
-    const txReward:any = await walletClient!.writeContract({
+  const onGetReward = async () => {
+    const txReward: any = await walletClient!.writeContract({
       address: rewardToken as Address,
       abi: FortunnaTokenABI,
-      functionName: "getReward"
+      functionName: "getReward",
     });
-  
+
     const confirmation = await publicClient.waitForTransactionReceipt({
-      hash:txReward,
-      timeout:100000
+      hash: txReward,
+      timeout: 100000,
     });
 
-    console.log('getReward confirm', confirmation);
-
-  }
+    console.log("getReward confirm", confirmation);
+  };
 
   useEffect(() => {
-    if (!walletClient?.chain)
-      return;
+    if (!walletClient?.chain) return;
     if (active) {
       readTokensInfo();
     }
   }, [active]);
 
   useEffect(() => {
-    if (!walletClient?.chain)
-      return;
+    if (!walletClient?.chain) return;
 
-      readRewardAmount();
-      readStaking_RewardInfo();
-  }, [tokenABalance, tokenBBalance])
+    readRewardAmount();
+    readStaking_RewardInfo();
+  }, [tokenABalance, tokenBBalance]);
 
   const onHandleDepositActionModal = (event: any) => {
-    if (!walletClient?.chain)
-      return;
+    if (!walletClient?.chain) return;
 
     onSelectedIndex(0);
     onHandleActionModal(event);
-  }
+  };
 
   const onHandleWithdrawActionModal = (event: any) => {
-    if (!walletClient?.chain)
-      return;
+    if (!walletClient?.chain) return;
 
     onSelectedIndex(1);
     onHandleActionModal(event);
-  }
+  };
 
-  const onHandleActionModal = (event:any) => {
-
+  const onHandleActionModal = (event: any) => {
     const tokenAInfo = {
       tokenAddress: tokenAAddress,
       tokenBalanceInfo: tokenABalance,
@@ -185,7 +167,7 @@ export default function FarmList({
       stakeTokenAddress: pool.address,
       rewardTokenAddress: "",
       minStakeAmount: "0",
-      maxStakeAmount: tokenABalance?.value.toString()
+      maxStakeAmount: tokenABalance?.value.toString(),
     } as TokenInfos;
 
     const tokenBInfo = {
@@ -196,78 +178,73 @@ export default function FarmList({
       stakeTokenAddress: pool.address,
       rewardTokenAddress: "",
       minStakeAmount: "0",
-      maxStakeAmount: tokenBBalance?.value.toString()
+      maxStakeAmount: tokenBBalance?.value.toString(),
     } as TokenInfos;
 
     onSetTokenAInfo(tokenAInfo);
     onSetTokenBInfo(tokenBInfo);
     onOpenActionModal();
-  }
+  };
 
-  const onClaimReward = async (event:any) => {
-
+  const onClaimReward = async (event: any) => {
     setRewardStatus(true);
     try {
       const amount = await onGetReward();
 
-      console.log('reward amount', amount);
+      console.log("reward amount", amount);
 
       toast.success(TOAST_MESSAGE.TRANSACTION_SUBMITTED, {
-        position: toast.POSITION.TOP_CENTER
+        position: toast.POSITION.TOP_CENTER,
       });
-    } catch(ex){
-      console.log('ex', ex);
+    } catch (ex) {
+      console.log("ex", ex);
       toast.error(TOAST_MESSAGE.UNEXPECTED_ERROR, {
-        position: toast.POSITION.TOP_CENTER
+        position: toast.POSITION.TOP_CENTER,
       });
     }
 
     setRewardStatus(false);
-  }
-  const Assets = ({
-    tokenA, 
-    tokenB
-  }: {
-    tokenA: string, 
-    tokenB: string
-  }) => {
+  };
+  const Assets = ({ tokenA, tokenB }: { tokenA: string; tokenB: string }) => {
     return (
       <div>
-        <div
-            className="flex items-center mt-2"
-          >
-              <Image
-                  height={40}
-                  className="ms-3 mr-2"
-                  width={30}
-                  src={pool.tokenALogo.length ? pool.tokenALogo : "/default_token.png"}
-                  alt="img"
-              />
-              <Typography
-                label={tokenA}
-                className="!font-inter !text-secondary ml-2"
-                variant="body3"
-              />
+        <div className="flex items-center mt-2">
+          <Image
+            height={40}
+            className="ms-3 mr-2"
+            width={30}
+            src={
+              pool.tokenALogo.length ? pool.tokenALogo : "/default_token.png"
+            }
+            alt="img"
+          />
+          <Typography
+            label={tokenA}
+            className="!font-inter !text-secondary ml-2"
+            variant="body3"
+          />
         </div>
-        <div
-            className="flex items-center mt-2"
-          >
-              <Image
-                  height={40}
-                  className="ms-3 mr-2"
-                  width={30}
-                  src={pool.tokenBLogo.length ? pool.tokenBLogo : "/default_token.png"}
-                  alt="img"
-              />
-              <Typography
-                label={tokenB}
-                className="!font-inter !text-secondary ml-2"
-                variant="body3"
-              />
+        <div className="flex items-center mt-2">
+          <Image
+            height={40}
+            className="ms-3 mr-2"
+            width={30}
+            src={
+              pool.tokenBLogo.length ? pool.tokenBLogo : "/default_token.png"
+            }
+            alt="img"
+          />
+          <Typography
+            label={tokenB}
+            className="!font-inter !text-secondary ml-2"
+            variant="body3"
+          />
         </div>
       </div>
     );
   };
+
+  console.log(pool.name, " pool.name pool.name");
 
   return (
     <div
@@ -277,15 +254,28 @@ export default function FarmList({
       <div className="lg:flex lg:flex-row justify-between">
         <div className="lg:w-[70%]">
           <div className="flex flex-row items-center">
-            <div className="flex mr-4">
-              <div>
-                <Dai />
+            <div
+              className={`flex mr-4 ${
+                pool.name.trim() == "FTB/FTA pair" ? "" : "hidden"
+              }`}
+            >
+              <div className="-ml-3">
+                <SingleLogo />
               </div>
               <div className="-ml-3">
-                <Usdt />
+                <SingleLogo useBlackAndWhite />
+              </div>
+            </div>
+            <div
+              className={`flex mr-4 ${
+                pool.name.trim() == "FTA/ETH pair" ? "" : "hidden"
+              }`}
+            >
+              <div className="-ml-3">
+                <SingleLogo />
               </div>
               <div className="-ml-3">
-                <Usdc />
+                <WETH />
               </div>
             </div>
             <Typography variant="subtitle" label={pool.name} />
@@ -300,11 +290,11 @@ export default function FarmList({
                 label="Platform"
               />
               <div className="flex items-center mt-2">
-                <Curve />
+                <SingleLogo className="!w-7 h-auto" />
                 <Typography
                   variant="heading"
                   className="ml-[8px] !font-poppins-semi-bold"
-                  label="Curve"
+                  label="Fortuna"
                 />
               </div>
             </div>
@@ -324,7 +314,7 @@ export default function FarmList({
                 <Typography
                   variant="heading"
                   className="!font-poppins-semi-bold"
-                  label="5%"
+                  label="Custom"
                 />
               </div>
             </div>
@@ -337,7 +327,7 @@ export default function FarmList({
               <Typography
                 variant="heading"
                 className="!font-poppins-semi-bold mt-2"
-                label="$15,000,000"
+                label="-"
               />
             </div>
             <div>
@@ -349,7 +339,7 @@ export default function FarmList({
               <Typography
                 variant="heading"
                 className="!font-poppins-semi-bold mt-2"
-                label="$500,000,000"
+                label="-"
               />
             </div>
           </div>
@@ -408,9 +398,33 @@ export default function FarmList({
                   variant="body1"
                   label="Current Balance"
                 />
-                <Assets 
-                  tokenA = {!tokenAAddress || !tokenABalance ? "--" : convertUnderDecimals(ethers.formatUnits(tokenABalance!.value, tokenABalance?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) + " " + tokenABalance?.symbol}
-                  tokenB = {!tokenBAddress || !tokenBBalance ? "--" : convertUnderDecimals(ethers.formatUnits(tokenBBalance!.value, tokenBBalance?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) + " " + tokenBBalance?.symbol}
+                <Assets
+                  tokenA={
+                    !tokenAAddress || !tokenABalance
+                      ? "--"
+                      : convertUnderDecimals(
+                          ethers.formatUnits(
+                            tokenABalance!.value,
+                            tokenABalance?.decimals
+                          ),
+                          BalanceShowDecimals.FARM_SHOW_BALANCE
+                        ) +
+                        " " +
+                        tokenABalance?.symbol
+                  }
+                  tokenB={
+                    !tokenBAddress || !tokenBBalance
+                      ? "--"
+                      : convertUnderDecimals(
+                          ethers.formatUnits(
+                            tokenBBalance!.value,
+                            tokenBBalance?.decimals
+                          ),
+                          BalanceShowDecimals.FARM_SHOW_BALANCE
+                        ) +
+                        " " +
+                        tokenBBalance?.symbol
+                  }
                 />
 
                 <Button
@@ -419,7 +433,14 @@ export default function FarmList({
                   onClick={onHandleDepositActionModal}
                   rounded
                   theme="secondary-solid"
-                  disabled = {tokenAAddress && tokenBAddress && tokenABalance && tokenABalance?.value > 0 ?false:true}
+                  disabled={
+                    tokenAAddress &&
+                    tokenBAddress &&
+                    tokenABalance &&
+                    tokenABalance?.value > 0
+                      ? false
+                      : true
+                  }
                   label="Deposit"
                 />
               </div>
@@ -429,9 +450,33 @@ export default function FarmList({
                   variant="body1"
                   label="Available Balance"
                 />
-                <Assets 
-                  tokenA = {!tokenAStakeBalance ? "--" : convertUnderDecimals(ethers.formatUnits(tokenAStakeBalance, tokenABalance?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE)  + " " + tokenABalance?.symbol}
-                  tokenB = {!tokenBStakeBalance ? "--" : convertUnderDecimals(ethers.formatUnits(tokenBStakeBalance, tokenBBalance?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) + " " + tokenBBalance?.symbol}
+                <Assets
+                  tokenA={
+                    !tokenAStakeBalance
+                      ? "--"
+                      : convertUnderDecimals(
+                          ethers.formatUnits(
+                            tokenAStakeBalance,
+                            tokenABalance?.decimals
+                          ),
+                          BalanceShowDecimals.FARM_SHOW_BALANCE
+                        ) +
+                        " " +
+                        tokenABalance?.symbol
+                  }
+                  tokenB={
+                    !tokenBStakeBalance
+                      ? "--"
+                      : convertUnderDecimals(
+                          ethers.formatUnits(
+                            tokenBStakeBalance,
+                            tokenBBalance?.decimals
+                          ),
+                          BalanceShowDecimals.FARM_SHOW_BALANCE
+                        ) +
+                        " " +
+                        tokenBBalance?.symbol
+                  }
                 />
                 <Button
                   className="w-full mt-9"
@@ -439,7 +484,12 @@ export default function FarmList({
                   rounded
                   theme="secondary-solid"
                   onClick={onHandleWithdrawActionModal}
-                  disabled = {parseFloat(tokenAStakeBalance) > 0 || parseFloat(tokenBStakeBalance) > 0?false:true}
+                  disabled={
+                    parseFloat(tokenAStakeBalance) > 0 ||
+                    parseFloat(tokenBStakeBalance) > 0
+                      ? false
+                      : true
+                  }
                   label="Withdraw"
                 />
               </div>
@@ -449,9 +499,33 @@ export default function FarmList({
                   variant="body1"
                   label="Current Rewards"
                 />
-                <Assets 
-                  tokenA = {!tokenARewardBalance ? "--" : convertUnderDecimals(ethers.formatUnits(tokenARewardBalance, tokenABalance?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) + " " + tokenABalance?.symbol}
-                  tokenB = {!tokenBRewardBalance ? "--" : convertUnderDecimals(ethers.formatUnits(tokenBRewardBalance, tokenBBalance?.decimals), BalanceShowDecimals.FARM_SHOW_BALANCE) + " " + tokenBBalance?.symbol}
+                <Assets
+                  tokenA={
+                    !tokenARewardBalance
+                      ? "--"
+                      : convertUnderDecimals(
+                          ethers.formatUnits(
+                            tokenARewardBalance,
+                            tokenABalance?.decimals
+                          ),
+                          BalanceShowDecimals.FARM_SHOW_BALANCE
+                        ) +
+                        " " +
+                        tokenABalance?.symbol
+                  }
+                  tokenB={
+                    !tokenBRewardBalance
+                      ? "--"
+                      : convertUnderDecimals(
+                          ethers.formatUnits(
+                            tokenBRewardBalance,
+                            tokenBBalance?.decimals
+                          ),
+                          BalanceShowDecimals.FARM_SHOW_BALANCE
+                        ) +
+                        " " +
+                        tokenBBalance?.symbol
+                  }
                 />
                 <Button
                   className="w-full mt-9"
@@ -459,7 +533,7 @@ export default function FarmList({
                   onClick={onClaimReward}
                   rounded
                   theme="secondary-solid"
-                  disabled = {rewardStatus || rewardBalance == 0?true:false}
+                  disabled={rewardStatus || rewardBalance == 0 ? true : false}
                   label="Claim Rewards"
                 />
               </div>

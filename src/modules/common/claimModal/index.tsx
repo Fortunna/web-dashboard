@@ -35,7 +35,11 @@ const reward = [
   },
 ];
 
+const _all_key = reward?.map((r) => r.balance);
+
 export default function ClaimModal({ onClose }: { onClose: Function }) {
+  const [selectedRewards, setSelectedRewards] = useState<string[]>([]);
+
   return (
     <div>
       <Modal onClose={onClose} title="Rewards" visible={true}>
@@ -51,9 +55,30 @@ export default function ClaimModal({ onClose }: { onClose: Function }) {
               {reward.map((reward, index) => {
                 return (
                   <div className="flex items- justify-between" key={index}>
-                    <div className="flex items-center overflow-hidden ">
+                    <div
+                      onClick={() => {
+                        const present = selectedRewards.includes(
+                          reward.balance
+                        );
+                        if (present) {
+                          const _data = selectedRewards.filter(
+                            (c) => c !== reward.balance
+                          );
+                          setSelectedRewards(_data);
+                        } else {
+                          setSelectedRewards((prev) => [
+                            ...prev,
+                            reward.balance,
+                          ]);
+                        }
+                      }}
+                      className="flex items-center overflow-hidden "
+                    >
                       <div className="flex items-center">
-                        <CheckBox id={index.toString()} />
+                        <CheckBox
+                          checked={selectedRewards.includes(reward.balance)}
+                          id={index.toString()}
+                        />
                         <label
                           htmlFor={index.toString()}
                           className="flex items-center ms-2"
@@ -75,8 +100,20 @@ export default function ClaimModal({ onClose }: { onClose: Function }) {
                     </div>
 
                     {index == 0 ? (
-                      <div className="flex items-center">
-                        <CheckBox id="id" />
+                      <div
+                        className="flex items-center cursor-pointer"
+                        onClick={() => {
+                          if (selectedRewards?.length > 5) {
+                            setSelectedRewards([]);
+                          } else {
+                            setSelectedRewards(_all_key);
+                          }
+                        }}
+                      >
+                        <CheckBox
+                          checked={selectedRewards?.length > 5}
+                          id="id"
+                        />
                         <Typography className="ms-2" label="Check all" />
                       </div>
                     ) : null}
@@ -86,13 +123,11 @@ export default function ClaimModal({ onClose }: { onClose: Function }) {
             </div>
             <Typography
               variant="body2"
-              className="!font-inter mt-6 !text-[#94A3B8] border-[1px] border-[#334155] rounded-[8px] px-[17px] py-[9px]"
+              className="!font-poppins !text-secondary !text-center mt-6 border-[1px] border-[#334155] rounded-[8px] px-[17px] py-5"
             >
-              <div>
-                Deposit liquidity on Balancer, and then stake your received BPT
-                here to earn. These tokens automatically earn fees proportional
-                to your share of the pool, and can be redeemed at anytime
-                <svg
+              <>The ORACLE is under development</>
+
+              {/* <svg
                   className="inline-block ms-2"
                   width={15}
                   height={15}
@@ -104,8 +139,7 @@ export default function ClaimModal({ onClose }: { onClose: Function }) {
                     d="M11.473 11.974H3.30632V3.80729H7.38965V2.64062H3.30632C2.65882 2.64062 2.13965 3.16562 2.13965 3.80729V11.974C2.13965 12.6156 2.65882 13.1406 3.30632 13.1406H11.473C12.1146 13.1406 12.6396 12.6156 12.6396 11.974V7.89062H11.473V11.974ZM8.55631 2.64062V3.80729H10.6505L4.91632 9.54146L5.73882 10.364L11.473 4.62979V6.72396H12.6396V2.64062H8.55631Z"
                     fill="#94A3B8"
                   />
-                </svg>
-              </div>
+                </svg> */}
             </Typography>
 
             <div className="mt-[34px]"></div>

@@ -6,10 +6,15 @@ import Typography from "@/components/typography";
 import FarmList from "@/widget/earning/farmList/index";
 import React, { useEffect, useState } from "react";
 import ActionModal from "../actionModal";
-import { PoolCollection, PoolMode, TOAST_MESSAGE, TokenInfos } from "@/constants";
+import {
+  PoolCollection,
+  PoolMode,
+  TOAST_MESSAGE,
+  TokenInfos,
+} from "@/constants";
 import { useNetwork } from "wagmi";
 import { toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 
 const AccountBalance = () => {
   return (
@@ -58,16 +63,12 @@ const headers = [
   },
 ];
 
-
 type FarmModuleType = {
-  poolData: PoolCollection[]
-}
+  poolData: PoolCollection[];
+};
 
-export default function FramingModule({
-  poolData
-}: FarmModuleType) {
-
-  const {chain} = useNetwork();
+export default function FramingModule({ poolData }: FarmModuleType) {
+  const { chain } = useNetwork();
   const [openActionModal, setOpenActionModal] = useState(false);
   const [selectedFarm, setSelectedFarm] = useState(-1);
   const [activePool, setActivePool] = useState<PoolCollection>();
@@ -129,12 +130,11 @@ export default function FramingModule({
                 <div className="mb-[32px] overflow-hidden relative">
                   <FarmList
                     active={index == selectedFarm}
-                    pool = {_list}
+                    pool={_list}
                     onJoinPool={() => {
-
                       if (!chain) {
                         toast.error(TOAST_MESSAGE.CONNECT_WALLET, {
-                          position: toast.POSITION.TOP_CENTER
+                          position: toast.POSITION.TOP_CENTER,
                         });
                         return;
                       }
@@ -143,12 +143,12 @@ export default function FramingModule({
                       } else {
                         setSelectedFarm(index);
                       }
-                      setActivePool(_list)
+                      setActivePool(_list);
                     }}
                     onOpenActionModal={() => setOpenActionModal(true)}
                     onSetTokenAInfo={setTokenAInfo}
                     onSetTokenBInfo={setTokenBInfo}
-                    onSelectedIndex = {setDepositWithdrawIndex}
+                    onSelectedIndex={setDepositWithdrawIndex}
                   />
                 </div>
               </AnimateWhileInView>
@@ -156,12 +156,12 @@ export default function FramingModule({
           })}
           {openActionModal ? (
             <ActionModal
-              tokenAInfo={tokenAInfo!} 
+              tokenAInfo={tokenAInfo!}
               tokenBInfo={tokenBInfo!}
-              pool = {activePool!}
-              poolMode = {PoolMode.UNISWAP_POOL}
-              onClose={() => setOpenActionModal(false)} 
-              index = {depositWithdrawIndex}
+              pool={activePool!}
+              poolMode={PoolMode.UNISWAP_POOL}
+              onClose={() => setOpenActionModal(false)}
+              index={depositWithdrawIndex}
             />
           ) : null}
         </>
