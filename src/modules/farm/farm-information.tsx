@@ -22,7 +22,7 @@ export default function FarmInformation({ poolMode, onNext }: componentProps) {
 
   const [showAErrorBorder, setShowAErrorBorder] = useState<boolean>();
   const [showBErrorBorder, setShowBErrorBorder] = useState<boolean>();
-  const [tokenBInputDisabled, setTokenBInputDisabled] = useState<boolean>(true);
+  const [tokenBInputDisabled, setTokenBInputDisabled] = useState<boolean>(poolMode == PoolMode.CLASSIC_FARM ? true : false);
   const { chain } = useNetwork();
 
   const {
@@ -155,24 +155,28 @@ export default function FarmInformation({ poolMode, onNext }: componentProps) {
       <Card>
         <>
 
-          <Typography
-            label="(*) is required field."
-            variant="body1"
-            className="!text-secondary mb-[18px] !font-aeonik-pro"
-          />
-          <FormGroup
-            useSelect
-            options={[
-              { title: "Single Token" },
-              { title: "Dual Token" },
-            ]}
-            containerClassName="w-full mb-[28px]"
-            selectClassName="w-full"
-            inputPlaceholder="Pool Type"
-            id="Pool Type"
-            label="Pool Type"
-            onChange={onChangeSelection}
-          />
+          {poolMode == PoolMode.CLASSIC_FARM &&
+            <>
+              <Typography
+                label="(*) is required field."
+                variant="body1"
+                className="!text-secondary mb-[18px] !font-aeonik-pro"
+              />
+              <FormGroup
+                useSelect
+                options={[
+                  { title: "Single Token" },
+                  { title: "Dual Token" },
+                ]}
+                containerClassName="w-full mb-[28px]"
+                selectClassName="w-full"
+                inputPlaceholder="Pool Type"
+                id="Pool Type"
+                label="Pool Type"
+                onChange={onChangeSelection}
+              />
+            </>
+          }
           <FormGroup
             containerClassName="w-full mb-[24px]"
             inputClassName="w-full"
