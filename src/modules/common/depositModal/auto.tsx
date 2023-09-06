@@ -233,28 +233,28 @@ export default function Auto() {
 
           <div className="grid grid-cols-3 gap-2 my-4">
             <Button
-              onClick={() => setActiveRiskFactor("25%")}
+              onClick={() => setActiveRiskFactor("LOW")}
               className={`hover:border-secondary transition-all  ${isActiveStyles(
-                "25%"
+                "LOW"
               )}`}
               theme="transparent"
-              label="25%"
+              label="LOW"
             />
             <Button
-              onClick={() => setActiveRiskFactor("50%")}
+              onClick={() => setActiveRiskFactor("MEDIUM")}
               className={`hover:border-secondary transition-all  ${isActiveStyles(
-                "50%"
+                "MEDIUM"
               )}`}
               theme="transparent"
-              label="50%"
+              label="MEDIUM"
             />
             <Button
-              onClick={() => setActiveRiskFactor("75%")}
+              onClick={() => setActiveRiskFactor("HIGH")}
               className={`hover:border-secondary transition-all  ${isActiveStyles(
-                "75%"
+                "HIGH"
               )}`}
               theme="transparent"
-              label="75%"
+              label="HIGH"
             />
           </div>
           <div className="mb-4">

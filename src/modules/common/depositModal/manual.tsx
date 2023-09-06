@@ -238,6 +238,8 @@ const reward = [
   },
 ];
 export default function Manual() {
+  const [selectedRewards, setSelectedRewards] = useState<string[]>([]);
+
   return (
     <div>
       <>
@@ -251,10 +253,27 @@ export default function Manual() {
           <div className="border-[1px] border-[#2A2D3C] py-6 px-4 mb-4 rounded-[16px]">
             {reward.map((reward, index) => {
               return (
-                <div className="flex items- justify-between" key={index}>
+                <div
+                  onClick={() => {
+                    const present = selectedRewards.includes(reward.name);
+                    if (present) {
+                      const _data = selectedRewards.filter(
+                        (c) => c !== reward.name
+                      );
+                      setSelectedRewards(_data);
+                    } else {
+                      setSelectedRewards((prev) => [...prev, reward.name]);
+                    }
+                  }}
+                  className="flex items- justify-between"
+                  key={index}
+                >
                   <div className="flex items-center overflow-hidden ">
                     <div className="flex items-center">
-                      <CheckBox id={index.toString()} />
+                      <CheckBox
+                        checked={selectedRewards.includes(reward.name)}
+                        id={index.toString()}
+                      />
                       <label
                         htmlFor={index.toString()}
                         className="flex items-center ms-2"
