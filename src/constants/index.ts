@@ -36,13 +36,20 @@ export enum DEFAULT_VALUE {
     MINIMUM_LOCKUP_PERIOD = "30"
 }
 
-type FactoryAddressType = {[chainId in SupportedChains]: string; }
+type FactoryAddressType = { [chainId in SupportedChains]: string; }
 
 export const FACTORY_ADDRESS: FactoryAddressType = {
     1: "0xB8e4E0dF38005893CEaf45a7911Fc7DA9Fe50aD1",
     5: "0xc11782a349080f459E9172eB1087D675df87c664",
     56: "0xB8e4E0dF38005893CEaf45a7911Fc7DA9Fe50aD1",
     97: "0xB8e4E0dF38005893CEaf45a7911Fc7DA9Fe50aD1",
+}
+
+export const EXLORESCAN_ADDRESS: FactoryAddressType = {
+    1: "https://etherscan.io/address",
+    5: "https://goerli.etherscan.io/address/",
+    56: "https://bscscan.com/address/",
+    97: "https://testnet.bscscan.com/address/",
 }
 
 export interface PoolCollection {
@@ -59,7 +66,7 @@ export interface PoolCollection {
 };
 
 export interface TokenInfos {
-    tokenAddress : string,
+    tokenAddress: string,
     tokenBalanceInfo: any,
     tokenStakeBalance: string,
     tokenRewardBalance: string
@@ -67,6 +74,6 @@ export interface TokenInfos {
     rewardTokenAddress: string,
     minStakeAmount: string,
     maxStakeAmount: string
-  }
+}
 
 export const FIREBASE_DATABASE_NAME = "pool";

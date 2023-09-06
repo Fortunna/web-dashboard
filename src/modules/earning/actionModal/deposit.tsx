@@ -296,8 +296,8 @@ export default function Deposit({
     const minAAmount = ethers.formatUnits(tokenAInfo.minStakeAmount, tokenAInfo.tokenBalanceInfo?.decimals);
     const maxAAmount = ethers.formatUnits(tokenAInfo.maxStakeAmount, tokenAInfo.tokenBalanceInfo?.decimals);
 
-    let max_msg = `LP Token must be less than ${maxAAmount} ${tokenSymbol}`;
-    let min_msg = `LP Token must be more than ${minAAmount} ${tokenSymbol}`;
+    let max_msg = `Fortuna dust must be less than ${maxAAmount} ${tokenSymbol}`;
+    let min_msg = `Fortuna dust must be more than ${minAAmount} ${tokenSymbol}`;
     if (parseFloat(totalLPToken) < parseFloat(minAAmount)) {
       toast.error(min_msg, {
         position: toast.POSITION.TOP_CENTER
@@ -441,7 +441,7 @@ export default function Deposit({
           <Typography
             variant="heading"
             className="!font-aeonik-pro !text-[#FCFCFC] ps-[30%] mt-1"
-            label="LP Token"
+            label="Fortuna dust"
           />
           <div className="w-[70%]">
             <Typography
