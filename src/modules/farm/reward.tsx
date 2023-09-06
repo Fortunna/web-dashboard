@@ -75,6 +75,14 @@ export default function CreateFarmReward({
 
   }, [walletClient, chain]);
 
+  useEffect(() => {
+    if (!tokenBAddress) {
+      setRewardToken(1);
+    } else {
+      setRewardToken(0);
+    }
+  }, []);
+
   const onChangeSelection = (event: { target: { value: any; }; }) => {
     const selectedToken = event.target.value;
     setRewardToken(selectedToken);
@@ -193,6 +201,7 @@ export default function CreateFarmReward({
                 }}
                 value={AQuant}
                 disabled={rewardToken != 2 ? false : true}
+                bgColor={rewardToken != 2 ? "" : "dimgray"}
               />
               <FormGroup
                 containerClassName="w-full mb-[16px]"
@@ -208,6 +217,7 @@ export default function CreateFarmReward({
                 }}
                 value={ADis}
                 disabled={rewardToken != 2 ? false : true}
+                bgColor={rewardToken != 2 ? "" : "dimgray"}
               />
 
               <Typography
@@ -240,6 +250,7 @@ export default function CreateFarmReward({
                 label="Reward Distribution Duration"
                 onChange={onChangeADurationSelection}
                 disabled={rewardToken != 2 ? false : true}
+                bgColor={rewardToken != 2 ? "" : "dimgray"}
               />
 
               <FormGroup
@@ -256,6 +267,7 @@ export default function CreateFarmReward({
                 }}
                 value={AInit}
                 disabled={rewardToken != 2 ? false : true}
+                bgColor={rewardToken != 2 ? "" : "dimgray"}
               />
             </div>
             <div>
@@ -279,6 +291,7 @@ export default function CreateFarmReward({
                 }}
                 value={BQuant}
                 disabled={rewardToken != 1 ? false : true}
+                bgColor={rewardToken != 1 ? "" : "dimgray"}
               />
               <FormGroup
                 containerClassName="w-full mb-[16px]"
@@ -294,6 +307,7 @@ export default function CreateFarmReward({
                 }}
                 value={BDis}
                 disabled={rewardToken != 1 ? false : true}
+                bgColor={rewardToken != 1 ? "" : "dimgray"}
               />
 
               <Typography
@@ -325,6 +339,7 @@ export default function CreateFarmReward({
                 id="Reward Distribution Duration"
                 label="Reward Distribution Duration"
                 disabled={rewardToken != 1 ? false : true}
+                bgColor={rewardToken != 1 ? "" : "dimgray"}
                 onChange={onChangeBDurationSelection}
               />
 
@@ -342,6 +357,7 @@ export default function CreateFarmReward({
                 }}
                 value={BInit}
                 disabled={rewardToken != 1 ? false : true}
+                bgColor={rewardToken != 1 ? "" : "dimgray"}
               />
             </div>
           </div>

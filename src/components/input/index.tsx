@@ -12,6 +12,7 @@ export type inputComponentProps = {
   value?: string;
   disabled?: boolean;
   onChange?: ChangeEventHandler<HTMLInputElement>;
+  bgColor?: string;
 };
 export default function TextInput({
   placeholder,
@@ -23,7 +24,8 @@ export default function TextInput({
   onChange,
   value,
   theme = "default",
-  disabled = false
+  disabled = false,
+  bgColor
 }: inputComponentProps) {
   const bgStyles = classNames({
     "bg-transparent-deep text-light-white border-transparent-1":
@@ -42,8 +44,9 @@ export default function TextInput({
         onChange={onChange}
         id={id}
         placeholder={placeholder}
-        disabled = {disabled}
+        disabled={disabled}
         className={`${bgStyles} ${roundedStyles} ${className}   px-[16px] py-[8px] text-caption-2   h-[40px] border-[1px]`}
+        style={{ backgroundColor: bgColor }}
       />
       {rightComponent ? (
         <div className="absolute  top-0 right-0 h-full">{rightComponent}</div>

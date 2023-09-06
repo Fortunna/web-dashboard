@@ -22,7 +22,7 @@ export default function FarmInformation({ poolMode, onNext }: componentProps) {
 
   const [showAErrorBorder, setShowAErrorBorder] = useState<boolean>();
   const [showBErrorBorder, setShowBErrorBorder] = useState<boolean>();
-  const [tokenBInputDisabled, setTokenBInputDisabled] = useState<boolean>(poolMode == PoolMode.CLASSIC_FARM ? true : false);
+  const [tokenBInputDisabled, setTokenBInputDisabled] = useState<boolean>(true);
   const { chain } = useNetwork();
 
   const {
@@ -78,6 +78,12 @@ export default function FarmInformation({ poolMode, onNext }: componentProps) {
     }
 
   }, [chain, tokenAAddress, tokenBAddress]);
+
+  useEffect(() => {
+    setTokenBInputDisabled(poolMode == PoolMode.CLASSIC_FARM ? true : false);
+    if (poolMode == PoolMode.CLASSIC_FARM)
+      setTokenBAddress("");
+  }, [poolMode]);
 
   const onCreateFarm = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 
@@ -274,6 +280,7 @@ export default function FarmInformation({ poolMode, onNext }: componentProps) {
                 id="Contract Address"
                 label="Contract Address*"
                 inputPlaceholder="Ex. 0xbb9bc244d798123fde783fcc1c72d3bb8c189413"
+                bgColor={!tokenBInputDisabled ? "" : "dimgray"}
                 inputAgain={showBErrorBorder}
                 onChange={onChangeTokenB}
                 value={tokenBAddress}
@@ -284,6 +291,7 @@ export default function FarmInformation({ poolMode, onNext }: componentProps) {
                 inputClassName="w-full"
                 id="Token Symbol"
                 label="Token Symbol*"
+                bgColor={!tokenBInputDisabled ? "" : "dimgray"}
                 disabled={true}
                 value={tokenBSymbol}
               />
@@ -292,6 +300,7 @@ export default function FarmInformation({ poolMode, onNext }: componentProps) {
                 inputClassName="w-full"
                 id="Token Decimals"
                 label="Token Decimals*"
+                bgColor={!tokenBInputDisabled ? "" : "dimgray"}
                 disabled={true}
                 value={tokenBDecimal.toString()}
               />
@@ -300,6 +309,7 @@ export default function FarmInformation({ poolMode, onNext }: componentProps) {
                 inputClassName="w-full"
                 id="Token Logo URL (Optional)"
                 label="Token Logo URL (Optional)"
+                bgColor={!tokenBInputDisabled ? "" : "dimgray"}
                 inputPlaceholder="Ex. https://upload.fortuna.io"
                 onChange={(event) => setTokenBLogo(event.target.value)}
                 value={tokenBLogo}

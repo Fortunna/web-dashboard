@@ -15,7 +15,8 @@ type componentProps = {
   inputAgain?: boolean;
   name?: string;
   disabled?: boolean;
-  onChange?: ChangeEventHandler<HTMLInputElement|HTMLSelectElement>;
+  onChange?: ChangeEventHandler<HTMLInputElement | HTMLSelectElement>;
+  bgColor?: string;
 };
 
 export default function FormGroup({
@@ -32,7 +33,8 @@ export default function FormGroup({
   inputClassName,
   name,
   disabled,
-  inputAgain = false
+  inputAgain = false,
+  bgColor
 }: componentProps & Partial<selectComponentProps> & inputComponentProps) {
   return (
     <div className={`${containerClassName}`}>
@@ -48,9 +50,9 @@ export default function FormGroup({
           id={id}
           className={`${selectClassName} mt-[16px]`}
           options={options || []}
-          name = {name}
+          name={name}
           onChange={onChange}
-          value= {value}
+          value={value}
         />
       ) : (
         <TextInput
@@ -61,6 +63,7 @@ export default function FormGroup({
           className={!inputAgain ? `${inputClassName} mt-[16px]` : `${inputClassName} mt-[16px] border-[1px] border-[#AF6AFF]`}
           id={id}
           disabled={disabled}
+          bgColor={bgColor}
         />
       )}
     </div>
