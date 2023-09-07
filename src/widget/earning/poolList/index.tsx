@@ -20,7 +20,8 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { convertUnderDecimals } from "@/utils";
 import { ethers } from "ethers";
-import AppLogo, { SingleLogo } from "@/components/logo";
+import AppLogo, { FTA } from "@/components/logo";
+import { RenderAsset } from "@/data/assets";
 // import FarmActionModal from "./actionModal";
 
 const activeTokenData = [
@@ -352,14 +353,9 @@ export default function PoolList({
     return (
       <div>
         <div className="flex items-center mt-2">
-          <Image
-            height={40}
-            className="ms-3 mr-2"
-            width={30}
-            src={
-              pool.tokenALogo.length ? pool.tokenALogo : "/default_token.png"
-            }
-            alt="img"
+          <RenderAsset
+            className="ms-3 mr-2 !w-8 !h-8"
+            type={tokenABalance?.symbol}
           />
 
           <Typography
@@ -370,19 +366,10 @@ export default function PoolList({
         </div>
         {pool.tokenCount > 1 && (
           <div className="flex items-center mt-2">
-            {
-              <Image
-                height={40}
-                className="ms-3 mr-2"
-                width={30}
-                src={
-                  pool.tokenBLogo.length
-                    ? pool.tokenBLogo
-                    : "/default_token.png"
-                }
-                alt="img"
-              />
-            }
+            <RenderAsset
+              className="ms-3 mr-2 !w-8 !h-8"
+              type={tokenBBalance?.symbol}
+            />
             <Typography
               label={tokenB}
               className="!font-inter !text-secondary ml-2"
@@ -394,7 +381,6 @@ export default function PoolList({
     );
   };
 
-  const [value, setValue] = useState<number>(0);
   return (
     <div
       style={{ backgroundColor: "rgba(27, 28, 32, 0.6)" }}
@@ -410,10 +396,10 @@ export default function PoolList({
                 }`}
               >
                 <div className="-ml-3">
-                  <SingleLogo />
+                  <FTA />
                 </div>
                 <div className="-ml-3">
-                  <SingleLogo useBlackAndWhite />
+                  <FTA useBlackAndWhite />
                 </div>
               </div>
               <div
@@ -422,7 +408,7 @@ export default function PoolList({
                 }`}
               >
                 <div className="-ml-3">
-                  <SingleLogo />
+                  <FTA />
                 </div>
               </div>
             </div>
@@ -437,7 +423,7 @@ export default function PoolList({
                 label="Platform"
               />
               <div className="flex items-center mt-2">
-                <SingleLogo className="!w-7 h-auto" />
+                <FTA className="!w-7 h-auto" />
                 <Typography
                   variant="heading"
                   className="ml-[8px] !font-poppins-semi-bold"
