@@ -3,13 +3,13 @@ import Button from "@/components/button";
 import Typography from "@/components/typography";
 import React, { useEffect, useState } from "react";
 import MobileMenu from "./mobileMenu";
-import { 
-  useAccount, 
-  useConnect, 
-  useDisconnect, 
-  useBalance, 
+import {
+  useAccount,
+  useConnect,
+  useDisconnect,
+  useBalance,
   useSwitchNetwork,
-  useNetwork
+  useNetwork,
 } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import Spinner from "@/components/spinner";
@@ -20,37 +20,42 @@ export default function Header({
 }: {
   onOpenMobileMenu: () => void;
 }) {
-
   const [account, setAccount] = useState<string>("");
   const [networkName, setNetworkName] = useState<string>("Network");
-  const {chain} = useNetwork();
+  const { chain } = useNetwork();
   const { address, isConnected } = useAccount();
-  const { connect } = useConnect({
-    connector: new InjectedConnector()
+  const { connect, connectors } = useConnect({
+    connector: new InjectedConnector(),
   });
   const { disconnect } = useDisconnect();
-  const {switchNetwork} = useSwitchNetwork();
-  const { data:balance, isError, isLoading } = useBalance({
+  const { switchNetwork } = useSwitchNetwork();
+  const {
+    data: balance,
+    isError,
+    isLoading,
+  } = useBalance({
     address: address,
-    watch: true
+    watch: true,
   });
 
   const handleConnect = async () => {
     try {
-      connect();
+      const connector = connectors.find((_c) => _c.ready);
+      connect({ connector });
+    } catch (error) {
+      // alert(JSON.stringify(error));
+    }
+  };
+
+  const handleDisconnect = async () => {
+    try {
+      disconnect();
     } catch (error) {}
   };
 
-  const handleDisconnect = async() => {
-    try{
-      disconnect();
-    } catch(error){}
-  };
-
-  const handleSwitchNetwork = async() => {
+  const handleSwitchNetwork = async () => {
     try {
-      if (!switchNetwork)
-        return;
+      if (!switchNetwork) return;
 
       if (chain?.id === SupportedChains.ETH_MAINNET) {
         switchNetwork(SupportedChains.GOERLI);
@@ -58,15 +63,16 @@ export default function Header({
         switchNetwork(SupportedChains.ETH_MAINNET);
       }
     } catch (error) {}
-  }
+  };
 
   useEffect(() => {
-    if (!chain)
-      setNetworkName("Network");
-    else if (chain.id !== SupportedChains.ETH_MAINNET && chain.id !== SupportedChains.GOERLI)
+    if (!chain) setNetworkName("Network");
+    else if (
+      chain.id !== SupportedChains.ETH_MAINNET &&
+      chain.id !== SupportedChains.GOERLI
+    )
       setNetworkName("Unsupported");
-    else
-      setNetworkName(chain.name);
+    else setNetworkName(chain.name);
   }, [chain]);
 
   return (
@@ -120,17 +126,33 @@ export default function Header({
               </g>
             </svg> */}
 
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 256 417">
-            <path fill="#343434" d="m127.961 0l-2.795 9.5v275.668l2.795 2.79l127.962-75.638z"/>
-            <path fill="#8C8C8C" d="M127.962 0L0 212.32l127.962 75.639V154.158z"/>
-            <path fill="#3C3C3B" d="m127.961 312.187l-1.575 1.92v98.199l1.575 4.601l128.038-180.32z"/>
-            <path fill="#8C8C8C" d="M127.962 416.905v-104.72L0 236.585z"/>
-            <path fill="#141414" d="m127.961 287.958l127.96-75.637l-127.96-58.162z"/>
-            <path fill="#393939" d="m.001 212.321l127.96 75.637V154.159z"/>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 256 417"
+            >
+              <path
+                fill="#343434"
+                d="m127.961 0l-2.795 9.5v275.668l2.795 2.79l127.962-75.638z"
+              />
+              <path
+                fill="#8C8C8C"
+                d="M127.962 0L0 212.32l127.962 75.639V154.158z"
+              />
+              <path
+                fill="#3C3C3B"
+                d="m127.961 312.187l-1.575 1.92v98.199l1.575 4.601l128.038-180.32z"
+              />
+              <path fill="#8C8C8C" d="M127.962 416.905v-104.72L0 236.585z" />
+              <path
+                fill="#141414"
+                d="m127.961 287.958l127.96-75.637l-127.96-58.162z"
+              />
+              <path fill="#393939" d="m.001 212.321l127.96 75.637V154.159z" />
             </svg>
 
             <a onClick={handleSwitchNetwork}>
-              
               <Typography
                 variant="body2"
                 className="!font-dm-sans-bold cursor-pointer"
@@ -181,7 +203,11 @@ export default function Header({
                   ) : (
                     <Typography
                       className="!text-secondary"
-                      label={balance?.formatted.slice(0, 5) + " " + (chain?.nativeCurrency.symbol)}
+                      label={
+                        balance?.formatted.slice(0, 5) +
+                        " " +
+                        chain?.nativeCurrency.symbol
+                      }
                     />
                   )}
 
