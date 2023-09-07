@@ -2,9 +2,9 @@ import Store from "@/stores";
 import "../styles/globals.scss";
 import type { AppProps } from "next/app";
 import { WagmiConfig, configureChains, createConfig } from "wagmi";
-import { mainnet, goerli } from 'wagmi/chains'
+import { mainnet, goerli } from "wagmi/chains";
 import { FarmProvider } from "@/hooks/useFarm";
-import { publicProvider } from 'wagmi/providers/public'
+import { publicProvider } from "wagmi/providers/public";
 import { ToastContainer } from "react-toastify";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
@@ -19,13 +19,27 @@ const { chains, publicClient, webSocketPublicClient } = configureChains(
 
 // Set up wagmi config
 const config = createConfig({
-  autoConnect: false,
-  publicClient,
+  autoConnect: true,
   connectors: [
-    new MetaMaskConnector(), 
-    new InjectedConnector()]
-});
+    new MetaMaskConnector({ chains }),
 
+    new WalletConnectConnector({
+      chains,
+      options: {
+        projectId: "0c44a6f847a1d0c27d18a64ad26e2406",
+      },
+    }),
+    new InjectedConnector({
+      chains,
+      options: {
+        name: "Injected",
+        shimDisconnect: true,
+      },
+    }),
+  ],
+  publicClient,
+  webSocketPublicClient,
+});
 // Pass config to React Context Provider
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -35,7 +49,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <Store>
           <Component {...pageProps} />
           <div id="modal"></div>
-          <ToastContainer/>
+          <ToastContainer />
         </Store>
       </FarmProvider>
     </WagmiConfig>
