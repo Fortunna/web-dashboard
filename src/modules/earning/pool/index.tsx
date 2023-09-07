@@ -2,13 +2,18 @@ import { AnimateWhileInView } from "@/animations";
 import Button from "@/components/button";
 import PageWrapper from "@/components/pageWrapper";
 import Typography from "@/components/typography";
-import { PoolCollection, PoolMode, TOAST_MESSAGE, TokenInfos } from "@/constants";
+import {
+  PoolCollection,
+  PoolMode,
+  TOAST_MESSAGE,
+  TokenInfos,
+} from "@/constants";
 import FarmList from "@/widget/earning/farmList/index";
 import PoolList from "@/widget/earning/poolList";
 import React, { useState } from "react";
 import { useNetwork } from "wagmi";
 import { toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import ActionModal from "../actionModal";
 
 const AccountBalance = () => {
@@ -59,12 +64,10 @@ const headers = [
 ];
 
 type PoolModuleType = {
-  poolData: PoolCollection[]
-}
+  poolData: PoolCollection[];
+};
 
-export default function PoolModule({
-  poolData
-}: PoolModuleType) {
+export default function PoolModule({ poolData }: PoolModuleType) {
   const { chain } = useNetwork();
   const [openActionModal, setOpenActionModal] = useState(false);
   const [selectedFarm, setSelectedFarm] = useState(-1);
@@ -99,7 +102,7 @@ export default function PoolModule({
         <Typography
           variant="body1"
           className="!text-light-white"
-          label="Farms"
+          label="Pools"
         />
       </div>
 
@@ -132,7 +135,7 @@ export default function PoolModule({
                     onStake={() => {
                       if (!chain) {
                         toast.error(TOAST_MESSAGE.CONNECT_WALLET, {
-                          position: toast.POSITION.TOP_CENTER
+                          position: toast.POSITION.TOP_CENTER,
                         });
                         return;
                       }
@@ -141,7 +144,7 @@ export default function PoolModule({
                       } else {
                         setSelectedPool(index);
                       }
-                      setActivePool(_list)
+                      setActivePool(_list);
                     }}
                     onOpenActionModal={() => setOpenActionModal(true)}
                     onSetTokenAInfo={setTokenAInfo}

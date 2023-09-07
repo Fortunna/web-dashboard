@@ -2,7 +2,7 @@ import Button from "@/components/button";
 import Typography from "@/components/typography";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { ArrowUp, Curve, Dai, Usdc, Usdt, WETH } from "@/components/icons";
+import { ArrowUp, Curve, Dai, ETH, Usdc, Usdt, WETH } from "@/components/icons";
 import ActivityChart from "./activityChart";
 import FarmActionModal from "./actionModal";
 import FortunnaPoolABI from "@/assets/FortunaUniswapV3Pool.json";
@@ -21,9 +21,10 @@ import {
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { convertUnderDecimals } from "@/utils";
-import AppLogo, { SingleLogo } from "@/components/logo";
+import AppLogo, { FTA, FTB } from "@/components/logo";
 import Link from "next/link";
 import { data } from "autoprefixer";
+import { RenderAsset } from "@/data/assets";
 
 export default function FarmList({
   active,
@@ -53,7 +54,9 @@ export default function FarmList({
   const [rewardToken, setRewardToken] = useState<string>("");
   const [rewardBalance, setRewardBalance] = useState<number>(0);
   const [rewardStatus, setRewardStatus] = useState<boolean>(false);
-  const [href, setHref] = useState<string>("https://goerli.etherscan.io/address/" + pool.address);
+  const [href, setHref] = useState<string>(
+    "https://goerli.etherscan.io/address/" + pool.address
+  );
 
   const { data: tokenABalance } = useBalance({
     token: tokenAAddress as Address,
@@ -137,7 +140,10 @@ export default function FarmList({
     if (active) {
       readTokensInfo();
     }
-    setHref(EXLORESCAN_ADDRESS[walletClient?.chain.id! as SupportedChains] + pool.address);
+    setHref(
+      EXLORESCAN_ADDRESS[walletClient?.chain.id! as SupportedChains] +
+        pool.address
+    );
   }, [active, walletClient?.chain]);
 
   useEffect(() => {
@@ -212,15 +218,11 @@ export default function FarmList({
     return (
       <div>
         <div className="flex items-center mt-2">
-          <Image
-            height={40}
-            className="ms-3 mr-2"
-            width={30}
-            src={
-              pool.tokenALogo.length ? pool.tokenALogo : "/default_token.png"
-            }
-            alt="img"
+          <RenderAsset
+            className="ms-3 mr-2 !w-8 !h-8"
+            type={tokenABalance?.symbol}
           />
+
           <Typography
             label={tokenA}
             className="!font-inter !text-secondary ml-2"
@@ -228,15 +230,11 @@ export default function FarmList({
           />
         </div>
         <div className="flex items-center mt-2">
-          <Image
-            height={40}
-            className="ms-3 mr-2"
-            width={30}
-            src={
-              pool.tokenBLogo.length ? pool.tokenBLogo : "/default_token.png"
-            }
-            alt="img"
+          <RenderAsset
+            className="ms-3 mr-2 !w-8 !h-8"
+            type={tokenBBalance?.symbol ?? ""}
           />
+
           <Typography
             label={tokenB}
             className="!font-inter !text-secondary ml-2"
@@ -247,7 +245,12 @@ export default function FarmList({
     );
   };
 
-  console.log("href", href);
+  const _item: any = {
+    "FTA/ETH pair": [FTA, ETH],
+    "FTB/FTA pair": [FTB, FTA],
+  };
+
+  console.log(_item[pool.name.trim()], "kkssksksk");
 
   return (
     <div
@@ -257,28 +260,16 @@ export default function FarmList({
       <div className="lg:flex lg:flex-row justify-between">
         <div className="lg:w-[70%]">
           <div className="flex flex-row items-center">
-            <div
-              className={`flex mr-4 ${pool.name.trim() == "FTB/FTA pair" ? "" : "hidden"
-                }`}
-            >
-              <div className="-ml-3">
-                <SingleLogo />
-              </div>
-              <div className="-ml-3">
-                <SingleLogo useBlackAndWhite />
-              </div>
+            <div className={`flex mr-4 `}>
+              {_item[pool.name.trim()].map((Component: any, key: number) => {
+                return (
+                  <div className="-ms-3" key={key}>
+                    {<Component className="!w-9 h-auto" key={key} />}
+                  </div>
+                );
+              })}
             </div>
-            <div
-              className={`flex mr-4 ${pool.name.trim() == "FTA/ETH pair" ? "" : "hidden"
-                }`}
-            >
-              <div className="-ml-3">
-                <SingleLogo />
-              </div>
-              <div className="-ml-3">
-                <WETH />
-              </div>
-            </div>
+
             <Link href={href} target="_blank">
               <Typography variant="subtitle" label={pool.name} />
             </Link>
@@ -293,7 +284,7 @@ export default function FarmList({
                 label="Platform"
               />
               <div className="flex items-center mt-2">
-                <SingleLogo className="!w-7 h-auto" />
+                <FTA className="!w-7 h-auto" />
                 <Typography
                   variant="heading"
                   className="ml-[8px] !font-poppins-semi-bold"
@@ -406,27 +397,27 @@ export default function FarmList({
                     !tokenAAddress || !tokenABalance
                       ? "--"
                       : convertUnderDecimals(
-                        ethers.formatUnits(
-                          tokenABalance!.value,
-                          tokenABalance?.decimals
-                        ),
-                        BalanceShowDecimals.FARM_SHOW_BALANCE
-                      ) +
-                      " " +
-                      tokenABalance?.symbol
+                          ethers.formatUnits(
+                            tokenABalance!.value,
+                            tokenABalance?.decimals
+                          ),
+                          BalanceShowDecimals.FARM_SHOW_BALANCE
+                        ) +
+                        " " +
+                        tokenABalance?.symbol
                   }
                   tokenB={
                     !tokenBAddress || !tokenBBalance
                       ? "--"
                       : convertUnderDecimals(
-                        ethers.formatUnits(
-                          tokenBBalance!.value,
-                          tokenBBalance?.decimals
-                        ),
-                        BalanceShowDecimals.FARM_SHOW_BALANCE
-                      ) +
-                      " " +
-                      tokenBBalance?.symbol
+                          ethers.formatUnits(
+                            tokenBBalance!.value,
+                            tokenBBalance?.decimals
+                          ),
+                          BalanceShowDecimals.FARM_SHOW_BALANCE
+                        ) +
+                        " " +
+                        tokenBBalance?.symbol
                   }
                 />
 
@@ -438,9 +429,9 @@ export default function FarmList({
                   theme="secondary-solid"
                   disabled={
                     tokenAAddress &&
-                      tokenBAddress &&
-                      tokenABalance &&
-                      tokenABalance?.value > 0
+                    tokenBAddress &&
+                    tokenABalance &&
+                    tokenABalance?.value > 0
                       ? false
                       : true
                   }
@@ -453,32 +444,33 @@ export default function FarmList({
                   variant="body1"
                   label="Available Balance"
                 />
+
                 <Assets
                   tokenA={
                     !tokenAStakeBalance
                       ? "--"
                       : convertUnderDecimals(
-                        ethers.formatUnits(
-                          tokenAStakeBalance,
-                          tokenABalance?.decimals
-                        ),
-                        BalanceShowDecimals.FARM_SHOW_BALANCE
-                      ) +
-                      " " +
-                      tokenABalance?.symbol
+                          ethers.formatUnits(
+                            tokenAStakeBalance,
+                            tokenABalance?.decimals
+                          ),
+                          BalanceShowDecimals.FARM_SHOW_BALANCE
+                        ) +
+                        " " +
+                        tokenABalance?.symbol
                   }
                   tokenB={
                     !tokenBStakeBalance
                       ? "--"
                       : convertUnderDecimals(
-                        ethers.formatUnits(
-                          tokenBStakeBalance,
-                          tokenBBalance?.decimals
-                        ),
-                        BalanceShowDecimals.FARM_SHOW_BALANCE
-                      ) +
-                      " " +
-                      tokenBBalance?.symbol
+                          ethers.formatUnits(
+                            tokenBStakeBalance,
+                            tokenBBalance?.decimals
+                          ),
+                          BalanceShowDecimals.FARM_SHOW_BALANCE
+                        ) +
+                        " " +
+                        tokenBBalance?.symbol
                   }
                 />
                 <Button
@@ -489,7 +481,7 @@ export default function FarmList({
                   onClick={onHandleWithdrawActionModal}
                   disabled={
                     parseFloat(tokenAStakeBalance) > 0 ||
-                      parseFloat(tokenBStakeBalance) > 0
+                    parseFloat(tokenBStakeBalance) > 0
                       ? false
                       : true
                   }
@@ -507,27 +499,27 @@ export default function FarmList({
                     !tokenARewardBalance
                       ? "--"
                       : convertUnderDecimals(
-                        ethers.formatUnits(
-                          tokenARewardBalance,
-                          tokenABalance?.decimals
-                        ),
-                        BalanceShowDecimals.FARM_SHOW_BALANCE
-                      ) +
-                      " " +
-                      tokenABalance?.symbol
+                          ethers.formatUnits(
+                            tokenARewardBalance,
+                            tokenABalance?.decimals
+                          ),
+                          BalanceShowDecimals.FARM_SHOW_BALANCE
+                        ) +
+                        " " +
+                        tokenABalance?.symbol
                   }
                   tokenB={
                     !tokenBRewardBalance
                       ? "--"
                       : convertUnderDecimals(
-                        ethers.formatUnits(
-                          tokenBRewardBalance,
-                          tokenBBalance?.decimals
-                        ),
-                        BalanceShowDecimals.FARM_SHOW_BALANCE
-                      ) +
-                      " " +
-                      tokenBBalance?.symbol
+                          ethers.formatUnits(
+                            tokenBRewardBalance,
+                            tokenBBalance?.decimals
+                          ),
+                          BalanceShowDecimals.FARM_SHOW_BALANCE
+                        ) +
+                        " " +
+                        tokenBBalance?.symbol
                   }
                 />
                 <Button
