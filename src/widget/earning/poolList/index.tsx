@@ -1,6 +1,6 @@
 import Button from "@/components/button";
 import Typography from "@/components/typography";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { Ankr, ArrowUp, BnB, Curve, Dai, Usdc, Usdt } from "@/components/icons";
 import TextInput from "@/components/input";
@@ -271,6 +271,10 @@ export default function PoolList({
     console.log("burn confirm", confirmation);
   };
 
+  const chart = useMemo(() => {
+    return <ActivityChart />
+  }, []);
+
   useEffect(() => {
     if (!walletClient?.chain) return;
     if (active) {
@@ -391,9 +395,8 @@ export default function PoolList({
           <div className="flex flex-row items-center">
             <div className="flex">
               <div
-                className={`flex mr-4 ${
-                  pool.name.trim() == "FTA/FTB Staking" ? "" : "hidden"
-                }`}
+                className={`flex mr-4 ${pool.name.trim() == "FTA/FTB Staking" ? "" : "hidden"
+                  }`}
               >
                 <div className="-ml-3">
                   <FTA />
@@ -403,9 +406,8 @@ export default function PoolList({
                 </div>
               </div>
               <div
-                className={`flex mr-4 ${
-                  pool.name.trim() == "FTB Staking" ? "" : "hidden"
-                }`}
+                className={`flex mr-4 ${pool.name.trim() == "FTB Staking" ? "" : "hidden"
+                  }`}
               >
                 <div className="-ml-3">
                   <FTA />
@@ -521,7 +523,7 @@ export default function PoolList({
       {active ? (
         <div className="lg:grid lg:grid-cols-[30%_auto] lg:gap-16 mt-[60px]">
           <div>
-            <ActivityChart />
+            {chart}
           </div>
           <div className="lg:grid lg:grid-cols-3 lg:gap-14">
             <div>
@@ -535,27 +537,27 @@ export default function PoolList({
                   !tokenAAddress || !tokenABalance
                     ? "--"
                     : convertUnderDecimals(
-                        ethers.formatUnits(
-                          tokenABalance!.value,
-                          tokenABalance?.decimals
-                        ),
-                        BalanceShowDecimals.FARM_SHOW_BALANCE
-                      ) +
-                      " " +
-                      tokenABalance?.symbol
+                      ethers.formatUnits(
+                        tokenABalance!.value,
+                        tokenABalance?.decimals
+                      ),
+                      BalanceShowDecimals.FARM_SHOW_BALANCE
+                    ) +
+                    " " +
+                    tokenABalance?.symbol
                 }
                 tokenB={
                   !tokenBAddress || !tokenBBalance
                     ? "--"
                     : convertUnderDecimals(
-                        ethers.formatUnits(
-                          tokenBBalance!.value,
-                          tokenBBalance?.decimals
-                        ),
-                        BalanceShowDecimals.FARM_SHOW_BALANCE
-                      ) +
-                      " " +
-                      tokenBBalance?.symbol
+                      ethers.formatUnits(
+                        tokenBBalance!.value,
+                        tokenBBalance?.decimals
+                      ),
+                      BalanceShowDecimals.FARM_SHOW_BALANCE
+                    ) +
+                    " " +
+                    tokenBBalance?.symbol
                 }
               />
 
@@ -618,27 +620,27 @@ export default function PoolList({
                   !stakingToken
                     ? "--"
                     : convertUnderDecimals(
-                        ethers.formatUnits(
-                          tokenAStakeBalance,
-                          tokenABalance?.decimals
-                        ),
-                        BalanceShowDecimals.FARM_SHOW_BALANCE
-                      ) +
-                      " " +
-                      tokenABalance?.symbol
+                      ethers.formatUnits(
+                        tokenAStakeBalance,
+                        tokenABalance?.decimals
+                      ),
+                      BalanceShowDecimals.FARM_SHOW_BALANCE
+                    ) +
+                    " " +
+                    tokenABalance?.symbol
                 }
                 tokenB={
                   !stakingToken
                     ? "--"
                     : convertUnderDecimals(
-                        ethers.formatUnits(
-                          tokenBStakeBalance,
-                          tokenBBalance?.decimals
-                        ),
-                        BalanceShowDecimals.FARM_SHOW_BALANCE
-                      ) +
-                      " " +
-                      tokenBBalance?.symbol
+                      ethers.formatUnits(
+                        tokenBStakeBalance,
+                        tokenBBalance?.decimals
+                      ),
+                      BalanceShowDecimals.FARM_SHOW_BALANCE
+                    ) +
+                    " " +
+                    tokenBBalance?.symbol
                 }
               />
               <Button
@@ -649,7 +651,7 @@ export default function PoolList({
                 onClick={onHandleWithdrawActionModal}
                 disabled={
                   parseFloat(tokenAStakeBalance) > 0 ||
-                  parseFloat(tokenBStakeBalance) > 0
+                    parseFloat(tokenBStakeBalance) > 0
                     ? false
                     : true
                 }
@@ -702,27 +704,27 @@ export default function PoolList({
                   !rewardToken
                     ? "--"
                     : convertUnderDecimals(
-                        ethers.formatUnits(
-                          tokenARewardBalance,
-                          tokenABalance?.decimals
-                        ),
-                        BalanceShowDecimals.FARM_SHOW_BALANCE
-                      ) +
-                      " " +
-                      tokenABalance?.symbol
+                      ethers.formatUnits(
+                        tokenARewardBalance,
+                        tokenABalance?.decimals
+                      ),
+                      BalanceShowDecimals.FARM_SHOW_BALANCE
+                    ) +
+                    " " +
+                    tokenABalance?.symbol
                 }
                 tokenB={
                   !rewardToken
                     ? "--"
                     : convertUnderDecimals(
-                        ethers.formatUnits(
-                          tokenBRewardBalance,
-                          tokenBBalance?.decimals
-                        ),
-                        BalanceShowDecimals.FARM_SHOW_BALANCE
-                      ) +
-                      " " +
-                      tokenBBalance?.symbol
+                      ethers.formatUnits(
+                        tokenBRewardBalance,
+                        tokenBBalance?.decimals
+                      ),
+                      BalanceShowDecimals.FARM_SHOW_BALANCE
+                    ) +
+                    " " +
+                    tokenBBalance?.symbol
                 }
               />
               <Button
