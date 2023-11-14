@@ -1,6 +1,6 @@
 import Button from "@/components/button";
 import Typography from "@/components/typography";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { ArrowUp, Curve, Dai, ETH, Usdc, Usdt, WETH } from "@/components/icons";
 import ActivityChart from "./activityChart";
@@ -142,7 +142,7 @@ export default function FarmList({
     }
     setHref(
       EXLORESCAN_ADDRESS[walletClient?.chain.id! as SupportedChains] +
-        pool.address
+      pool.address
     );
   }, [active, walletClient?.chain]);
 
@@ -152,6 +152,10 @@ export default function FarmList({
     readRewardAmount();
     readStaking_RewardInfo();
   }, [tokenABalance, tokenBBalance]);
+
+  const chart = useMemo(() => {
+    return <ActivityChart />
+  }, []);
 
   const onHandleDepositActionModal = (event: any) => {
     if (!walletClient?.chain) return;
@@ -383,7 +387,7 @@ export default function FarmList({
         <>
           <div className="lg:grid lg:grid-cols-[30%_auto] lg:gap-16 md:mt-[60px] mt-[40px]">
             <div className=" md:mb-0 mb-10">
-              <ActivityChart />
+              {chart}
             </div>
             <div className="grid lg:grid-cols-3 lg:gap-14">
               <div className="md:mb-0 mb-8 relative overflow-hidden">
@@ -397,27 +401,27 @@ export default function FarmList({
                     !tokenAAddress || !tokenABalance
                       ? "--"
                       : convertUnderDecimals(
-                          ethers.formatUnits(
-                            tokenABalance!.value,
-                            tokenABalance?.decimals
-                          ),
-                          BalanceShowDecimals.FARM_SHOW_BALANCE
-                        ) +
-                        " " +
-                        tokenABalance?.symbol
+                        ethers.formatUnits(
+                          tokenABalance!.value,
+                          tokenABalance?.decimals
+                        ),
+                        BalanceShowDecimals.FARM_SHOW_BALANCE
+                      ) +
+                      " " +
+                      tokenABalance?.symbol
                   }
                   tokenB={
                     !tokenBAddress || !tokenBBalance
                       ? "--"
                       : convertUnderDecimals(
-                          ethers.formatUnits(
-                            tokenBBalance!.value,
-                            tokenBBalance?.decimals
-                          ),
-                          BalanceShowDecimals.FARM_SHOW_BALANCE
-                        ) +
-                        " " +
-                        tokenBBalance?.symbol
+                        ethers.formatUnits(
+                          tokenBBalance!.value,
+                          tokenBBalance?.decimals
+                        ),
+                        BalanceShowDecimals.FARM_SHOW_BALANCE
+                      ) +
+                      " " +
+                      tokenBBalance?.symbol
                   }
                 />
 
@@ -429,9 +433,9 @@ export default function FarmList({
                   theme="secondary-solid"
                   disabled={
                     tokenAAddress &&
-                    tokenBAddress &&
-                    tokenABalance &&
-                    tokenABalance?.value > 0
+                      tokenBAddress &&
+                      tokenABalance &&
+                      tokenABalance?.value > 0
                       ? false
                       : true
                   }
@@ -450,27 +454,27 @@ export default function FarmList({
                     !tokenAStakeBalance
                       ? "--"
                       : convertUnderDecimals(
-                          ethers.formatUnits(
-                            tokenAStakeBalance,
-                            tokenABalance?.decimals
-                          ),
-                          BalanceShowDecimals.FARM_SHOW_BALANCE
-                        ) +
-                        " " +
-                        tokenABalance?.symbol
+                        ethers.formatUnits(
+                          tokenAStakeBalance,
+                          tokenABalance?.decimals
+                        ),
+                        BalanceShowDecimals.FARM_SHOW_BALANCE
+                      ) +
+                      " " +
+                      tokenABalance?.symbol
                   }
                   tokenB={
                     !tokenBStakeBalance
                       ? "--"
                       : convertUnderDecimals(
-                          ethers.formatUnits(
-                            tokenBStakeBalance,
-                            tokenBBalance?.decimals
-                          ),
-                          BalanceShowDecimals.FARM_SHOW_BALANCE
-                        ) +
-                        " " +
-                        tokenBBalance?.symbol
+                        ethers.formatUnits(
+                          tokenBStakeBalance,
+                          tokenBBalance?.decimals
+                        ),
+                        BalanceShowDecimals.FARM_SHOW_BALANCE
+                      ) +
+                      " " +
+                      tokenBBalance?.symbol
                   }
                 />
                 <Button
@@ -481,7 +485,7 @@ export default function FarmList({
                   onClick={onHandleWithdrawActionModal}
                   disabled={
                     parseFloat(tokenAStakeBalance) > 0 ||
-                    parseFloat(tokenBStakeBalance) > 0
+                      parseFloat(tokenBStakeBalance) > 0
                       ? false
                       : true
                   }
@@ -499,27 +503,27 @@ export default function FarmList({
                     !tokenARewardBalance
                       ? "--"
                       : convertUnderDecimals(
-                          ethers.formatUnits(
-                            tokenARewardBalance,
-                            tokenABalance?.decimals
-                          ),
-                          BalanceShowDecimals.FARM_SHOW_BALANCE
-                        ) +
-                        " " +
-                        tokenABalance?.symbol
+                        ethers.formatUnits(
+                          tokenARewardBalance,
+                          tokenABalance?.decimals
+                        ),
+                        BalanceShowDecimals.FARM_SHOW_BALANCE
+                      ) +
+                      " " +
+                      tokenABalance?.symbol
                   }
                   tokenB={
                     !tokenBRewardBalance
                       ? "--"
                       : convertUnderDecimals(
-                          ethers.formatUnits(
-                            tokenBRewardBalance,
-                            tokenBBalance?.decimals
-                          ),
-                          BalanceShowDecimals.FARM_SHOW_BALANCE
-                        ) +
-                        " " +
-                        tokenBBalance?.symbol
+                        ethers.formatUnits(
+                          tokenBRewardBalance,
+                          tokenBBalance?.decimals
+                        ),
+                        BalanceShowDecimals.FARM_SHOW_BALANCE
+                      ) +
+                      " " +
+                      tokenBBalance?.symbol
                   }
                 />
                 <Button

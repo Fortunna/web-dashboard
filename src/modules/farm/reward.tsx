@@ -206,8 +206,8 @@ export default function CreateFarmReward({
               <FormGroup
                 containerClassName="w-full mb-[16px]"
                 inputClassName="w-full"
-                id="Reward Distribution Frequency"
-                label="Reward Distribution Frequency"
+                id="Reward Distribution %"
+                label="Reward Distribution %"
                 inputPlaceholder="Ex. 5%"
                 onChange={(event) => {
                   const val = event.target.value;
@@ -246,8 +246,8 @@ export default function CreateFarmReward({
                 ]}
                 containerClassName="w-full mb-4"
                 selectClassName="w-full"
-                id="Reward Distribution Duration"
-                label="Reward Distribution Duration"
+                id="Reward Distribution Frequency"
+                label="Reward Distribution Frequency"
                 onChange={onChangeADurationSelection}
                 disabled={rewardToken != 2 ? false : true}
                 bgColor={rewardToken != 2 ? "" : "dimgray"}
@@ -296,8 +296,8 @@ export default function CreateFarmReward({
               <FormGroup
                 containerClassName="w-full mb-[16px]"
                 inputClassName="w-full"
-                id="Reward Distribution Frequency"
-                label="Reward Distribution Frequency"
+                id="Reward Distribution %"
+                label="Reward Distribution %"
                 inputPlaceholder="Ex. 5%"
                 onChange={(event) => {
                   const val = event.target.value;
@@ -336,8 +336,8 @@ export default function CreateFarmReward({
                 ]}
                 containerClassName="w-full mb-4"
                 selectClassName="w-full"
-                id="Reward Distribution Duration"
-                label="Reward Distribution Duration"
+                id="Reward Distribution Frequency"
+                label="Reward Distribution Frequency"
                 disabled={rewardToken != 1 ? false : true}
                 bgColor={rewardToken != 1 ? "" : "dimgray"}
                 onChange={onChangeBDurationSelection}
