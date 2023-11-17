@@ -512,9 +512,8 @@ export default function CreateFarmReview({
       if (address_res) {
 
         const address = removeForwardZero(address_res);
-        console.log('address', address);
-        // if (mode[0] == PoolMode.CLASSIC_FARM)
-        //   await onSetupForPool(address);
+        if (mode[0] == PoolMode.CLASSIC_FARM)
+          await onSetupForPool(address);
         savePool(address);
       }
 

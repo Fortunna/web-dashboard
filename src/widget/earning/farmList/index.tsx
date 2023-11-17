@@ -254,7 +254,7 @@ export default function FarmList({
     "FTB/FTA pair": [FTB, FTA],
   };
 
-  console.log(_item[pool.name.trim()], "kkssksksk");
+  // console.log(_item[pool.name.trim()], "kkssksksk");
 
   return (
     <div
