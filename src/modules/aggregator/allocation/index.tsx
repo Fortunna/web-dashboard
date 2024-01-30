@@ -1,6 +1,6 @@
-import Card from "@/components/card";
-import React from "react";
-import AllocationChart from "./chart";
+import Card from '@/components/card';
+import React from 'react';
+import AllocationChart from './chart';
 import {
   Avalanche,
   BnB,
@@ -8,10 +8,10 @@ import {
   Osmosis,
   Others,
   Solana,
-} from "@/components/icons";
-import Typography from "@/components/typography";
-import { RenderWhenInView } from "@/animations";
-import { useInView } from "react-intersection-observer";
+} from '@/components/icons';
+import Typography from '@/components/typography';
+import { RenderWhenInView } from '@/animations';
+import { useInView } from 'react-intersection-observer';
 
 export default function Allocation() {
   const [ref, inView] = useInView({
@@ -21,33 +21,33 @@ export default function Allocation() {
 
   const data = [
     {
-      name: "Solana",
-      value: "67.23%",
+      name: 'Solana',
+      value: '33.3%',
       icon: <Solana />,
     },
     {
-      name: "Osmosis",
-      value: "16.70%",
+      name: 'Osmosis',
+      value: '33.3%',
       icon: <Osmosis />,
     },
     {
-      name: "Cosmos",
-      value: "12.33%",
+      name: 'Cosmos',
+      value: '33.3%',
       icon: <Cosmos />,
     },
     {
-      name: "BNB Chain",
-      value: "1.56%",
+      name: 'BNB Chain',
+      value: '0%',
       icon: <BnB />,
     },
     {
-      name: "Avalanche",
-      value: "0.95%",
+      name: 'Avalanche',
+      value: '0%',
       icon: <Avalanche />,
     },
     {
-      name: "Others",
-      value: "1.24%",
+      name: 'Others',
+      value: '0%',
       icon: <Others />,
     },
   ];

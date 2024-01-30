@@ -1,12 +1,12 @@
-import Modal from "@/components/modal";
-import Typography from "@/components/typography";
-import React, { ChangeEventHandler, useState } from "react";
-import { Dai, Usdc, Usdt } from "@/components/icons";
-import Select, { StylesConfig } from "react-select";
-import SelectComponent from "@/components/customSelect";
-import Image from "next/image";
-import Button from "@/components/button";
-import { components } from "react-select";
+import Modal from '@/components/modal';
+import Typography from '@/components/typography';
+import React, { ChangeEventHandler, useState } from 'react';
+import { Dai, Usdc, Usdt } from '@/components/icons';
+import Select, { StylesConfig } from 'react-select';
+import SelectComponent from '@/components/customSelect';
+import Image from 'next/image';
+import Button from '@/components/button';
+import { components } from 'react-select';
 
 type componentProps = {
   onClose: () => void;
@@ -14,33 +14,33 @@ type componentProps = {
 export default function BuyCoinModal({ onClose }: componentProps) {
   const header = [
     {
-      title: "Deposit",
-      subtitle: "Wallet Balance",
-      key: "deposit",
+      title: 'Deposit',
+      subtitle: 'Wallet Balance',
+      key: 'deposit',
     },
     {
-      title: "Withdraw",
-      subtitle: "Current Rewards",
-      key: "withdraw",
+      title: 'Withdraw',
+      subtitle: 'Current Rewards',
+      key: 'withdraw',
     },
     {
-      title: "Rewards",
-      subtitle: "Wallet Balance",
-      key: "reward",
+      title: 'Rewards',
+      subtitle: 'Wallet Balance',
+      key: 'reward',
     },
   ];
 
   const data = [
     {
-      value: "1000 DAI",
+      value: '1000 DAI',
       icon: <Dai />,
     },
     {
-      value: "21 USDC",
+      value: '21 USDC',
       icon: <Usdc />,
     },
     {
-      value: "29 USDT",
+      value: '29 USDT',
       icon: <Usdt />,
     },
   ];
@@ -50,21 +50,21 @@ export default function BuyCoinModal({ onClose }: componentProps) {
   const colourStyles: StylesConfig<any> = {
     control: (styles) => ({
       ...styles,
-      backgroundColor: "transparent",
-      borderColor: "#222531",
+      backgroundColor: 'transparent',
+      borderColor: '#222531',
 
-      width: "150px",
-      borderRadius: "8px",
-      ":hover": {
-        borderColor: "#222531",
+      width: '150px',
+      borderRadius: '8px',
+      ':hover': {
+        borderColor: '#222531',
       },
-      ":focus": {
-        borderColor: "#222531",
+      ':focus': {
+        borderColor: '#222531',
       },
     }),
 
     option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-      const color = "";
+      const color = '';
       return {
         ...styles,
         backgroundColor: isDisabled
@@ -73,33 +73,33 @@ export default function BuyCoinModal({ onClose }: componentProps) {
           ? data.color
           : undefined,
         color: isDisabled
-          ? "#ccc"
+          ? '#ccc'
           : isSelected
-          ? ""
-            ? "white"
-            : "black"
+          ? ''
+            ? 'white'
+            : 'black'
           : data.color,
-        cursor: isDisabled ? "not-allowed" : "default",
+        cursor: isDisabled ? 'not-allowed' : 'default',
 
-        ":active": {
-          ...styles[":active"],
+        ':active': {
+          ...styles[':active'],
         },
       };
     },
     input: (styles) => ({
       ...styles,
-      height: "50px",
+      height: '50px',
       // fontSize: "34px",
-      fontFamily: "Poppins",
-      color: "#888DAA",
+      fontFamily: 'Poppins',
+      color: '#888DAA',
     }),
     placeholder: (styles) => ({ ...styles }),
     singleValue: (styles, { data }) => ({
       ...styles,
-      color: "#fff",
-      fontFamily: "Poppins",
-      fontSize: "14px",
-      fontWeight: "bold",
+      color: '#fff',
+      fontFamily: 'Poppins',
+      fontSize: '14px',
+      fontWeight: 'bold',
     }),
   };
 
@@ -113,13 +113,13 @@ export default function BuyCoinModal({ onClose }: componentProps) {
             height={25}
             src={props.selectProps.value.image}
           />
-        )}{" "}
+        )}{' '}
         {children}
       </components.Control>
     );
   };
   const CustomOption = ({ innerProps, label, data }: any) => {
-    console.log(data, "kskks");
+    console.log(data, 'kskks');
     return (
       <div
         {...innerProps}
@@ -211,8 +211,8 @@ export default function BuyCoinModal({ onClose }: componentProps) {
               }}
               defaultValue={defaultValue ?? {}}
               data={[
-                { label: "ETH", value: "ETH", img: "/eth.png" },
-                { label: "FTN", value: "FTN", img: "/ftn.png" },
+                { label: 'ETH', value: 'ETH', img: '/eth.png' },
+                { label: 'FTN', value: 'FTN', img: '/ftn.png' },
               ]}
             />
           </div>
@@ -235,10 +235,10 @@ export default function BuyCoinModal({ onClose }: componentProps) {
             className="!font-aeonik-pro !text-[40px] bg-clip-text"
             style={{
               background:
-                "linear-gradient(152deg, #8C01FA 32.29%, #EB08A4 100%)",
-              backgroundClip: "text",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
+                'linear-gradient(152deg, #8C01FA 32.29%, #EB08A4 100%)',
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
             }}
           >
             SWAP
@@ -274,7 +274,7 @@ export default function BuyCoinModal({ onClose }: componentProps) {
 
         <div className="mt-8">
           <TokenInput
-            defaultValue={{ label: "ETH", img: "/eth.png" }}
+            defaultValue={{ label: 'ETH', img: '/eth.png' }}
             title="From"
           />
         </div>
@@ -349,7 +349,7 @@ export default function BuyCoinModal({ onClose }: componentProps) {
           </defs>
         </svg>
         <TokenInput
-          defaultValue={{ label: "FTN", img: "/ftn.png" }}
+          defaultValue={{ label: 'FTN', img: '/ftn.png' }}
           title="To"
         />
 
@@ -362,11 +362,11 @@ export default function BuyCoinModal({ onClose }: componentProps) {
             />
           </div>
           <div className="flex items-center ">
-            <Typography
+            {/* <Typography
               variant="body1"
               className="text-white !font-poppins"
               label="0.0021672 ETH per 1INCH"
-            />
+            /> */}
             <svg
               width={24}
               height={24}

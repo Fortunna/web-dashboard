@@ -1,7 +1,7 @@
-import Button from "@/components/button";
-import { CancelIcon, PlayIcon } from "@/components/icons";
-import Typography from "@/components/typography";
-import React from "react";
+import Button from '@/components/button';
+import { CancelIcon, PlayIcon } from '@/components/icons';
+import Typography from '@/components/typography';
+import React from 'react';
 
 export default function AggregatorBanner() {
   return (
@@ -19,11 +19,11 @@ export default function AggregatorBanner() {
                 className="!text-[18px] !font-aeonik-pro font-bold !whitespace-nowrap"
                 label="AI Aggregator"
               />
-              <Typography
+              {/* <Typography
                 variant="body1"
                 className="!font-inter !text-[#CFCFCF]"
                 label="Discover the Oracle "
-              />
+              /> */}
               <div className="md:block hidden">
                 <Button
                   size="small"

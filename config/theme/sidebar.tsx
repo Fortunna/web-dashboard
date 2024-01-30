@@ -1,8 +1,8 @@
 export const TOP_MENU_DATA = [
   {
-    name: "Home",
-    key: "/",
-    to: "/",
+    name: 'Home',
+    key: 'home',
+    to: '/',
     icon: (
       <svg
         width={15}
@@ -21,9 +21,9 @@ export const TOP_MENU_DATA = [
     ),
   },
   {
-    name: "Earn",
-    key: "earn",
-    to: "/earn/farms",
+    name: 'Earn',
+    key: 'earn',
+    to: '/earn/farms',
     icon: (
       <svg
         width={15}
@@ -36,7 +36,7 @@ export const TOP_MENU_DATA = [
         <g clipPath="url(#clip0_51_30462)">
           <mask
             id="mask0_51_30462"
-            style={{ maskType: "luminance" }}
+            style={{ maskType: 'luminance' }}
             maskUnits="userSpaceOnUse"
             x={10}
             y={10}
@@ -77,8 +77,8 @@ export const TOP_MENU_DATA = [
     ),
     menu: [
       {
-        name: "Farms",
-        to: "/earn/farms",
+        name: 'Farms',
+        to: '/earn/farms',
         icon: (
           <svg
             width={24}
@@ -95,8 +95,8 @@ export const TOP_MENU_DATA = [
         ),
       },
       {
-        name: "Pools",
-        to: "/earn/pools",
+        name: 'Pools',
+        to: '/earn/pools',
         icon: (
           <svg
             width={24}
@@ -115,9 +115,9 @@ export const TOP_MENU_DATA = [
     ],
   },
   {
-    name: "Create",
-    key: "create",
-    to: "/create/farm",
+    name: 'Create',
+    key: 'create',
+    to: '/create/farm',
     icon: (
       <svg
         width="24"
@@ -186,8 +186,8 @@ export const TOP_MENU_DATA = [
     ),
     menu: [
       {
-        name: "Create Pool",
-        to: "/create/pool",
+        name: 'Create Pool',
+        to: '/create/pool',
         icon: (
           <svg
             width={24}
@@ -204,8 +204,8 @@ export const TOP_MENU_DATA = [
         ),
       },
       {
-        name: "Create LP Pair",
-        to: "/create/farm",
+        name: 'Create LP Pair',
+        to: '/create/farm',
         icon: (
           <svg
             width={24}
@@ -225,9 +225,9 @@ export const TOP_MENU_DATA = [
   },
 
   {
-    name: "AI Aggregator",
-    key: "ai-aggregator",
-    to: "/ai-aggregator",
+    name: 'AI Aggregator',
+    key: 'ai-aggregator',
+    to: '/ai-aggregator',
 
     icon: (
       <svg
@@ -245,8 +245,9 @@ export const TOP_MENU_DATA = [
     ),
   },
   {
-    name: "Governance",
-    to: "#",
+    name: 'Governance',
+    key: 'governance',
+    to: '',
     icon: (
       <svg
         width="24"
@@ -268,8 +269,8 @@ export const TOP_MENU_DATA = [
 
 export const BOTTOM_MENU_DATA = [
   {
-    name: "Docs",
-    to: "https://fortunafi.io/docs.pdf",
+    name: 'Docs',
+    to: 'https://fortuna-finance-1.gitbook.io/documentation/',
     icon: (
       <svg
         width="44"
@@ -288,7 +289,8 @@ export const BOTTOM_MENU_DATA = [
     ),
   },
   {
-    name: "Tutorials ",
+    name: 'Tutorials ',
+    to: 'https://fortuna-finance-1.gitbook.io/documentation/',
     icon: (
       <svg
         width="40"
@@ -326,7 +328,8 @@ export const BOTTOM_MENU_DATA = [
     ),
   },
   {
-    name: "Contacts",
+    name: 'Contacts',
+    to: 'https://fortuna-finance-1.gitbook.io/documentation/',
     icon: (
       <svg
         width="40"

@@ -1,8 +1,8 @@
-"use client";
-import Button from "@/components/button";
-import Typography from "@/components/typography";
-import React, { useEffect, useState } from "react";
-import MobileMenu from "./mobileMenu";
+'use client';
+import Button from '@/components/button';
+import Typography from '@/components/typography';
+import React, { useEffect, useState } from 'react';
+import MobileMenu from './mobileMenu';
 import {
   useAccount,
   useConnect,
@@ -10,18 +10,18 @@ import {
   useBalance,
   useSwitchNetwork,
   useNetwork,
-} from "wagmi";
-import { InjectedConnector } from "wagmi/connectors/injected";
-import Spinner from "@/components/spinner";
-import { SupportedChains } from "@/constants";
+} from 'wagmi';
+import { InjectedConnector } from 'wagmi/connectors/injected';
+import Spinner from '@/components/spinner';
+import { SupportedChains } from '@/constants';
 
 export default function Header({
   onOpenMobileMenu,
 }: {
   onOpenMobileMenu: () => void;
 }) {
-  const [account, setAccount] = useState<string>("");
-  const [networkName, setNetworkName] = useState<string>("Network");
+  const [account, setAccount] = useState<string>('');
+  const [networkName, setNetworkName] = useState<string>('Network');
   const { chain } = useNetwork();
   const { address, isConnected } = useAccount();
   const { connect, connectors } = useConnect({
@@ -66,12 +66,12 @@ export default function Header({
   };
 
   useEffect(() => {
-    if (!chain) setNetworkName("Network");
+    if (!chain) setNetworkName('Network');
     else if (
       chain.id !== SupportedChains.ETH_MAINNET &&
       chain.id !== SupportedChains.GOERLI
     )
-      setNetworkName("Unsupported");
+      setNetworkName('Unsupported');
     else setNetworkName(chain.name);
   }, [chain]);
 
@@ -88,7 +88,7 @@ export default function Header({
           <Typography
             variant="body2"
             className="!text-light-white flex items-center ps-4 pr-12 !font-dm-sans-bold"
-            label="$0.96"
+            label="$ -"
           />
 
           <div className="bg-deep-secondary md:flex hidden px-[10px] rounded-2xl py-[5px]  items-center justify-center">
@@ -191,9 +191,9 @@ export default function Header({
                   label={
                     account
                       ? account.slice(0, 4) +
-                        "..." +
+                        '...' +
                         account.slice(account.length - 4, account.length)
-                      : "Connect wallet"
+                      : 'Connect wallet'
                   }
                 />
               ) : (
@@ -205,7 +205,7 @@ export default function Header({
                       className="!text-secondary"
                       label={
                         balance?.formatted.slice(0, 5) +
-                        " " +
+                        ' ' +
                         chain?.nativeCurrency.symbol
                       }
                     />

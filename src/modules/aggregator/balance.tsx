@@ -1,24 +1,24 @@
-import Button from "@/components/button";
-import Card from "@/components/card";
-import { RefreshIcon } from "@/components/icons";
-import Typography from "@/components/typography";
-import React, { useState } from "react";
-import Deposit from "../common/depositModal/index";
-import ClaimModal from "../common/claimModal/index";
+import Button from '@/components/button';
+import Card from '@/components/card';
+import { RefreshIcon } from '@/components/icons';
+import Typography from '@/components/typography';
+import React, { useState } from 'react';
+import Deposit from '../common/depositModal/index';
+import ClaimModal from '../common/claimModal/index';
 
 export default function Balance() {
   const data = [
     {
-      name: "Deposited",
-      value: "$24,876.09",
+      name: 'Deposited',
+      value: '$ -',
     },
     {
-      name: "APY",
-      value: "156%",
+      name: 'APY',
+      value: '- %',
     },
     {
-      name: "Rewards",
-      value: "$4,456.72",
+      name: 'Rewards',
+      value: '$ -',
     },
   ];
 
