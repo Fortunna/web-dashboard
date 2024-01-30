@@ -7,10 +7,12 @@
     font-family: "Aeonik Pro";
     src: url(/font/AeonikPro/AeonikProTRIAL-Regular.otf);
   }
+
   @font-face {
     font-family: "Aeonik Pro Bold";
     src: url(/font/AeonikPro/AeonikProTRIAL-Bold.otf);
   }
+
   @font-face {
     font-family: "Aeonik Fono";
     src: url(/font/AeonikFono/AeonikFono-Regular.otf);
@@ -25,6 +27,7 @@
     font-family: "Poppins";
     src: url(/font/Poppins/Poppins-Regular.ttf);
   }
+
   @font-face {
     font-family: "Poppins Light";
     src: url(/font/Poppins/Poppins-Light.ttf);
@@ -39,26 +42,32 @@
     font-family: "Poppins Bold";
     src: url(/font/Poppins/Poppins-Bold.ttf);
   }
+
   @font-face {
     font-family: "DM Sans";
     src: url(/font/DMSans/DMSans-Regular.ttf);
   }
+
   @font-face {
     font-family: "DM Sans Bold";
     src: url(/font/DMSans/DMSans-Bold.ttf);
   }
+
   @font-face {
     font-family: "SF Pro Text";
     src: url(/font/SF-Pro-Text/SF-Pro-Text-Regular.otf);
   }
+
   @font-face {
     font-family: "SF Pro Text Semibold";
     src: url(/font/SF-Pro-Text/SF-Pro-Text-Semibold.otf);
   }
+
   @font-face {
     font-family: "SF Pro Text Bold";
     src: url(/font/SF-Pro-Text/SF-Pro-Text-Bold.otf);
   }
+
   @font-face {
     font-family: "Inter";
     src: url(/font/Inter/static/Inter-Regular.ttf);
@@ -68,14 +77,17 @@
     font-family: "Inter Light";
     src: url(/font/Inter/static/Inter-Light.ttf);
   }
+
   @font-face {
     font-family: "IBM Plex Mono";
     src: url(/font/IBM-Plex-Mono/IBMPlexMono-Regular.ttf);
   }
+
   @font-face {
     font-family: "IBM Plex Mono Semi Bold";
     src: url(/font/IBM-Plex-Mono/IBMPlexMono-SemiBold.ttf);
   }
+
   @font-face {
     font-family: "Noto Sans";
     src: url(/font/Noto_Sans/NotoSans-Regular.ttf);
@@ -99,11 +111,13 @@
             transition: all 0.3s ease-in-out;
           }
         }
+
         &.active {
           span {
             color: #fff;
             transition: all 0.3s ease-in-out;
           }
+
           &.main {
             svg {
               height: 40px;
@@ -112,6 +126,7 @@
             }
           }
         }
+
         &.main {
           &:hover {
             svg {
@@ -121,6 +136,7 @@
             }
           }
         }
+
         &.submenu {
           &:hover {
             svg:not(.no-animate) {
@@ -128,6 +144,7 @@
               transition: all 0.3s ease-out;
               width: 35px;
             }
+
             svg.no-animate {
               path: {
                 display: none !important;
@@ -144,9 +161,11 @@
 .transition {
   // transition: all 0.3s ease-in-out !important;
 }
+
 .custom_select__indicator-separator {
   display: none !important;
 }
+
 .allocation-chart {
   .highcharts-container {
     height: 250px !important;
@@ -156,28 +175,33 @@
 
 .home-chart {
   .highcharts-container {
-    height: 400px !important ;
+    height: 400px !important;
     width: 100% !important;
+
     svg {
       width: 100% !important;
     }
   }
 }
+
 .balance-chart {
   .highcharts-container {
     height: 200px !important;
   }
 }
+
 .ai-aggregator-performance-chart {
   .highcharts-container {
     height: 200px !important;
   }
 }
+
 .pool-list-chart {
   .highcharts-container {
     height: 220px !important;
   }
 }
+
 html {
   font-family: sans-serif;
   font-size: 14px;
@@ -191,6 +215,7 @@ html {
       }
     }
   }
+
   tbody {
     tr {
       td {
@@ -198,6 +223,7 @@ html {
         background-color: transparent !important;
         height: 51px !important;
       }
+
       &:nth-child(even) {
         td {
           background-color: #25252f !important;
@@ -226,11 +252,9 @@ input[type="range"]::-webkit-slider-thumb {
   appearance: none;
   width: 10px;
   height: 10px;
-  background: linear-gradient(
-    98.88deg,
-    #8c01fa 31%,
-    #eb08a4 102.28%
-  ) !important;
+  background: linear-gradient(98.88deg,
+      #8c01fa 31%,
+      #eb08a4 102.28%) !important;
   border-radius: 50%;
   cursor: pointer;
 }
@@ -239,11 +263,9 @@ input[type="range"]::-moz-range-thumb {
   /* Set thumb styles for Firefox */
   width: 10px;
   height: 10px;
-  background: linear-gradient(
-    98.88deg,
-    #8c01fa 31%,
-    #eb08a4 102.28%
-  ) !important;
+  background: linear-gradient(98.88deg,
+      #8c01fa 31%,
+      #eb08a4 102.28%) !important;
   border-radius: 50%;
   cursor: pointer;
 }
@@ -252,11 +274,9 @@ input[type="range"]::-ms-thumb {
   /* Set thumb styles for IE/Edge */
   width: 10px;
   height: 10px;
-  background: linear-gradient(
-    98.88deg,
-    #8c01fa 31%,
-    #eb08a4 102.28%
-  ) !important;
+  background: linear-gradient(98.88deg,
+      #8c01fa 31%,
+      #eb08a4 102.28%) !important;
   border-radius: 50%;
   cursor: pointer;
 }

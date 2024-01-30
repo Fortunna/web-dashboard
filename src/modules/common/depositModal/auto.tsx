@@ -1,13 +1,13 @@
-import Modal from "@/components/modal";
-import React, { useState } from "react";
-import Image from "next/image";
-import Typography from "@/components/typography";
-import TextInput from "@/components/input";
-import Slider from "@/components/slider";
-import Button from "@/components/button";
-import SelectComponent from "@/components/customSelect";
-import { components } from "react-select";
-import Select, { StylesConfig } from "react-select";
+import Modal from '@/components/modal';
+import React, { useState } from 'react';
+import Image from 'next/image';
+import Typography from '@/components/typography';
+import TextInput from '@/components/input';
+import Slider from '@/components/slider';
+import Button from '@/components/button';
+import SelectComponent from '@/components/customSelect';
+import { components } from 'react-select';
+import Select, { StylesConfig } from 'react-select';
 
 type componentProps = {
   imgSrc: string;
@@ -18,21 +18,21 @@ type componentProps = {
 const colourStyles: StylesConfig<any> = {
   control: (styles) => ({
     ...styles,
-    backgroundColor: "transparent",
-    borderColor: "#222531",
+    backgroundColor: 'transparent',
+    borderColor: '#222531',
 
-    width: "150px",
-    borderRadius: "8px",
-    ":hover": {
-      borderColor: "#222531",
+    width: '150px',
+    borderRadius: '8px',
+    ':hover': {
+      borderColor: '#222531',
     },
-    ":focus": {
-      borderColor: "#222531",
+    ':focus': {
+      borderColor: '#222531',
     },
   }),
 
   option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-    const color = "";
+    const color = '';
     return {
       ...styles,
       backgroundColor: isDisabled
@@ -41,33 +41,33 @@ const colourStyles: StylesConfig<any> = {
         ? data.color
         : undefined,
       color: isDisabled
-        ? "#ccc"
+        ? '#ccc'
         : isSelected
-        ? ""
-          ? "white"
-          : "black"
+        ? ''
+          ? 'white'
+          : 'black'
         : data.color,
-      cursor: isDisabled ? "not-allowed" : "default",
+      cursor: isDisabled ? 'not-allowed' : 'default',
 
-      ":active": {
-        ...styles[":active"],
+      ':active': {
+        ...styles[':active'],
       },
     };
   },
   input: (styles) => ({
     ...styles,
-    height: "50px",
+    height: '50px',
     // fontSize: "34px",
-    fontFamily: "Poppins",
-    color: "#888DAA",
+    fontFamily: 'Poppins',
+    color: '#888DAA',
   }),
   placeholder: (styles) => ({ ...styles }),
   singleValue: (styles, { data }) => ({
     ...styles,
-    color: "#fff",
-    fontFamily: "Poppins",
-    fontSize: "14px",
-    fontWeight: "bold",
+    color: '#fff',
+    fontFamily: 'Poppins',
+    fontSize: '14px',
+    fontWeight: 'bold',
   }),
 };
 
@@ -81,13 +81,13 @@ const Control = ({ children, ...props }: any) => {
           height={25}
           src={props.selectProps.value.image}
         />
-      )}{" "}
+      )}{' '}
       {children}
     </components.Control>
   );
 };
 const CustomOption = ({ innerProps, label, data }: any) => {
-  console.log(data, "kskks");
+  console.log(data, 'kskks');
   return (
     <div
       {...innerProps}
@@ -161,7 +161,7 @@ const SingleCoinOption = ({ imgSrc, name, balance }: componentProps) => {
                 <Typography
                   variant="body2"
                   className="!font-poppins !text-white"
-                  label={"Amount"}
+                  label={'Amount'}
                 />
               </div>
             </div>
@@ -198,10 +198,10 @@ const SingleCoinOption = ({ imgSrc, name, balance }: componentProps) => {
               SingleValue: CustomValue,
               DropdownIndicator: DropdownIndicator,
             }}
-            defaultValue={{ label: "ETH", value: "ETH", img: "/eth.png" } ?? {}}
+            defaultValue={{ label: 'ETH', value: 'ETH', img: '/eth.png' } ?? {}}
             data={[
-              { label: "ETH", value: "ETH", img: "/eth.png" },
-              { label: "FTN", value: "FTN", img: "/ftn.png" },
+              { label: 'ETH', value: 'ETH', img: '/eth.png' },
+              { label: 'FTN', value: 'FTN', img: '/ftn.png' },
             ]}
           />
         </div>
@@ -211,15 +211,15 @@ const SingleCoinOption = ({ imgSrc, name, balance }: componentProps) => {
 };
 
 export default function Auto() {
-  const [activeRiskFactor, setActiveRiskFactor] = useState("");
+  const [activeRiskFactor, setActiveRiskFactor] = useState('');
 
   const isActiveStyles = (label: string) => {
     const isActive = label === activeRiskFactor;
 
     if (isActive) {
-      return "!border-secondary !text-secondary ";
+      return '!border-secondary !text-secondary ';
     }
-    return "";
+    return '';
   };
   return (
     <div>
@@ -233,25 +233,25 @@ export default function Auto() {
 
           <div className="grid grid-cols-3 gap-2 my-4">
             <Button
-              onClick={() => setActiveRiskFactor("LOW")}
+              onClick={() => setActiveRiskFactor('LOW')}
               className={`hover:border-secondary transition-all  ${isActiveStyles(
-                "LOW"
+                'LOW'
               )}`}
               theme="transparent"
               label="LOW"
             />
             <Button
-              onClick={() => setActiveRiskFactor("MEDIUM")}
+              onClick={() => setActiveRiskFactor('MEDIUM')}
               className={`hover:border-secondary transition-all  ${isActiveStyles(
-                "MEDIUM"
+                'MEDIUM'
               )}`}
               theme="transparent"
               label="MEDIUM"
             />
             <Button
-              onClick={() => setActiveRiskFactor("HIGH")}
+              onClick={() => setActiveRiskFactor('HIGH')}
               className={`hover:border-secondary transition-all  ${isActiveStyles(
-                "HIGH"
+                'HIGH'
               )}`}
               theme="transparent"
               label="HIGH"
@@ -262,7 +262,7 @@ export default function Auto() {
               variant="body2"
               className="!font-poppins !text-secondary !text-center  border-[1px] border-[#334155] rounded-[8px] px-[17px] py-5"
             >
-              <>The ORACLE is under development</>
+              <>The A.I. Aggregator is under development</>
 
               {/* <svg
                   className="inline-block ms-2"

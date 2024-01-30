@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
-import Highcharts from "highcharts";
-import HighchartsReact from "highcharts-react-official";
-import Typography from "../typography";
-import Badge from "../badge";
-import Button from "../button";
-import classNames from "classnames";
-import BuyCoinModal from "@/modules/home/buyCoin/buyCoinModal";
+import React, { useEffect, useState } from 'react';
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
+import Typography from '../typography';
+import Badge from '../badge';
+import Button from '../button';
+import classNames from 'classnames';
+import BuyCoinModal from '@/modules/home/buyCoin/buyCoinModal';
 
 const ExchangeRateChart = () => {
   const [data, setData] = useState([]);
@@ -15,12 +15,12 @@ const ExchangeRateChart = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "https://cdn.jsdelivr.net/gh/highcharts/highcharts@v10.3.3/samples/data/usdeur.json"
+          'https://cdn.jsdelivr.net/gh/highcharts/highcharts@v10.3.3/samples/data/usdeur.json'
         );
         const data = await response.json();
         setData(data);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error('Error fetching data:', error);
       }
     };
 
@@ -30,14 +30,14 @@ const ExchangeRateChart = () => {
   const config = {
     chart: {
       // zoomType: "x",
-      type: "area",
-      zoomType: "x",
+      type: 'area',
+      zoomType: 'x',
       panning: true,
-      panKey: "shift",
+      panKey: 'shift',
       scrollablePlotArea: {
         minWidth: 600,
       },
-      backgroundColor: "transparent",
+      backgroundColor: 'transparent',
     },
     title: {
       text: null,
@@ -47,13 +47,13 @@ const ExchangeRateChart = () => {
     },
 
     xAxis: {
-      type: "datetime",
+      type: 'datetime',
       labels: {
         style: {
-          color: "#FFF", // X-axis label color
-          fontFamily: "Inter",
-          fontSize: "12px", // X-axis label font size
-          opacity: "0.30000001192092896",
+          color: '#FFF', // X-axis label color
+          fontFamily: 'Inter',
+          fontSize: '12px', // X-axis label font size
+          opacity: '0.30000001192092896',
 
           // Add more styling properties as needed
         },
@@ -61,15 +61,15 @@ const ExchangeRateChart = () => {
     },
     yAxis: {
       gridLineWidth: 1,
-      gridLineColor: "rgba(255, 255, 255,.1)",
-      gridLineDashStyle: "Dash",
-      title: "",
+      gridLineColor: 'rgba(255, 255, 255,.1)',
+      gridLineDashStyle: 'Dash',
+      title: '',
       labels: {
         style: {
-          color: "#FFF", // X-axis label color
-          fontFamily: "Inter",
-          fontSize: "12px", // X-axis label font size
-          opacity: "0.30000001192092896",
+          color: '#FFF', // X-axis label color
+          fontFamily: 'Inter',
+          fontSize: '12px', // X-axis label font size
+          opacity: '0.30000001192092896',
 
           // Add more styling properties as needed
         },
@@ -80,7 +80,7 @@ const ExchangeRateChart = () => {
     },
     plotOptions: {
       area: {
-        fillColor: "rgba(123, 97, 255, 0.1)",
+        fillColor: 'rgba(123, 97, 255, 0.1)',
         marker: {
           radius: 2,
         },
@@ -95,15 +95,15 @@ const ExchangeRateChart = () => {
     },
     series: [
       {
-        type: "area",
-        name: "USD to EUR",
+        type: 'area',
+        name: 'USD to EUR',
         data: data,
-        color: "#DE1EFD",
+        color: '#DE1EFD',
       },
     ],
   };
 
-  const filterBy = ["24H", "7D", "30D", "90D", "1Y", "ALL"];
+  const filterBy = ['24H', '7D', '30D', '90D', '1Y', 'ALL'];
 
   return (
     <div>
@@ -117,10 +117,10 @@ const ExchangeRateChart = () => {
           <div className="md:flex md:items-center">
             <div className="md:flex md:items-center">
               <Typography
-                label="$62,340.48"
+                label="$ -"
                 className="!text-[54px] !font-aeonik-pro !font-normal"
               />
-              <div>
+              {/* <div>
                 <div className="md:flex inline-block  mx-auto align-top h-full md:-mt-5">
                   <Badge
                     className="!py-1 ml-4"
@@ -147,7 +147,7 @@ const ExchangeRateChart = () => {
                     outline
                   />
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
@@ -205,7 +205,7 @@ const ExchangeRateChart = () => {
           <div className="flex items-start justify-between">
             {filterBy.map((_option, index) => {
               const activeStyle = classNames({
-                "bg-[#2C2C33]": index == 2,
+                'bg-[#2C2C33]': index == 2,
               });
               return (
                 <Typography

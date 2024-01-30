@@ -1,12 +1,12 @@
-import { AnimateFadeIn, RenderWhenInView } from "@/animations";
-import Badge from "@/components/badge";
-import { PlusIcon, ThreeDotIcon } from "@/components/icons";
-import TabComponent from "@/components/tab";
-import Table from "@/components/table";
-import Typography from "@/components/typography";
-import { createColumnHelper } from "@tanstack/react-table";
-import React from "react";
-import Image from "next/image";
+import { AnimateFadeIn, RenderWhenInView } from '@/animations';
+import Badge from '@/components/badge';
+import { PlusIcon, ThreeDotIcon } from '@/components/icons';
+import TabComponent from '@/components/tab';
+import Table from '@/components/table';
+import Typography from '@/components/typography';
+import { createColumnHelper } from '@tanstack/react-table';
+import React from 'react';
+import Image from 'next/image';
 
 export default function ProvidersPrice() {
   type Providers = {
@@ -23,59 +23,59 @@ export default function ProvidersPrice() {
 
   const defaultData: Providers[] = [
     {
-      name: "Binance Coin (BNB) ",
-      img: "/binance.png",
-      price: "$ 1720.83",
-      _24hrs: "+13.1%",
-      holdings_fiat: "$ 200.63",
-      holdings_crypto: "0.47 BNB",
-      avg: "$ 411.39",
-      profit: "+ $7.14",
-      loss: "3.67%",
+      name: 'Binance Coin (BNB) ',
+      img: '/binance.png',
+      price: '$ -',
+      _24hrs: '- %',
+      holdings_fiat: '$ -',
+      holdings_crypto: '- BNB',
+      avg: '$ -',
+      profit: '+ $ -',
+      loss: '- %',
     },
     {
-      name: "Polkadot (DOT) ",
-      img: "/dot.png",
-      price: "$ 19.31",
-      _24hrs: "- 3.1%",
-      holdings_fiat: "$ 188.94",
-      holdings_crypto: "9.8 DOT",
-      avg: "$ 20.39",
-      profit: "- $17.14",
-      loss: "+ 33.67%",
+      name: 'Polkadot (DOT) ',
+      img: '/dot.png',
+      price: '$ -',
+      _24hrs: '- %',
+      holdings_fiat: '$ -',
+      holdings_crypto: '- DOT',
+      avg: '$ -',
+      profit: '+ $ -',
+      loss: '- %',
     },
     {
-      name: "Bitcoin (BTC)",
-      img: "/btc.png",
-      price: "$ 390.83",
-      _24hrs: "-9.1%",
-      holdings_fiat: "$ 2030.63",
-      holdings_crypto: "4.47 BTC",
-      avg: "$ 211.39",
-      profit: "+ $17.14",
-      loss: "- 3.67%",
+      name: 'Bitcoin (BTC)',
+      img: '/btc.png',
+      price: '$ -',
+      _24hrs: '- %',
+      holdings_fiat: '$ -',
+      holdings_crypto: '- BTC',
+      avg: '$ -',
+      profit: '+ $ -',
+      loss: '- %',
     },
     {
-      name: "Ethereum (ETH) ",
-      img: "/eth.png",
-      price: "$ 5720.83",
-      _24hrs: "-103.1%",
-      holdings_fiat: "$ 500.63",
-      holdings_crypto: "0.47 ETH",
-      avg: "$ 411.39",
-      profit: "+ $7.14",
-      loss: "3.67%",
+      name: 'Ethereum (ETH) ',
+      img: '/eth.png',
+      price: '$ -',
+      _24hrs: '- %',
+      holdings_fiat: '$ -',
+      holdings_crypto: '- ETH',
+      avg: '$ -',
+      profit: '+ $ -',
+      loss: '- %',
     },
     {
-      name: "Chainlink (LINK) ",
-      img: "/binance.png",
-      price: "$ 1720.83",
-      _24hrs: "+13.1%",
-      holdings_fiat: "$ 200.63",
-      holdings_crypto: "0.47 LINK",
-      avg: "$ 411.39",
-      profit: "+ $7.14",
-      loss: "3.67%",
+      name: 'Chainlink (LINK) ',
+      img: '/binance.png',
+      price: '$ -',
+      _24hrs: '- %',
+      holdings_fiat: '$ -',
+      holdings_crypto: '- LINK',
+      avg: '$ -',
+      profit: '+ $ -',
+      loss: '- %',
     },
   ];
 
@@ -83,7 +83,7 @@ export default function ProvidersPrice() {
 
   const columns = [
     columnHelper.accessor((row) => row.name, {
-      id: "Name",
+      id: 'Name',
       cell: (info) => (
         <span className={`whitespace-nowrap flex items-center`}>
           <Image
@@ -102,7 +102,7 @@ export default function ProvidersPrice() {
       header: (props) => <div className="whitespace-nowrap">Name</div>,
     }),
     columnHelper.accessor((row) => row.price, {
-      id: "PRICE (ETH/DAI)",
+      id: 'PRICE (ETH/DAI)',
       cell: (info) => (
         <Typography
           variant="body2"
@@ -116,14 +116,16 @@ export default function ProvidersPrice() {
     }),
 
     columnHelper.accessor((row) => row._24hrs, {
-      id: "24H",
+      id: '24H',
       cell: (info) => (
         <Typography
           variant="body2"
           className={`!font-inter ${
-            info.getValue().includes("-")
-              ? "!text-[#F94F59]"
-              : "!text-[#47A663]"
+            info.getValue().includes('- %')
+              ? '!text-[#9b9a9a]'
+              : info.getValue().includes('-')
+              ? '!text-[#F94F59]'
+              : '!text-[#47A663]'
           }`}
           label={info.getValue()}
         />
@@ -132,7 +134,7 @@ export default function ProvidersPrice() {
     }),
 
     columnHelper.accessor((row) => row.price, {
-      id: "HOLDINGS",
+      id: 'HOLDINGS',
       cell: (info) => (
         <div>
           <Typography
@@ -151,7 +153,7 @@ export default function ProvidersPrice() {
     }),
 
     columnHelper.accessor((row) => row.price, {
-      id: "Avg. Buy Price",
+      id: 'Avg. Buy Price',
       cell: (info) => (
         <Typography
           variant="body2"
@@ -165,7 +167,7 @@ export default function ProvidersPrice() {
     }),
 
     columnHelper.accessor((row) => row.price, {
-      id: "Profit/Loss",
+      id: 'Profit/Loss',
       cell: (info) => (
         <div>
           <Typography
@@ -176,9 +178,11 @@ export default function ProvidersPrice() {
           <Typography
             variant="body2"
             className={`!font-inter ${
-              info.row.original?.loss?.includes("-")
-                ? "!text-[#F94F59]"
-                : "!text-[#47A663]"
+              info.row.original?.loss?.includes('- %')
+                ? '!text-[#9b9a9a]'
+                : info.row.original?.loss?.includes('-')
+                ? '!text-[#F94F59]'
+                : '!text-[#47A663]'
             }`}
             label={info.getValue()}
           />
@@ -187,7 +191,7 @@ export default function ProvidersPrice() {
       header: (props) => <div className="whitespace-nowrap"> Profit/Loss</div>,
     }),
     columnHelper.accessor((row) => row.price, {
-      id: "Actions",
+      id: 'Actions',
       cell: (info) => (
         <div className="flex items-center">
           <PlusIcon />
@@ -206,7 +210,7 @@ export default function ProvidersPrice() {
         label="Token Holdings"
         className="!font-aeonik-pro-bold mb-3"
       />
-      <Table columns={columns} data={...defaultData} />
+      <Table columns={columns} data={defaultData} />
     </div>
   );
 }

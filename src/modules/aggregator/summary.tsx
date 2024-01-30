@@ -1,21 +1,21 @@
-import { AnimateFadeIn } from "@/animations";
-import Card from "@/components/card";
-import Typography from "@/components/typography";
-import React from "react";
+import { AnimateFadeIn } from '@/animations';
+import Card from '@/components/card';
+import Typography from '@/components/typography';
+import React from 'react';
 
 export default function Summary() {
   const data = [
     {
-      value: "$ 15,600,000",
-      name: "Total Value Locked",
+      value: '$ -',
+      name: 'Total Value Locked',
     },
     {
-      value: "135%",
-      name: "APY",
+      value: '- %',
+      name: 'APY',
     },
     {
-      value: "$ 160,000",
-      name: "Total Rewards",
+      value: '$ -',
+      name: 'Total Rewards',
     },
   ];
 
@@ -24,7 +24,7 @@ export default function Summary() {
       <div className="md:flex md:justify-around md:text-start text-center  py-[56px] overflow-hidden relative rounded-[8px] ">
         {data?.map((_stac, index) => {
           return (
-            <div className={`md:mt-0 ${index ? "mt-9" : ""}`} key={index}>
+            <div className={`md:mt-0 ${index ? 'mt-9' : ''}`} key={index}>
               <AnimateFadeIn animationPosition="leftToRight" delay={index / 4}>
                 <>
                   <Typography

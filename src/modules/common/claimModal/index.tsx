@@ -1,37 +1,37 @@
-import Modal from "@/components/modal";
-import React, { useState } from "react";
-import Image from "next/image";
-import Typography from "@/components/typography";
-import TextInput from "@/components/input";
-import Slider from "@/components/slider";
-import Button from "@/components/button";
-import RangeInputWithSteps from "@/components/stepper/withSteps";
-import CheckBox from "@/components/checkbox";
+import Modal from '@/components/modal';
+import React, { useState } from 'react';
+import Image from 'next/image';
+import Typography from '@/components/typography';
+import TextInput from '@/components/input';
+import Slider from '@/components/slider';
+import Button from '@/components/button';
+import RangeInputWithSteps from '@/components/stepper/withSteps';
+import CheckBox from '@/components/checkbox';
 
 const reward = [
   {
-    balance: "0.1 DAI",
-    img: "/dai.png",
+    balance: '0.1 DAI',
+    img: '/dai.png',
   },
   {
-    balance: "0.25 ETH",
-    img: "/eth.png",
+    balance: '0.25 ETH',
+    img: '/eth.png',
   },
   {
-    balance: "0.456 BTC",
-    img: "/btc.png",
+    balance: '0.456 BTC',
+    img: '/btc.png',
   },
   {
-    img: "/binance.png",
-    balance: "0.00 BNB",
+    img: '/binance.png',
+    balance: '0.00 BNB',
   },
   {
-    img: "/usdc.png",
-    balance: "0.01 USDC",
+    img: '/usdc.png',
+    balance: '0.01 USDC',
   },
   {
-    balance: "100.00 USDT",
-    img: "/usdt.png",
+    balance: '100.00 USDT',
+    img: '/usdt.png',
   },
 ];
 
@@ -125,7 +125,7 @@ export default function ClaimModal({ onClose }: { onClose: Function }) {
               variant="body2"
               className="!font-poppins !text-secondary !text-center mt-6 border-[1px] border-[#334155] rounded-[8px] px-[17px] py-5"
             >
-              <>The ORACLE is under development</>
+              <>The A.I. Aggregator is under development</>
 
               {/* <svg
                   className="inline-block ms-2"

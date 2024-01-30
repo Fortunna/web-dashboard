@@ -1,9 +1,9 @@
-import React, { memo } from "react";
-import Card from "../card";
-import Typography from "../typography";
-import Portal from "./portal";
-import classNames from "classnames";
-import { AnimateFadeIn } from "@/animations";
+import React, { memo } from 'react';
+import Card from '../card';
+import Typography from '../typography';
+import Portal from './portal';
+import classNames from 'classnames';
+import { AnimateFadeIn } from '@/animations';
 
 type ComponentProps = {
   children: React.ReactNode;
@@ -28,7 +28,7 @@ function Modal({
       <div
         style={{
           // background: "rgba(225, 225, 225, 0.2)",
-          backdropFilter: "blur(4px)",
+          backdropFilter: 'blur(4px)',
         }}
         className="h-screen w-screen !overflow-y-scroll pt-[8%] flex fixed z-10 top-0   justify-center "
       >
@@ -57,9 +57,7 @@ function Modal({
               {title ? (
                 <div className="grid pt-[40px] pb-[36px] px-[24px] grid-cols-[20%_auto_20%] ">
                   <div></div>
-                  <div className="text-center">
-                    <Typography variant="subtitle" label={title} />
-                  </div>
+                  <div className="text-center"></div>
                   <div className="flex justify-end">
                     <svg
                       width={24}
